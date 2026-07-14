@@ -1,0 +1,163 @@
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f5f7fa;
+}
+
+/* ===== 领域主题色 ===== */
+.domain-数 { color: #3B82F6; }
+.domain-式 { color: #10B981; }
+.domain-方程与不等式 { color: #F59E0B; }
+.domain-函数 { color: #8B5CF6; }
+.domain-几何 { color: #EF4444; }
+.domain-排列组合与统计 { color: #EC4899; }
+.domain-数列与导数 { color: #06B6D4; }
+
+/* ===== 图谱区域 ===== */
+.graph-container {
+  width: 100%;
+  height: calc(100vh - 64px);
+  position: relative;
+}
+
+.graph-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.graph-node {
+  cursor: pointer;
+  transition: r 0.2s;
+}
+
+.graph-node:hover {
+  filter: brightness(1.2);
+}
+
+.graph-node-text {
+  pointer-events: none;
+  font-size: 12px;
+  user-select: none;
+}
+
+/* ===== 节点 tooltip ===== */
+.graph-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 260px;
+  line-height: 1.5;
+}
+
+/* ===== 详情页 ===== */
+.detail-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.detail-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.detail-section h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #1a1a2e;
+}
+
+.detail-section h3::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: #3B82F6;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.visual-area {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 关系卡片 ===== */
+.relation-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f0f5ff;
+  border: 1px solid #d6e4ff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #1d39c4;
+  margin: 4px 6px 4px 0;
+}
+
+.relation-card:hover {
+  background: #d6e4ff;
+  transform: translateY(-1px);
+}
+
+.relation-card .relation-type-badge {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #fff;
+  color: #666;
+}
+
+/* ===== 随堂练习 ===== */
+.practice-question {
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  border-left: 3px solid #3B82F6;
+}
+
+/* ===== 摘要卡片 ===== */
+.milestone-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+/* ===== 滚动条 ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(node *)",
+      "Bash(curl -s http://localhost:8082/knowledge/graph)",
+      "Bash(curl -s http://localhost:8082/api/knowledge/graph)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s http://localhost:8082/)",
+      "Bash(grep *)",
+      "Bash(curl -s http://localhost:8082/src/components/Graph/KnowledgeGraph.tsx)",
+      "Bash(npx prisma *)",
+      "Bash(curl -s http://localhost:8082/@fs/Users/liuzuodong/Documents/workspace/math-knowledge/web/src/components/Graph/KnowledgeGraph.tsx)",
+      "Bash(curl -s 'http://localhost:8082/src/components/Graph/KnowledgeGraph.tsx')",
+      "Bash(curl -s 'http://localhost:8082/@fs/Users/liuzuodong/Documents/workspace/math-knowledge/web/src/components/Graph/KnowledgeGraph.tsx')"
+    ]
+  }
+}

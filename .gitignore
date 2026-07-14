@@ -1,0 +1,26 @@
+# Node
+node_modules/
+web/dist/
+
+# Java
+server/target/
+*.class
+*.jar
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/binaries/
+scripts/mathverse-backend.jar

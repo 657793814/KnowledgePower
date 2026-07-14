@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mathverse-server
+  profiles:
+    active: dev
+
+# ====== MyBatis-Plus 配置 ======
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+# ====== 日志 ======
+logging:
+  level:
+    com.mathverse: info
+
+# ====== AI 配置 ======
+ai:
+  # 供应商: openai（远程） 或 ollama（本地）
+  provider: openai
+  # Ollama 配置（provider=ollama 时使用）
+  base-url: http://localhost:11434
+  # 远程 API 配置（provider=openai 时使用）
+  # 支持所有 OpenAI 兼容接口：DeepSeek / OpenAI / 硅基流动 / Agnes AI 等
+  api-base-url: https://apihub.agnes-ai.com/v1
+  api-key: sk-TLbyiqLJOFY2FZT9DtiH4ChFLgPWK6er8IjJdVuEsidIpA1b
+  # 模型名
+  model: agnes-2.0-flash
+  # 每次 AI 请求的最大 token 数
+  max-tokens: 4096
+  # 知识上下文最大字符数（防止超过 context window）
+  max-context-chars: 3000

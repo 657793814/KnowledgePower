@@ -1,0 +1,132 @@
+// Prisma Schema — MathVerse Node Server
+// 完全对齐 Java 侧所有表结构，无物理外键，用逻辑字段维护关联
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== 用户 ====================
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String?
+  nickname  String?
+  avatar    String?
+  role      String   @default("user")
+  status    Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// ==================== 知识点 ====================
+model KnowledgeNode {
+  id            String   @id                // 字符串主键 如 "number_01"
+  title         String
+  subtitle      String?
+  subject       String   @default("math")  // math | physics | chemistry
+  domain        String
+  level         String
+  difficulty    Int      @default(1)
+  sortOrder     Int      @default(0)
+  visualType    String?
+  summary       String?
+  contentJson   String?                     // TEXT, 存 JSON 字符串（含 LaTeX、例题）
+  milestoneType String?
+  deleted       Int      @default(0)
+  status        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@index([subject])
+  @@index([domain])
+  @@index([level])
+  @@index([status])
+}
+
+// ==================== 知识点关系 ====================
+model KnowledgeRelation {
+  id           Int      @id @default(autoincrement())
+  fromNodeId   String
+  toNodeId     String
+  relationType String
+  sortOrder    Int      @default(0)
+  description  String?
+  createdAt    DateTime @default(now())
+
+  @@index([fromNodeId])
+  @@index([toNodeId])
+  @@index([relationType])
+}
+
+// ==================== 题库 ====================
+model ExamQuestion {
+  id            Int      @id @default(autoincrement())
+  nodeId        String?
+  subject       String   @default("math")
+  domain        String?
+  level         String?
+  questionType  String
+  difficulty    Int      @default(1)
+  title         String
+  options       String?                     // JSON 字符串: {"A":"选项A",...}
+  answer        String
+  explanation   String?
+  tags          String?                     // JSON 字符串: ["tag1","tag2"]
+  deleted       Int      @default(0)
+  status        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+// ==================== 试卷 ====================
+model ExamPaper {
+  id            Int      @id @default(autoincrement())
+  title         String
+  domain        String?
+  level         String?
+  mode          String
+  questionCount Int
+  timeLimit     Int?
+  allowRetry    Int      @default(0)
+  questionIds   String
+  createdBy     Int?
+  deleted       Int      @default(0)
+  status        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+// ==================== 答题记录 ====================
+model ExamAnswer {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  paperId     Int?
+  questionId  Int
+  nodeId      String?
+  userAnswer  String
+  isCorrect   Int      @default(0)
+  score       Float?                        // SQLite 无 BigDecimal, 用 Float
+  timeSpent   Int?
+  submittedAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ==================== 错题本 ====================
+model ExamWrongBook {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  questionId   Int
+  nodeId       String?
+  reviewCount  Int      @default(0)
+  lastReviewAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+}

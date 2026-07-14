@@ -1,0 +1,115 @@
+/* 知识点详情页样式 */
+.detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+  min-height: calc(100vh - 64px);
+}
+
+.detail-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s;
+}
+
+.detail-section:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.detail-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* 关系卡片 */
+.relation-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  margin: 4px 6px 4px 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.relation-card:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.relation-type-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+/* 练习问题卡片 */
+.practice-question {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+/* D3 图谱全局样式 */
+.graph-node {
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.graph-node:hover {
+  filter: brightness(1.15);
+}
+
+.graph-node-text {
+  pointer-events: none;
+  user-select: none;
+}
+
+.graph-tooltip {
+  position: absolute;
+  background: rgba(30, 41, 59, 0.95);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 240px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  line-height: 1.5;
+}
+
+/* 可视化区域 */
+.visual-area {
+  margin-top: 12px;
+}
+
+/* 返回顶部按钮 */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
