@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { fetchGraph } from '@/api';
@@ -63,15 +63,18 @@ export default function GraphPage() {
     navigate(`/knowledge/${id}`);
   };
 
-  // 过滤
-  const filteredNodes: GraphNodeVO[] = graphData?.nodes.filter(n =>
-    !currentLevel || n.level === currentLevel
-  ) || [];
+  // 过滤（useMemo 避免每次渲染生成新数组，防止 D3 重初始化）
+  const filteredNodes = useMemo<GraphNodeVO[]>(
+    () => graphData?.nodes.filter(n => !currentLevel || n.level === currentLevel) || [],
+    [graphData?.nodes, currentLevel]
+  );
 
-  const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
-  const filteredEdges: GraphEdgeVO[] = graphData?.edges.filter(e =>
-    filteredNodeIds.has(e.source) && filteredNodeIds.has(e.target)
-  ) || [];
+  const filteredNodeIds = useMemo(() => new Set(filteredNodes.map(n => n.id)), [filteredNodes]);
+
+  const filteredEdges = useMemo<GraphEdgeVO[]>(
+    () => graphData?.edges.filter(e => filteredNodeIds.has(e.source) && filteredNodeIds.has(e.target)) || [],
+    [graphData?.edges, filteredNodeIds]
+  );
 
   return (
     <div style={{ height: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column' }}>

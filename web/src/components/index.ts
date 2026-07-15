@@ -8,5 +8,13 @@ export { default as FunctionTransform } from './Visual/function-transform/Functi
 export { default as GeometryVisual } from './Visual/geometry-visual/GeometryVisual';
 export { default as SequenceVisual } from './Visual/sequence-visual/SequenceVisual';
 export { default as TrigCircle } from './Visual/trig-circle/TrigCircle';
+export { default as CirclePower } from './Visual/circle-power/CirclePower';
+export { default as AnimationPlayer } from './Animation/AnimationPlayer';
+export { default as AnimationContainer } from './Animation/AnimationContainer';
+export { default as FunctionShift } from './Animation/animations/FunctionShift';
+export { default as EquationSolve } from './Animation/animations/EquationSolve';
+export { default as NumberExpansion } from './Animation/animations/NumberExpansion';
+export { default as FreeFall } from './Animation/animations/FreeFall';
+export { default as EquationBalance } from './Animation/animations/EquationBalance';
 export { default as KnowledgeCard } from './Card/KnowledgeCard';
 export { Loading } from './common/Loading';

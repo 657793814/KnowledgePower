@@ -2,11 +2,12 @@ import request from './request';
 import type { KnowledgeGraphVO, KnowledgeNode, KnowledgeNodeDetailVO, PageResult } from '@/types';
 
 /** 获取知识图谱 */
-export const fetchGraph = (subject: string, domain?: string) => {
+export const fetchGraph = (subject?: string, domain?: string) => {
+  const params: Record<string, string> = {};
+  if (subject) params.subject = subject;
+  const qs = new URLSearchParams(params).toString();
   let url = domain ? `/knowledge/graph/${encodeURIComponent(domain)}` : '/knowledge/graph';
-  if (subject !== 'math') {
-    url += (url.includes('?') ? '&' : '?') + `subject=${subject}`;
-  }
+  if (qs) url += (url.includes('?') ? '&' : '?') + qs;
   return request.get<KnowledgeGraphVO>(url).then(r => r.data);
 }
 
@@ -17,6 +18,7 @@ export const fetchKnowledgeDetail = (id: string) =>
 
 /** 知识点列表 */
 export const fetchKnowledgeList = (params: {
+  subject?: string;
   domain?: string;
   level?: string;
   keyword?: string;

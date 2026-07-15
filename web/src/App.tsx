@@ -8,6 +8,7 @@ import KnowledgeEdit from './pages/admin/KnowledgeEdit';
 import PracticePage from './pages/exam/PracticePage';
 import StatsPage from './pages/exam/StatsPage';
 import WrongBookPage from './pages/exam/WrongBookPage';
+import AnimationDemo from './pages/AnimationDemo';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/exam/practice" element={<PracticePage />} />
         <Route path="/exam/stats" element={<StatsPage />} />
         <Route path="/exam/wrong-book" element={<WrongBookPage />} />
+        <Route path="/animation/demo" element={<AnimationDemo />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/knowledge/edit/:id" element={<KnowledgeEdit />} />
         <Route path="/admin/knowledge/create" element={<KnowledgeEdit />} />

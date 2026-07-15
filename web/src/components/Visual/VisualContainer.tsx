@@ -1,5 +1,6 @@
 import React from 'react';
 import type { VisualConfig } from '@/types';
+import AnimationContainer from '@/components/Animation/AnimationContainer';
 import NumberLine from './number-line/NumberLine';
 import ComplexPlane, { ComplexPlaneDraggable } from './complex-plane/ComplexPlane';
 import FunctionTransform from './function-transform/FunctionTransform';
@@ -9,6 +10,7 @@ import TrigCircle from './trig-circle/TrigCircle';
 import ForceDiagram from './force-diagram/ForceDiagram';
 import MoleculeView from './molecule-view/MoleculeView';
 import OpticsDemo from './optics-demo/OpticsDemo';
+import CirclePower from './circle-power/CirclePower';
 
 interface Props {
   visualType?: string;
@@ -30,10 +32,23 @@ const visualRegistry: Record<string, React.FC<any>> = {
   'force-diagram': ForceDiagram,
   'molecule-view': MoleculeView,
   'optics-demo': OpticsDemo,
+  'circle-power': CirclePower,
 };
 
 /** 互动演示容器 — 根据配置自动选择对应演示组件 */
 export default function VisualContainer({ visualType, visualConfig }: Props) {
+  // 动画类型 — 直接交给 AnimationContainer 处理
+  if (visualType === 'animation') {
+    const cfg = Array.isArray(visualConfig) ? visualConfig[0] : visualConfig;
+    if (!cfg) return null;
+    return (
+      <AnimationContainer
+        type={cfg.component}
+        {...cfg.config}
+      />
+    );
+  }
+
   if (!visualType || visualType === 'static') {
     return null;
   }

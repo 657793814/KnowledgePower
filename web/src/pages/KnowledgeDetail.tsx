@@ -2,7 +2,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Spin, Tag, Button, Divider } from 'antd';
 import { ArrowLeftOutlined, ArrowRightOutlined, BranchesOutlined } from '@ant-design/icons';
 import { useKnowledgeDetail } from '@/hooks/useGraphData';
-import { VisualContainer } from '@/components';
+import { VisualContainer, AnimationContainer } from '@/components';
+import { NODE_ANIMATION_MAP } from '@/components/Animation/AnimationContainer';
 import { DOMAIN_COLORS, LEVEL_COLORS } from '@/types';
 import AiChatPanel from '@/components/ai/AiChatPanel';
 import { useEffect, useState } from 'react';
@@ -57,6 +58,21 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
               visualConfig={section.visual}
             />
           )}
+        </div>
+      );
+
+    case 'animation':
+      return (
+        <div className="detail-section" key={index}>
+          <h3>{'🎬 ' + (section.title || '动画演示')}</h3>
+          {section.content && (
+            <p style={{ fontSize: 14, lineHeight: 1.8, color: '#64748b', marginBottom: 12, whiteSpace: 'pre-line' }}
+              dangerouslySetInnerHTML={{ __html: renderFormula(section.content) }} />
+          )}
+          <AnimationContainer
+            type={section.animation}
+            {...(section.config || {})}
+          />
         </div>
       );
 
@@ -127,6 +143,50 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
                 <li key={i} style={{ fontSize: 14, color: '#7c2d12' }}>{item}</li>
               ))}
             </ul>
+          )}
+        </div>
+      );
+
+    case 'derivation':
+      return (
+        <div className="detail-section" key={index} style={{ background: '#fefce8' }}>
+          <h3 style={{ color: '#d97706' }}>{'📐 ' + (section.title || '推导证明')}</h3>
+          <p style={{ fontSize: 14, lineHeight: 1.8, color: '#374151' }}
+            dangerouslySetInnerHTML={{ __html: renderFormula(section.content || '') }} />
+          {section.steps?.length > 0 && (
+            <div style={{ counterReset: 'step' }}>
+              {section.steps.map((step: string, i: number) => (
+                <div key={i} style={{
+                  display: 'flex', gap: 12, marginBottom: 8,
+                  padding: '8px 12px', background: '#fefce8', borderRadius: 6,
+                  borderLeft: '3px solid #d97706'
+                }}>
+                  <span style={{
+                    background: '#d97706', color: '#fff', borderRadius: '50%',
+                    width: 24, height: 24, display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0
+                  }}>{i + 1}</span>
+                  <span style={{ fontSize: 14, lineHeight: 1.6, color: '#92400e', paddingTop: 2 }}
+                    dangerouslySetInnerHTML={{ __html: renderFormula(step) }} />
+                </div>
+              ))}
+            </div>
+          )}
+          {section.formulas?.length > 0 && section.formulas.map((f: string, i: number) => (
+            <div key={i} style={{
+              background: '#fff8e1', padding: '8px 14px', borderRadius: 6,
+              marginTop: 6, textAlign: 'center', fontStyle: 'italic'
+            }}
+              dangerouslySetInnerHTML={{ __html: renderFormula(f) }} />
+          ))}
+          {section.result && (
+            <div style={{
+              marginTop: 12, padding: '10px 14px', background: '#f0fdf4',
+              borderRadius: 6, border: '1px solid #86efac', textAlign: 'center'
+            }}>
+              <strong style={{ color: '#16a34a' }}>结论：</strong>
+              <span dangerouslySetInnerHTML={{ __html: renderFormula(section.result) }} />
+            </div>
           )}
         </div>
       );
@@ -338,6 +398,14 @@ export default function KnowledgeDetail() {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* 动画演示（后备：如果知识点关联了动画，始终显示） */}
+      {id && NODE_ANIMATION_MAP[id] && (
+        <div className="detail-section" style={{ background: '#f0f9ff' }}>
+          <h3 style={{ color: '#0369a1' }}>🎬 动画演示</h3>
+          <AnimationContainer nodeId={id} />
         </div>
       )}
 

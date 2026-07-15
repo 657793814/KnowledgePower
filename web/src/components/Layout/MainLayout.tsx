@@ -4,6 +4,7 @@ import { Layout, Menu, Input, Select, Typography } from 'antd';
 import {
   BookOutlined, SearchOutlined, BarChartOutlined,
   EditOutlined, PieChartOutlined, DeleteOutlined,
+  PlayCircleOutlined,
 } from '@ant-design/icons';
 import { SUBJECT_LABELS, SUBJECT_DOMAINS, LEVEL_COLORS } from '@/types';
 import { useSubjectStore } from '@/store/subjectStore';
@@ -70,7 +71,7 @@ export default function MainLayout() {
       }}>
         <Typography.Title level={4} style={{ margin: 0, cursor: 'pointer', whiteSpace: 'nowrap' }}
           onClick={() => navigate('/')}>
-          📐 数理世界
+          📐 知识动力
         </Typography.Title>
 
         <Select
@@ -133,6 +134,19 @@ export default function MainLayout() {
                 icon: <DeleteOutlined />,
                 label: '📕 错题本',
                 onClick: () => navigate('/exam/wrong-book'),
+              },
+            ]}
+          />
+          <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+          <Menu
+            mode="inline"
+            selectable={false}
+            items={[
+              {
+                key: 'animation-demo',
+                icon: <PlayCircleOutlined />,
+                label: '🎬 动画演示',
+                onClick: () => navigate('/animation/demo'),
               },
             ]}
           />

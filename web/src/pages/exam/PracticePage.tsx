@@ -9,6 +9,7 @@ import { DOMAIN_COLORS, SUBJECT_DOMAINS } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { useSubjectStore } from '@/store/subjectStore';
 import { renderFormula } from '@/utils/renderFormula';
+import { AnimationContainer } from '@/components';
 
 const { TextArea } = Input;
 
@@ -114,6 +115,13 @@ export default function PracticePage() {
                 {!d.correct && <> | 正确答案：<span style={{ color: '#10B981', fontWeight: 600 }} dangerouslySetInnerHTML={{ __html: renderFormula(d.correctAnswer) }} /></>}
               </div>
               {d.explanation && <div style={{ marginTop: 6, fontSize: 13, color: '#8B5CF6', background: '#f5f3ff', padding: '6px 10px', borderRadius: 6 }}>💡 {d.explanation}</div>}
+
+              {/* 动画演示按钮 — 根据知识点匹配对应动画 */}
+              {!d.correct && q?.nodeId && (
+                <div style={{ marginTop: 4 }}>
+                  <AnimationContainer nodeId={q.nodeId} />
+                </div>
+              )}
 
               {/* AI 深度解析 */}
               {!d.correct && (

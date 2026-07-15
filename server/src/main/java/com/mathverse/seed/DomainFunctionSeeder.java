@@ -115,6 +115,7 @@ public class DomainFunctionSeeder {
                     {"type":"definition","title":"定义","content":"形如 $y=ax^2+bx+c$（$a\\\\neq0$）的函数叫二次函数。顶点式：$y=a(x-h)^2+k$"},
                     {"type":"visualization","title":"参数对图像的影响","content":"调节 a、h、k 观察抛物线变化：a 控制开口，h 左右平移，k 上下平移",
                         "visual":{"type":"canvas","component":"function-transform","config":{"mode":"quadratic"}}},
+                    {"type":"animation","title":"🎬 函数平移动画","content":"观察 y=x² 平移为 y=(x-2)²+3 的完整过程","animation":"function-shift","config":{}},
                     {"type":"keypoints","title":"核心要素","items":[
                         "顶点：$(-\\\\frac{b}{2a}, \\\\frac{4ac-b^2}{4a})$",
                         "对称轴：$x=-\\\\frac{b}{2a}$",
@@ -128,8 +129,22 @@ public class DomainFunctionSeeder {
                         "$\\\\Delta=0$ → 一个交点（顶点在 $x$ 轴上）",
                         "$\\\\Delta<0$ → 无交点"
                     ]},
+                    {"type":"strategy","title":"思维训练·解题策略","items":[
+                        "遇到二次函数，先确定开口方向（$a>0$ 向上，$a<0$ 向下）",
+                        "顶点坐标 $(-\\frac{b}{2a},\\frac{4ac-b^2}{4a})$ —— 这是标准化的解题入口",
+                        "配方是万能方法：$y=ax^2+bx+c\\rightarrow y=a(x-h)^2+k$",
+                        "$|a|$ 越大开口越小 → 二次项系数决定图像『胖瘦』",
+                        "求与 $x$ 轴交点 → 令 $y=0$ 解一元二次方程",
+                        "💡 核心心法：二次函数的问题，大部分都能通过配方变成顶点式来解决"
+                    ]},
+                    {"type":"common-mistakes","title":"易错点辨析","items":[
+                        {"mistake":"二次函数 $y=ax^2+bx+c$ 中，顶点横坐标是 $\\frac{b}{2a}$","correct":"顶点横坐标是 $-\\frac{b}{2a}$（注意负号！）"},
+                        {"mistake":"$a$ 越大开口越大","correct":"$|a|$ 越大开口反而越小，$|a|$ 越小开口越大"},
+                        {"mistake":"平移时 $y=(x-h)^2+k$，$h>0$ 向左平移","correct":"$y=(x-h)^2$ 中 $h>0$ 向右平移——『正右负左』"}
+                    ]},
                     {"type":"example","title":"示例","items":[
-                        {"question":"求 y=x²-4x+3 的顶点坐标和对称轴","steps":["a=1,b=-4,c=3","顶点 x=-b/(2a)=4/2=2","y=2²-4×2+3=-1","顶点：(2,-1)，对称轴：x=2"],"answer":"顶点(2,-1)，对称轴 x=2"}
+                        {"question":"求 y=x²-4x+3 的顶点坐标和对称轴","steps":["a=1,b=-4,c=3","顶点 x=-b/(2a)=4/2=2","y=2²-4×2+3=-1","顶点：(2,-1)，对称轴：x=2"],"answer":"顶点(2,-1)，对称轴 x=2"},
+                        {"question":"将 y=x² 向右平移 2 个单位、向上平移 3 个单位，求新函数","steps":["左加右减，上加下减","向右平移 2：y=(x-2)²","再向上平移 3：y=(x-2)²+3"],"answer":"y=(x-2)²+3"}
                     ]}
                 ]}""")
                 .status(1).build());

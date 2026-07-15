@@ -23,6 +23,8 @@ public class KnowledgeNode {
 
     private String domain;
 
+    private String subject;
+
     private String level;
 
     private Integer difficulty;

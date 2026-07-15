@@ -8,9 +8,9 @@ interface SubjectStore {
 }
 
 export const useSubjectStore = create<SubjectStore>((set) => ({
-  currentSubject: (localStorage.getItem('mathverse_subject') as SubjectKey) || 'math',
+  currentSubject: (localStorage.getItem('knowledgepower_subject') as SubjectKey) || 'math',
   setSubject: (s) => {
-    localStorage.setItem('mathverse_subject', s);
+    localStorage.setItem('knowledgepower_subject', s);
     set({ currentSubject: s });
   },
 }));

@@ -208,59 +208,194 @@ public class DomainGeometrySeeder {
                 .id("MATH-05-007").title("圆").subtitle("完美的对称图形")
                 .domain("几何").level("初中").difficulty(3).sortOrder(700)
                 .visualType("canvas").milestoneType(null)
-                .summary("圆是到定点（圆心）距离等于定长（半径）的所有点的集合")
+                .summary("圆是到定点（圆心）距离等于定长（半径）的所有点的集合。从圆出发，可以打开几何宇宙的半壁江山")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"平面上到定点 $O$ 的距离等于定长 $r$ 的所有点组成的图形叫圆。$O$ 是圆心，$r$ 是半径。"},
-                    {"type":"keypoints","title":"基本元素","items":[
+                    {"type":"definition","title":"定义","content":"平面上到定点 $O$ 的距离等于定长 $r$ 的所有点组成的图形叫圆。$O$ 是圆心，$r$ 是半径。\\n\\n💡 **直觉理解**：用圆规画圆——固定的一脚是圆心，两脚间距是半径，旋转一周就得到一个完美的圆。"},
+                    {"type":"keypoints","title":"基础·基本元素","items":[
                         "弦：连接圆上任意两点的线段",
                         "直径：经过圆心的弦（最长的弦，$d=2r$）",
                         "弧：圆上任意两点间的部分（优弧 > 半圆 > 劣弧）",
-                        "圆心角：顶点在圆心的角",
+                        "圆心角：顶点在圆心的角（度数等于所对弧的度数）",
                         "圆周角：顶点在圆上、两边与圆相交的角"
                     ]},
-                    {"type":"keypoints","title":"重要定理","items":[
-                        "直径所对的圆周角是 $90^\\\\\\circ$",
-                        "同弧所对的圆周角是圆心角的一半",
-                        "垂径定理：垂直于弦的直径平分这条弦",
-                        "切线性质：切线垂直于过切点的半径",
-                        "切线长定理：从圆外一点引的两条切线长相等"
+                    {"type":"derivation","title":"提升·圆周角定理的证明","content":"圆周角定理：同弧所对的圆周角是圆心角的一半。证明需要构造等腰三角形和利用外角定理。",
+                        "steps":[
+                            "如图，$\\angle ACB$ 是 $\\widehat{AB}$ 所对的圆周角，$\\angle AOB$ 是圆心角",
+                            "连接 $OC$，$\\triangle AOC$ 和 $\\triangle BOC$ 都是等腰三角形（$OA=OC=OB=r$）",
+                            "设 $\\angle ACO=\\angle CAO=\\alpha$，$\\angle BCO=\\angle CBO=\\beta$",
+                            "$\\angle AOB=180^\\circ-(\\angle OAB+\\angle OBA)$",
+                            "$=180^\\circ-((90^\\circ-\\alpha)+(90^\\circ-\\beta))=\\alpha+\\beta$",
+                            "$\\angle ACB=\\alpha+\\beta$，$\\therefore \\angle ACB=\\frac{1}{2}\\angle AOB$，得证！"
+                        ],
+                        "result":"同弧所对的圆周角 $\\theta$ 等于圆心角 $\\Theta$ 的一半：$\\theta = \\frac{1}{2}\\Theta$",
+                        "formulas":["$\\angle ACB = \\frac{1}{2}\\angle AOB$"]
+                    },
+                    {"type":"derivation","title":"提升·圆周角定理的推论","content":"圆周角定理有若干重要的推论，是解题的利器。",
+                        "steps":[
+                            "直径所对的圆周角是 $90^\\circ$（半圆上的圆周角）",
+                            "证明：直径对应的圆心角为 $180^\\circ$，圆周角是它的一半 $=90^\\circ$",
+                            "同弧所对的圆周角相等",
+                            "相等的圆周角所对的弧相等"
+                        ],
+                        "formulas":["$\\angle ACB=90^\\circ \\iff AB$ 是直径"]
+                    },
+                    {"type":"derivation","title":"提升·垂径定理的证明","content":"垂直于弦的直径平分这条弦。这是圆的对称性的体现。",
+                        "steps":[
+                            "设直径 $CD\\perp AB$ 于 $P$，求证 $AP=PB$",
+                            "连接 $OA$、$OB$，则 $\\triangle OAP\\cong\\triangle OBP$",
+                            "$\\because OA=OB=r$（同圆半径相等）",
+                            "$OP=OP$（公共边），$\\angle OPA=\\angle OPB=90^\\circ$",
+                            "$\\therefore \\triangle OAP\\cong\\triangle OBP$（HL）",
+                            "$\\therefore AP=PB$，$CD$ 平分 $AB$，得证！"
+                        ],
+                        "result":"$CD\\perp AB \\iff CD$ 平分 $AB$（垂径定理）"
+                    },
+                    {"type":"keypoints","title":"提升·圆内接四边形","items":[
+                        "圆内接四边形：四个顶点都在圆上的四边形",
+                        "对角互补：$\\angle A + \\angle C = 180^\\circ$，$\\angle B + \\angle D = 180^\\circ$",
+                        "外角等于内对角：外角等于不相邻的内角",
+                        "托勒密定理：$AC\\cdot BD = AB\\cdot CD + AD\\cdot BC$（拓展）"
                     ]},
-                    {"type":"keypoints","title":"圆的计算","items":[
-                        "周长：$C=2\\\\pi r$",
-                        "面积：$S=\\\\pi r^2$",
-                        "弧长：$l=\\\\\\frac{n\\\\pi r}{180}$（$n$ 为圆心角度数）",
-                        "扇形面积：$S=\\\\\\frac{n\\\\pi r^2}{360}$"
+                    {"type":"keypoints","title":"提升·切线性质证明","items":[
+                        "切线的判定：过半径外端且垂直于半径的直线是圆的切线",
+                        "切线的性质：圆的切线垂直于过切点的半径",
+                        "证明（反证法）：假设切线不垂直于半径，则可作垂线推出矛盾",
+                        "切线长定理：从圆外一点引的两条切线长相等",
+                        "证明：连接 $PO$、$PA$、$PB$，$\\triangle PAO\\cong\\triangle PBO$（HL）"
                     ]},
-                    {"type":"example","title":"示例","items":[
-                        {"question":"直径为 10 的圆，圆心角为 60° 的弧长和扇形面积","steps":["r=5，n=60°","弧长 l=60×π×5/180=5π/3","扇形面积 S=60×π×25/360=25π/6"],"answer":"弧长 5π/3，面积 25π/6"}
-                    ]}
+                    {"type":"keypoints","title":"提升·圆的计算","items":[
+                        "周长：$C=2\\pi r$（$\\pi\\approx3.14159\\ldots$ 是无理数）",
+                        "面积：$S=\\pi r^2$（$\\pi$ 的由来——古希腊的穷竭法）",
+                        "弧长：$l=\\frac{n\\pi r}{180}$（$n$ 为圆心角度数）",
+                        "扇形面积：$S=\\frac{n\\pi r^2}{360}$",
+                        "弓形面积：扇形 $\\pm$ 三角形（看弓形是否含圆心）"
+                    ]},
+                    {"type":"example","title":"例题·基础","items":[
+                        {"question":"直径为 10 的圆，圆心角为 60° 的弧长和扇形面积","steps":["$r=5$，$n=60^\\circ$","弧长 $l=\\frac{60\\times\\pi\\times5}{180}=\\frac{5\\pi}{3}$","扇形面积 $S=\\frac{60\\times\\pi\\times25}{360}=\\frac{25\\pi}{6}$"],"answer":"弧长 $5\\pi/3$，面积 $25\\pi/6$"}
+                    ]},
+                    {"type":"example","title":"例题·提升","items":[
+                        {"question":"如图，$AB$ 是 $\\odot O$ 的直径，$\\angle CAB=25^\\circ$，求 $\\angle ABC$","steps":["$AB$ 是直径 → $\\angle ACB=90^\\circ$（直径所对圆周角为直角）","$\\angle ABC=180^\\circ-90^\\circ-25^\\circ=65^\\circ$（内角和定理）"],"answer":"$\\angle ABC=65^\\circ$","solution":"圆周角定理+内角和的经典应用"},
+                        {"question":"$\\odot O$ 中弦 $AB$ 长为 8，圆心到 $AB$ 的距离为 3，求半径","steps":["连接 $OA$，作 $OC\\perp AB$ 于 $C$","$AC=AB/2=4$（垂径定理）","$OC=3$，由勾股定理：$r=OA=\\sqrt{4^2+3^2}=5$"],"answer":"半径 $r=5$"}
+                    ]},
+                    {"type":"keypoints","title":"拓展·托勒密定理（圆内接四边形）","items":[
+                        "托勒密定理：圆内接四边形中，两条对角线之积等于两组对边之积的和",
+                        "公式：$AC \\times BD = AB \\times CD + AD \\times BC$",
+                        "这是几何中非常漂亮的等式，将四边形的边和对角线联系起来",
+                        "应用：已知四边求对角线、证明几何等式"
+                    ]},
+                    {"type":"keypoints","title":"拓展·阿波罗尼斯圆","items":[
+                        "到两定点 $A$、$B$ 距离之比为定值 $k$（$k>0$，$k\\neq 1$）的点的轨迹是一个圆",
+                        "这个圆叫阿波罗尼斯圆（简称阿氏圆）",
+                        "圆心在线段 $AB$ 上，半径与 $k$ 和 $AB$ 长度有关",
+                        "这是从「圆」到「轨迹」的跨越，是解析几何中圆的又一维度"
+                    ]},
+                    {"type":"keypoints","title":"拓展·圆在实际中的应用","items":[
+                        "🚗 车轮：圆形的轮子保证车轴高度恒定（圆心到地面的距离不变）",
+                        "🛰️ 圆形轨道：卫星绕地球的近似圆形轨道",
+                        "🏛️ 罗马万神殿：穹顶的完美圆形结构",
+                        "🥏 飞盘的设计：圆形在空气动力学中的优势",
+                        "🎵 CD 光盘：同心圆轨道存储数据"
+                    ]},
+                    {"type":"strategy","title":"思维训练·解题策略","items":[
+                        "遇到圆的问题，先找圆心和半径——它们是圆的『身份证』",
+                        "有直径 → 考虑圆周角定理（直径对直角）",
+                        "有弦 → 考虑垂径定理（作弦心距）",
+                        "有切线 → 连半径（半径垂直切线）",
+                        "有圆内接四边形 → 对角互补",
+                        "多解问题：圆是对称图形，注意多种可能性（如弦的位置）",
+                        "💡 核心思想：圆的问题，本质是三角形的问题（连半径造等腰）"
+                    ]},
+                    {"type":"common-mistakes","title":"易错点辨析","items":[
+                        {"mistake":"在所有弧中，圆周角都是圆心角的一半","correct":"只有同弧（或等弧）所对的圆周角和圆心角才满足此关系"},
+                        {"mistake":"垂直于弦的直线平分这条弦","correct":"过圆心的直线垂直于弦才平分（垂径定理的条件：直径⊥弦）"},
+                        {"mistake":"所有切线都相等","correct":"切线长相等指从同一点出发的两条切线是相等的"}
+                    ]},
+                    {"type":"analogy","title":"类比理解·圆与生命","content":"圆无处不在：\\n🌅 日出日落——太阳的圆形\\n🌳 树的年轮——一圈圈同心圆\\n💧 水滴涟漪——水面的圆形波纹\\n🪐 行星公转——近似的圆周运动\\n\\n数学之美在于：自然界的『圆』正是数学定义的『到定点距离为定长的点的集合』。当你理解了圆的定义，你就理解了🌌半个宇宙的几何。"}
                 ]}""")
                 .status(1).build());
 
         nodes.add(KnowledgeNode.builder()
-                .id("MATH-05-010").title("圆幂定理").subtitle("相交弦、切割线、割线三定理的统一")
+                .id("MATH-05-010").title("圆幂定理").subtitle("相交弦·切割线·割线三大定理的统一证明")
                 .domain("几何").level("高中").difficulty(3).sortOrder(750)
-                .visualType("static").milestoneType(null)
-                .summary("圆幂定理是相交弦定理、切割线定理、割线定理的统一表达，核心是「圆幂」=\nOP²-r²")
+                .visualType("canvas").milestoneType(null)
+                .summary("圆幂定理是相交弦定理、切割线定理、割线定理的统一表达，核心是圆幂 OP²−r²")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"圆幂的定义","content":"平面上一点 $P$ 对圆 $O$ 的幂定义为：$$\\\\text{幂}=OP^2-r^2$$ 其中 $r$ 为圆的半径。"},
-                    {"type":"keypoints","title":"三大定理（圆幂定理的三种情形）","items":[
-                        "相交弦定理：圆内两弦 $AB$、$CD$ 交于点 $P$，则 $PA\\\\cdot PB=PC\\\\cdot PD$（圆幂在圆内为负）",
-                        "切割线定理：从圆外一点 $P$ 引切线 $PT$ 和割线 $PAB$，则 $PT^2=PA\\\\cdot PB$",
-                        "割线定理：从圆外一点 $P$ 引两条割线分别交圆于 $A$、$B$ 和 $C$、$D$，则 $PA\\\\cdot PB=PC\\\\cdot PD$",
-                        "统一表述：过定点 $P$ 作圆的任意弦（或割线），$P$ 到两交点的距离之积为定值，等于 $|OP^2-r^2|$"
+                    {"type":"definition","title":"圆幂的定义","content":"平面上一点 $P$ 对圆 $O$ 的幂定义为：$$\\text{圆幂}=OP^2-r^2$$ 其中 $r$ 为圆的半径。\\n\\n💡 **直观理解**：$P$ 到圆的「影响力」——$P$ 离圆越远，圆幂越大；$P$ 在圆上时圆幂为 0；$P$ 在圆内时圆幂为负。"},"
+                    {"type":"keypoints","title":"【一】相交弦定理","items":[
+                        "情形：$P$ 在圆内，$AB$、$CD$ 是过 $P$ 的两条弦",
+                        "结论：$PA \\times PB = PC \\times PD$",
+                        "几何意义：交点分两弦所得线段之积相等"
                     ]},
-                    {"type":"keypoints","title":"圆幂的正负","items":[
-                        "$P$ 在圆外 $\\\\iff$ 幂 $>0$（切割线/割线定理适用）",
-                        "$P$ 在圆上 $\\\\iff$ 幂 $=0$",
-                        "$P$ 在圆内 $\\\\iff$ 幂 $<0$（相交弦定理适用）"
+                    {"type":"derivation","title":"相交弦定理的证明（相似三角形法）","content":"利用圆周角定理构造相似三角形。",
+                        "steps":[
+                            "连接 $AD$、$BC$，构造 $\\triangle APD$ 和 $\\triangle CPB$",
+                            "$\\because \\angle ADP = \\angle CBP$（同弧 $\\widehat{AC}$ 所对的圆周角相等）",
+                            "$\\because \\angle APD = \\angle CPB$（对顶角相等）",
+                            "$\\therefore \\triangle APD \\sim \\triangle CPB$（AA 判定）",
+                            "$\\therefore \\frac{PA}{PC} = \\frac{PD}{PB}$（对应边成比例）",
+                            "交叉相乘得：$PA \\times PB = PC \\times PD$ ✅"
+                        ],
+                        "formulas":["$\\triangle APD \\sim \\triangle CPB \\implies PA\\cdot PB = PC\\cdot PD$"]
+                    },
+                    {"type":"keypoints","title":"【二】切割线定理","items":[
+                        "情形：$P$ 在圆外，$PT$ 是切线（切点 $T$），$PAB$ 是割线",
+                        "结论：$PT^2 = PA \\times PB$",
+                        "几何意义：切线长是圆外部分与整个割线的比例中项"
                     ]},
-                    {"type":"example","title":"示例","items":[
-                        {"question":"圆中两弦 AB 和 CD 交于 P，PA=3，PB=6，PC=2，求 PD","steps":["相交弦定理：PA·PB=PC·PD","3×6=2×PD","PD=9"],"answer":"PD=9"},
-                        {"question":"从圆外一点 P 引切线 PT=6，割线交圆于 A、B，若 PA=4，求 PB","steps":["切割线定理：PT²=PA·PB","36=4·PB","PB=9"],"answer":"PB=9"}
-                    ]}
+                    {"type":"derivation","title":"切割线定理的证明（相似三角形法）",
+                        "steps":[
+                            "连接 $AT$、$BT$",
+                            "$\\because \\angle PTA = \\angle PBT$（弦切角定理：弦切角等于所夹弧对的圆周角）",
+                            "$\\because \\angle APT = \\angle TPB$（公共角）",
+                            "$\\therefore \\triangle PAT \\sim \\triangle PTB$（AA 判定）",
+                            "$\\therefore \\frac{PT}{PA} = \\frac{PB}{PT}$（对应边成比例）",
+                            "交叉相乘得：$PT^2 = PA \\times PB$ ✅"
+                        ],
+                        "formulas":["$\\triangle PAT \\sim \\triangle PTB \\implies PT^2 = PA\\cdot PB$"]
+                    },
+                    {"type":"keypoints","title":"【三】割线定理","items":[
+                        "情形：$P$ 在圆外，$PAB$、$PCD$ 是两条割线",
+                        "结论：$PA \\times PB = PC \\times PD$",
+                        "与相交弦定理形式相同，但 $P$ 在圆外"
+                    ]},
+                    {"type":"derivation","title":"割线定理的证明",
+                        "steps":[
+                            "连接 $AD$、$BC$",
+                            "$\\because \\angle PAD = \\angle PCB$（圆内接四边形的外角等于内对角，$A$、$B$、$C$、$D$ 四点共圆）",
+                            "$\\because \\angle APD = \\angle CPB$（公共角）",
+                            "$\\therefore \\triangle PAD \\sim \\triangle PCB$（AA 判定）",
+                            "$\\therefore \\frac{PA}{PC} = \\frac{PD}{PB}$",
+                            "交叉相乘得：$PA \\times PB = PC \\times PD$ ✅"
+                        ],
+                        "formulas":["$\\triangle PAD \\sim \\triangle PCB \\implies PA\\cdot PB = PC\\cdot PD$"]
+                    },
+                    {"type":"visualization","title":"🎨 圆幂三大定理交互演示","content":"切换三个按钮查看不同情形的几何图示，观察线段乘积的相等关系。",
+                        "visual":{"type":"canvas","component":"circle-power","config":{}}}
+                    ,{"type":"keypoints","title":"拓展·圆幂的统一表述","items":[
+                        "三种定理可以统一为：过定点 $P$ 的直线与圆交于 $X$、$Y$，则 $PX \\times PY = |OP^2 - r^2|$（定值）",
+                        "这个定值就是「圆幂」的绝对值",
+                        "$P$ 在圆外 $\\iff$ 幂 $>0$，适用切割线/割线定理",
+                        "$P$ 在圆上 $\\iff$ 幂 $=0$",
+                        "$P$ 在圆内 $\\iff$ 幂 $<0$，适用相交弦定理",
+                        "💡 **极线概念**：$P$ 关于圆的极线方程可直接从圆幂推导"
+                    ]},
+                    {"type":"strategy","title":"思维训练·解题策略","items":[
+                        "遇到圆内两弦相交 → 相交弦定理（找等积）",
+                        "遇到切线和割线 → 切割线定理（切线平方 = 乘积）",
+                        "遇到圆外两条割线 → 割线定理（外积相等）",
+                        "三步法：① 确定 $P$ 的位置（圆内/圆外）② 确定使用的定理 ③ 列出等积方程",
+                        "💡 核心心法：圆幂定理的本质是『相似三角形』，每次用之前思考：哪两个三角形相似？"
+                    ]},
+                    {"type":"example","title":"例题·基础应用","items":[
+                        {"question":"圆中两弦 AB 和 CD 交于 P，PA=3，PB=6，PC=2，求 PD","steps":["相交弦定理：$PA\\cdot PB=PC\\cdot PD$","$3\\times6=2\\times PD$","$PD=9$"],"answer":"$PD=9$"},
+                        {"question":"从圆外一点 P 引切线 PT=6，割线交圆于 A、B，若 PA=4，求 PB","steps":["切割线定理：$PT^2=PA\\cdot PB$","$36=4\\cdot PB$","$PB=9$"],"answer":"$PB=9$"}
+                    ]},
+                    {"type":"common-mistakes","title":"易错点辨析","items":[
+                        {"mistake":"相交弦定理中，PA·PB=PC·PD，P 随便取哪条弦都行","correct":"P 必须是两条弦的交点，且 PA·PB 是同一条弦被 P 分的两段之积"},
+                        {"mistake":"切割线定理中 PT²=PA·PB，A 和 B 随意放哪都可以","correct":"A 必须是近端点（离 P 近的交点），B 是远端点"}
+                    ]},
                 ]}""")
                 .status(1).build());
 

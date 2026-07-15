@@ -10,6 +10,7 @@ public class KnowledgeNodeDTO {
     private String title;
     private String subtitle;
     private String domain;
+    private String subject;
     private String level;
     private Integer difficulty;
     private Integer sortOrder;

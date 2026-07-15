@@ -37,6 +37,8 @@ interface Section {
   content?: string;
   items?: string[] | { mistake: string; correct: string }[];
   formulas?: string[];
+  steps?: string[];
+  result?: string;
   visual?: any;
   solution?: string;
 }
@@ -83,6 +85,7 @@ export function richContent(
   commonMistakes?: { mistake: string; correct: string }[],
   extended?: string,
   analogy?: string,
+  derivation?: { title?: string; content?: string; steps?: string[]; formulas?: string[]; result?: string },
   visual?: { type: string; [key: string]: any },
 ): string {
   const sections: Section[] = [];
@@ -98,6 +101,11 @@ export function richContent(
   // 要点
   if (keypoints.length > 0) {
     sections.push({ type: 'keypoints', title: '核心要点', items: keypoints });
+  }
+
+  // 推导证明
+  if (derivation) {
+    sections.push({ type: 'derivation', title: derivation.title || '📐 推导证明', content: derivation.content, steps: derivation.steps, formulas: derivation.formulas, result: derivation.result });
   }
 
   // 类比

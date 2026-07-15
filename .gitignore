@@ -4,6 +4,7 @@ web/dist/
 
 # Java
 server/target/
+server/src/main/resources/application.yml.example
 *.class
 *.jar
 

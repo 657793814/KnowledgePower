@@ -25,18 +25,19 @@ logging:
     com.mathverse: info
 
 # ====== AI 配置 ======
+# 根据实际配置自行修改以下参数
 ai:
   # 供应商: openai（远程） 或 ollama（本地）
-  provider: openai
+  provider: ${AGNES_PROVIDER}
   # Ollama 配置（provider=ollama 时使用）
-  base-url: http://localhost:11434
+  base-url: ${AGNES_BASE_URL}
   # 远程 API 配置（provider=openai 时使用）
   # 支持所有 OpenAI 兼容接口：DeepSeek / OpenAI / 硅基流动 / Agnes AI 等
-  api-base-url: https://apihub.agnes-ai.com/v1
-  api-key: sk-TLbyiqLJOFY2FZT9DtiH4ChFLgPWK6er8IjJdVuEsidIpA1b
+  api-base-url: ${AGNES_API_BASE_URL}
+  api-key: ${AGNES_API_KEY}
   # 模型名
-  model: agnes-2.0-flash
+  model: ${AGNES_MODEL}
   # 每次 AI 请求的最大 token 数
-  max-tokens: 4096
+  max-tokens: ${AGNES_MAX_TOKENS}
   # 知识上下文最大字符数（防止超过 context window）
-  max-context-chars: 3000
+  max-context-chars: ${AGNES_MAX_CONTEXT_CHARS}

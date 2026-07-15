@@ -38,6 +38,7 @@ public class KnowledgeNodeController {
     @Operation(summary = "知识点列表（分页）")
     @GetMapping
     public R<PageResult<KnowledgeNode>> list(
+            @RequestParam(required = false) String subject,
             @RequestParam(required = false) String domain,
             @RequestParam(required = false) String level,
             @RequestParam(required = false) String keyword,
@@ -46,9 +47,12 @@ public class KnowledgeNodeController {
 
         LambdaQueryWrapper<KnowledgeNode> wrapper = new LambdaQueryWrapper<KnowledgeNode>()
                 .eq(KnowledgeNode::getStatus, 1)
+                .eq(StrUtil.isNotBlank(subject), KnowledgeNode::getSubject, subject)
                 .eq(StrUtil.isNotBlank(domain), KnowledgeNode::getDomain, domain)
                 .eq(StrUtil.isNotBlank(level), KnowledgeNode::getLevel, level)
                 .and(StrUtil.isNotBlank(keyword), w -> w
+                        .like(KnowledgeNode::getId, keyword)
+                        .or()
                         .like(KnowledgeNode::getTitle, keyword)
                         .or()
                         .like(KnowledgeNode::getSummary, keyword))
@@ -139,6 +143,7 @@ public class KnowledgeNodeController {
         vo.setTitle(node.getTitle());
         vo.setSubtitle(node.getSubtitle());
         vo.setDomain(node.getDomain());
+        vo.setSubject(node.getSubject());
         vo.setLevel(node.getLevel());
         vo.setDifficulty(node.getDifficulty());
         vo.setSortOrder(node.getSortOrder());

@@ -31,17 +31,20 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("开始初始化种子数据...");
-        seedUsers();
-        seedNodes();
-        seedRelations();
-        domainExpressionSeeder.seed();
-        domainEquationSeeder.seed();
-        domainFunctionSeeder.seed();
-        domainGeometrySeeder.seed();
-        domainCombinatoricsSeeder.seed();
-        domainSequenceSeeder.seed();
-        examQuestionSeeder.seed();
+        // ⚠️ 所有种子数据已迁移至 node-server/src/seeders/
+        // Java 端不再执行任何数据初始化，由 Node 端统一管理
+        log.info("种子数据初始化（已完全禁用，由 Node.js 端统一管理）");
+        // 如需重新启用，取消下方注释
+        // seedUsers();
+        // seedNodes();
+        // seedRelations();
+        // domainExpressionSeeder.seed();
+        // domainEquationSeeder.seed();
+        // domainFunctionSeeder.seed();
+        // domainGeometrySeeder.seed();
+        // domainCombinatoricsSeeder.seed();
+        // domainSequenceSeeder.seed();
+        // examQuestionSeeder.seed();
         log.info("种子数据初始化完成！");
     }
 
@@ -239,7 +242,8 @@ public class DataSeeder implements CommandLineRunner {
                             "负数的平方根不够用 → 引入虚数",
                             "×1=正向，×(-1)=反向，×i=旋转90°"
                         ]},
-                        {"type": "keypoints", "title": "易错点", "items": [
+                        {"type": "animation", "title": "🎬 数的扩张动画", "content": "从自然数到复数的完整旅程，每一次扩张都为了解决不够用的问题", "animation": "number-expansion", "config": {}},
+                    {"type": "keypoints", "title": "易错点", "items": [
                             "0 既不是正数也不是负数",
                             "1 既不是质数也不是合数",
                             "π 是无理数（不是有理数）",
