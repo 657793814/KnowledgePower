@@ -6,6 +6,8 @@ import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
 import { fail } from './utils/response.js';
+import authRouter from './routes/auth.js';
+import adminRouter from './routes/admin.js';
 import userRouter from './routes/user.js';
 import knowledgeNodesRouter from './routes/knowledgeNodes.js';
 import knowledgeRelationsRouter from './routes/knowledgeRelations.js';
@@ -36,6 +38,8 @@ app.use((req, res, next) => {
 });
 
 // 路由
+app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
 app.use('/user', userRouter);
 app.use('/knowledge/nodes', knowledgeNodesRouter);
 app.use('/knowledge/relations', knowledgeRelationsRouter);

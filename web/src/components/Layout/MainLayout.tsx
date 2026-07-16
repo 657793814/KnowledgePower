@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Input, Select, Typography } from 'antd';
+import { Layout, Menu, Input, Select, Typography, Dropdown, Button, Space } from 'antd';
 import {
   BookOutlined, SearchOutlined, BarChartOutlined,
   EditOutlined, PieChartOutlined, DeleteOutlined,
-  PlayCircleOutlined,
+  PlayCircleOutlined, UserOutlined, LogoutOutlined,
+  LoginOutlined, UserAddOutlined, SettingOutlined,
 } from '@ant-design/icons';
 import { SUBJECT_LABELS, SUBJECT_DOMAINS, LEVEL_COLORS } from '@/types';
 import { useSubjectStore } from '@/store/subjectStore';
 import type { SubjectKey } from '@/store/subjectStore';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 const { Header, Sider, Content } = Layout;
 
@@ -18,6 +20,7 @@ export default function MainLayout() {
   const { currentSubject, setSubject } = useSubjectStore();
   const [searchText, setSearchText] = useState('');
   const [collapsed, setCollapsed] = useState(false);
+  const { user, isLoggedIn, isAdmin, logout } = useAuth();
 
   // 获取当前学科下的领域菜单
   const domainLabels = SUBJECT_DOMAINS[currentSubject] || {};
@@ -69,10 +72,12 @@ export default function MainLayout() {
         flexShrink: 0,
         gap: 16,
       }}>
-        <Typography.Title level={4} style={{ margin: 0, cursor: 'pointer', whiteSpace: 'nowrap' }}
-          onClick={() => navigate('/')}>
-          📐 知识动力
-        </Typography.Title>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => navigate('/')}>
+          <img src="/logo.png" alt="logo" style={{ width: 28, height: 28 }} />
+          <Typography.Title level={4} style={{ margin: 0, whiteSpace: 'nowrap' }}>
+            知识动力
+          </Typography.Title>
+        </div>
 
         <Select
           value={currentSubject}
@@ -94,6 +99,43 @@ export default function MainLayout() {
           prefix={<SearchOutlined />}
         />
         <div style={{ flex: 1 }} />
+
+        {/* 用户区 */}
+        {isLoggedIn ? (
+          <Dropdown menu={{
+            items: [
+              ...(isAdmin ? [{
+                key: 'admin',
+                icon: <SettingOutlined />,
+                label: '管理后台',
+                onClick: () => navigate('/admin'),
+              }, {
+                key: 'create-user',
+                icon: <UserAddOutlined />,
+                label: '创建用户',
+                onClick: () => navigate('/admin/users/create'),
+              }] : []),
+              { type: 'divider' as const },
+              {
+                key: 'logout',
+                icon: <LogoutOutlined />,
+                label: '退出登录',
+                onClick: () => { logout(); navigate('/'); },
+              },
+            ],
+          }}>
+            <Button type="text" style={{ height: 48, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <UserOutlined style={{ fontSize: 16 }} />
+              <span>{user?.nickname || user?.username}</span>
+            </Button>
+          </Dropdown>
+        ) : (
+          <Space size="small">
+            <Button type="text" icon={<LoginOutlined />} onClick={() => navigate('/login')}>
+              登录
+            </Button>
+          </Space>
+        )}
       </Header>
       <Layout style={{ flex: 1, overflow: 'hidden' }}>
         <Sider
@@ -129,12 +171,12 @@ export default function MainLayout() {
                 label: '📈 学习统计',
                 onClick: () => navigate('/exam/stats'),
               },
-              {
+              ...(isLoggedIn ? [{
                 key: 'wrongbook',
                 icon: <DeleteOutlined />,
                 label: '📕 错题本',
                 onClick: () => navigate('/exam/wrong-book'),
-              },
+              }] : []),
             ]}
           />
           <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
@@ -150,19 +192,27 @@ export default function MainLayout() {
               },
             ]}
           />
-          <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
-          <Menu
-            mode="inline"
-            selectable={false}
-            items={[
-              {
-                key: 'admin',
-                icon: <BarChartOutlined />,
-                label: '🏗️ 管理后台',
-                onClick: () => navigate('/admin'),
-              },
-            ]}
-          />
+          {isAdmin && <>
+            <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+            <Menu
+              mode="inline"
+              selectable={false}
+              items={[
+                {
+                  key: 'admin-dashboard',
+                  icon: <BarChartOutlined />,
+                  label: '🏗️ 管理后台',
+                  onClick: () => navigate('/admin'),
+                },
+                {
+                  key: 'admin-users',
+                  icon: <UserOutlined />,
+                  label: '👥 用户管理',
+                  onClick: () => navigate('/admin/users'),
+                },
+              ]}
+            />
+          </>}
         </Sider>
         <Content style={{ background: '#f5f7fa', overflow: 'auto', height: '100%' }}>
           <Outlet />

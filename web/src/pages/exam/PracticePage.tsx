@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Radio, Tag, Spin, Input, Select, Space, Divider, Alert } from 'antd';
+import { Button, Card, Radio, Tag, Spin, Input, Select, Space, Divider, Alert, Checkbox } from 'antd';
 import { PlayCircleOutlined, ReloadOutlined, RobotOutlined } from '@ant-design/icons';
 import { fetchRandomQuestions, submitAnswers } from '@/api/exam';
 import { aiExplain } from '@/api/ai';
@@ -179,8 +179,11 @@ export default function PracticePage() {
           } catch { /* ignore */ }
 
           const isChoice = q.questionType === 'choice';
+          const isMultiChoice = q.questionType === 'multi_choice';
           const isFill = q.questionType === 'fill';
-          const isTrueFalse = q.questionType === 'true_false';
+          const isTrueFalse = q.questionType === 'true_false' || q.questionType === 'judge';
+          const isMatch = q.questionType === 'match';
+          const isOrder = q.questionType === 'order';
 
           return (
             <Card key={q.id} size="small" style={{ marginBottom: 12, borderLeft: `4px solid ${DOMAIN_COLORS[q.domain] || '#94a3b8'}` }}>
@@ -222,6 +225,81 @@ export default function PracticePage() {
                   <Radio value="对">对</Radio>
                   <Radio value="错">错</Radio>
                 </Radio.Group>
+              )}
+
+              {isMultiChoice && parsedOptions && (
+                <Checkbox.Group
+                  value={(answers[q.id] || '').split(',').filter(Boolean)}
+                  onChange={vals => setAnswers(a => ({ ...a, [q.id]: vals.join(',') }))}
+                >
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    {Object.entries(parsedOptions).map(([key, val]) => (
+                      <Checkbox key={key} value={key} style={{ fontSize: 14, padding: '4px 0' }}>
+                        <span dangerouslySetInnerHTML={{ __html: renderFormula(`${key}. ${val}`) }} />
+                      </Checkbox>
+                    ))}
+                  </Space>
+                </Checkbox.Group>
+              )}
+
+              {isMatch && parsedOptions?.left && parsedOptions?.right && (
+                <div>
+                  {parsedOptions.left.map((item: string, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                      <span style={{ minWidth: 120, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: renderFormula(item) }} />
+                      <Select
+                        value={(answers[q.id] || '').split(',').find(s => s.startsWith(`${idx + 1}-`))?.split('-')[1] || undefined}
+                        onChange={val => {
+                          const current = (answers[q.id] || '').split(',').filter(Boolean);
+                          const filtered = current.filter(s => !s.startsWith(`${idx + 1}-`));
+                          filtered.push(`${idx + 1}-${val}`);
+                          setAnswers(a => ({ ...a, [q.id]: filtered.sort().join(',') }));
+                        }}
+                        style={{ width: 180 }}
+                        placeholder="匹配"
+                        options={parsedOptions.right.map((r: string, ri: number) => ({
+                          value: String.fromCharCode(65 + ri),
+                          label: `${String.fromCharCode(65 + ri)}. ${r}`,
+                        }))}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {isOrder && Array.isArray(parsedOptions) && (
+                <div>
+                  {parsedOptions.map((item: string, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                      <span style={{ width: 24, height: 24, background: '#f0f0f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
+                        {String.fromCharCode(65 + idx)}
+                      </span>
+                      <span style={{ fontSize: 14 }} dangerouslySetInnerHTML={{ __html: renderFormula(item) }} />
+                      <Input
+                        type="number"
+                        min={1}
+                        max={parsedOptions.length}
+                        value={(() => {
+                          const ans = answers[q.id] || '';
+                          const found = ans.split(',').find(p => p.startsWith(`${idx}-`));
+                          return found ? found.split('-')[1] : '';
+                        })()}
+                        onChange={e => {
+                          const val = e.target.value;
+                          const current = (answers[q.id] || '').split(',').filter(Boolean);
+                          const filtered = current.filter(s => !s.startsWith(`${idx}-`));
+                          if (val) filtered.push(`${idx}-${val}`);
+                          setAnswers(a => ({ ...a, [q.id]: filtered.sort().join(',') }));
+                        }}
+                        style={{ width: 60, textAlign: 'center' }}
+                        placeholder="#"
+                      />
+                    </div>
+                  ))}
+                  <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 4 }}>
+                    💡 为每个步骤输入正确的顺序（1-${parsedOptions.length}）
+                  </div>
+                </div>
               )}
             </Card>
           );

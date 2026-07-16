@@ -1,22 +1,22 @@
 /**
- * 用户管理 — UserController
- * GET /user/info
+ * 用户管理（旧占位路由 — 已迁移到 auth.ts）
+ * 保留此文件仅用于兼容，所有功能已移到 routes/auth.ts
  */
 import { Router } from 'express';
 import prisma from '../db.js';
 import { ok, fail } from '../utils/response.js';
+import { requireAuth } from '../middlewares/auth.js';
 
 const router = Router();
 
-// 获取当前用户信息（简化，暂未接入认证）
-router.get('/info', async (_req, res, next) => {
+// 简化的当前用户信息（旧版兼容）
+router.get('/info', requireAuth, async (req, res, next) => {
   try {
-    const user = await prisma.user.findFirst({ where: { status: 1 } });
+    const user = await prisma.user.findUnique({ where: { id: req.user!.userId } });
     if (!user) {
       fail(res, 404, '未找到用户');
       return;
     }
-    // 脱敏密码
     const { password, ...safe } = user;
     ok(res, safe);
   } catch (e) {

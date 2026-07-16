@@ -1,0 +1,6 @@
+pymilvus>=2.5.0
+pdfplumber>=0.11.0
+langchain-text-splitters>=0.3.0
+requests>=2.31.0
+tqdm>=4.66.0
+PyYAML>=6.0

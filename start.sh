@@ -18,6 +18,37 @@ echo "  后端引擎: $BACKEND"
 
 # ====== 后端启动 ======
 
+load_ai_config() {
+  local ai_config_path="$PROJECT_DIR/config/ai-config.json"
+  if [ ! -f "$ai_config_path" ]; then
+    echo "  ⚠️ AI 配置文件不存在: $ai_config_path"
+    echo "     将使用默认配置，如需自定义请复制样例文件"
+    return
+  fi
+
+  echo "  📖 加载 AI 配置..."
+  local provider=$(cat "$ai_config_path" | grep -o '"provider": *"[^"]*"' | cut -d'"' -f4)
+  local base_url=$(cat "$ai_config_path" | grep -o '"baseUrl": *"[^"]*"' | cut -d'"' -f4)
+  local api_key=$(cat "$ai_config_path" | grep -o '"apiKey": *"[^"]*"' | cut -d'"' -f4)
+  local model=$(cat "$ai_config_path" | grep -o '"model": *"[^"]*"' | cut -d'"' -f4)
+  local max_tokens=$(cat "$ai_config_path" | grep -o '"maxTokens": *[0-9]*' | cut -d':' -f2 | tr -d ' ')
+  local max_context_chars=$(cat "$ai_config_path" | grep -o '"maxContextChars": *[0-9]*' | cut -d':' -f2 | tr -d ' ')
+
+  export AGNES_PROVIDER="${provider:-openai}"
+  export AGNES_BASE_URL="${base_url:-http://localhost:11434}"
+  export AGNES_API_BASE_URL="${base_url:-https://apihub.agnes-ai.com/v1}"
+  export AGNES_API_KEY="${api_key:-}"
+  export AGNES_MODEL="${model:-agnes-2.0-flash}"
+  export AGNES_MAX_TOKENS="${max_tokens:-4096}"
+  export AGNES_MAX_CONTEXT_CHARS="${max_context_chars:-3000}"
+
+  if [ -n "$api_key" ]; then
+    echo "     Provider: $provider | Model: $model | API Key: ${api_key:0:8}..."
+  else
+    echo "     Provider: $provider | Model: $model | API Key: 未配置"
+  fi
+}
+
 start_java_backend() {
   echo "🔍 检查 MySQL..."
   if mysqladmin ping -h 127.0.0.1 -u root -proot1234 --silent 2>/dev/null; then
@@ -39,10 +70,12 @@ start_java_backend() {
     mysql -h 127.0.0.1 -u root -proot1234 knowledgepower < "$PROJECT_DIR/server/src/main/resources/db/init.sql"
   fi
 
+  load_ai_config
+
   echo "🖥️  启动后端 (Spring Boot :8080)..."
   cd "$PROJECT_DIR/server"
   PID=$(lsof -ti:8080 2>/dev/null) && kill -9 $PID 2>/dev/null && echo "  已停止旧进程"
-  mvn spring-boot:run -Dspring-boot.run.profiles=dev -q > "$PROJECT_DIR/logs/server.log" 2>&1 &
+  AGNES_PROVIDER="$AGNES_PROVIDER" AGNES_BASE_URL="$AGNES_BASE_URL" AGNES_API_BASE_URL="$AGNES_API_BASE_URL" AGNES_API_KEY="$AGNES_API_KEY" AGNES_MODEL="$AGNES_MODEL" AGNES_MAX_TOKENS="$AGNES_MAX_TOKENS" AGNES_MAX_CONTEXT_CHARS="$AGNES_MAX_CONTEXT_CHARS" mvn spring-boot:run -Dspring-boot.run.profiles=dev -q > "$PROJECT_DIR/logs/server.log" 2>&1 &
   echo "  后端 PID: $! (日志: logs/server.log)"
   sleep 12
 

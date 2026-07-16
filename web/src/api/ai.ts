@@ -2,8 +2,9 @@ import axios from 'axios';
 import type { AiAskResp, ExamPaperVO } from '@/types';
 
 // AI 请求专用实例 — 超时 60 秒，因为远程 API 响应慢
+const AI_API_BASE = import.meta.env.PROD ? 'http://localhost:3001' : '/api';
 const aiRequest = axios.create({
-  baseURL: '/api',
+  baseURL: AI_API_BASE,
   timeout: 60000,
 });
 

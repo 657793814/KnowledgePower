@@ -102,6 +102,7 @@ build_backend() {
     # 同时保留一份在 scripts 目录（方便开发调试）
     cp "$JAR_FILE" "$SCRIPT_DIR/knowledgepower-backend.jar"
     info "已复制到 scripts/（开发调试用）"
+    fi
 }
 
 # ============================================================

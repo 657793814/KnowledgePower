@@ -6,11 +6,10 @@ import { Router } from 'express';
 import prisma from '../db.js';
 import { ok, fail } from '../utils/response.js';
 import { buildExamService } from '../services/examService.js';
+import { optionalAuth, requireAuth } from '../middlewares/auth.js';
 
 const router = Router();
 const examService = buildExamService(prisma);
-
-const DEFAULT_USER_ID = 1;
 
 // ========== 题库管理 ==========
 
@@ -137,9 +136,10 @@ router.get('/random', async (req, res, next) => {
 
 // ========== 提交批改 ==========
 
-router.post('/submit', async (req, res, next) => {
+router.post('/submit', optionalAuth, async (req, res, next) => {
   try {
-    const result = await examService.submitAnswers(DEFAULT_USER_ID, req.body);
+    const userId = req.user?.userId || 0;
+    const result = await examService.submitAnswers(userId, req.body);
     ok(res, result);
   } catch (e) {
     next(e);
@@ -148,32 +148,32 @@ router.post('/submit', async (req, res, next) => {
 
 // ========== 错题本 ==========
 
-router.get('/wrong-book', async (req, res, next) => {
+router.get('/wrong-book', requireAuth, async (req, res, next) => {
   try {
     const { page = '1', pageSize = '20' } = req.query;
     const p = Math.max(1, parseInt(page as string, 10));
     const ps = Math.min(100, Math.max(1, parseInt(pageSize as string, 10)));
-    const result = await examService.getWrongBook(DEFAULT_USER_ID, p, ps);
+    const result = await examService.getWrongBook(req.user!.userId, p, ps);
     ok(res, result);
   } catch (e) {
     next(e);
   }
 });
 
-router.delete('/wrong-book/:questionId', async (req, res, next) => {
+router.delete('/wrong-book/:questionId', requireAuth, async (req, res, next) => {
   try {
     const questionId = parseInt(req.params.questionId, 10);
-    await examService.removeFromWrongBook(DEFAULT_USER_ID, questionId);
+    await examService.removeFromWrongBook(req.user!.userId, questionId);
     ok(res, null);
   } catch (e) {
     next(e);
   }
 });
 
-router.post('/wrong-book/:questionId/review', async (req, res, next) => {
+router.post('/wrong-book/:questionId/review', requireAuth, async (req, res, next) => {
   try {
     const questionId = parseInt(req.params.questionId, 10);
-    await examService.markReviewed(DEFAULT_USER_ID, questionId);
+    await examService.markReviewed(req.user!.userId, questionId);
     ok(res, null);
   } catch (e) {
     next(e);
@@ -182,10 +182,10 @@ router.post('/wrong-book/:questionId/review', async (req, res, next) => {
 
 // ========== 学习统计 ==========
 
-router.get('/stats', async (req, res, next) => {
+router.get('/stats', requireAuth, async (req, res, next) => {
   try {
     const { subject } = req.query;
-    const stats = await examService.getStats(DEFAULT_USER_ID, subject as string | undefined);
+    const stats = await examService.getStats(req.user!.userId, subject as string | undefined);
     ok(res, stats);
   } catch (e) {
     next(e);

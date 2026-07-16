@@ -53,12 +53,20 @@ pub fn run() {
                         .unwrap_or_default();
 
                     let server_js = backend_dir.join("server.js");
+                    let db_path = backend_dir.join("knowledgepower.db");
 
                     if server_js.exists() {
                         log::info!("启动 Node.js 后端: {:?}", server_js);
-                        match Command::new("node")
+                        log::info!("数据库路径: {:?}", db_path);
+                        let db_url = format!("file:{}", db_path.display());
+                        // Finder 启动时 PATH 极简，显式设置确保找到 node
+                        let node_path = std::env::var("PATH").unwrap_or_else(|_| String::new());
+                        let extended_path = format!("/usr/local/bin:{}:{}/.nvm/versions/node/v20.19.4/bin", node_path, std::env::var("HOME").unwrap_or_default());
+                        match Command::new("/usr/local/bin/node")
                             .arg(&server_js)
                             .current_dir(&backend_dir)
+                            .env("DATABASE_URL", &db_url)
+                            .env("PATH", &extended_path)
                             .spawn()
                         {
                             Ok(child) => {

@@ -5,7 +5,8 @@
  */
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
-import { config } from '../config.js';
+import { getAiConfig } from '../config.js';
+import { searchRag } from './ragService.js';
 
 const SYSTEM_PROMPT = `你是一位富有耐心的初中高中数学导师（数学教授水平）。
 你的教学风格：
@@ -27,12 +28,26 @@ export function buildAiService(prisma: PrismaClient) {
     history?: string[];
   }) {
     try {
-      const context = req.context || (req.nodeId ? await buildKnowledgeContext(req.nodeId) : '');
+      const knowledgeContext = req.context || (req.nodeId ? await buildKnowledgeContext(req.nodeId) : '');
       const historyStr = req.history?.length
         ? '\n## 对话历史\n' + req.history.join('\n')
         : '';
 
-      const userContent = `\n## 知识点上下文\n${context}${historyStr}\n\n## 学生提问\n${req.question}`;
+      // RAG 检索
+      let ragContext = '';
+      try {
+        const ragResults = await searchRag(req.question);
+        if (ragResults.length > 0) {
+          ragContext = '\n## 教材参考资料\n' + ragResults.map(r =>
+            `[来自《${r.source}》(相似度${(r.score * 100).toFixed(0)}%)]\n${r.text}`
+          ).join('\n\n---\n\n');
+        }
+      } catch (e) {
+        // RAG 检索失败不阻塞主流程
+        console.warn('[ai] RAG 检索异常:', (e as Error).message);
+      }
+
+      const userContent = `\n## 知识点上下文\n${knowledgeContext}${ragContext}${historyStr}\n\n## 学生提问\n${req.question}`;
       const answer = await callAi(userContent);
 
       return { answer, success: true };
@@ -162,8 +177,8 @@ export function buildAiService(prisma: PrismaClient) {
 
     // 内容摘要
     let content = node.contentJson || '';
-    if (content.length > config.ai.maxContextChars) {
-      content = content.slice(0, config.ai.maxContextChars) + '...';
+    if (content.length > getAiConfig().maxContextChars) {
+      content = content.slice(0, getAiConfig().maxContextChars) + '...';
     }
     parts.push(`详细内容：${content || '暂无'}`);
 
@@ -172,21 +187,21 @@ export function buildAiService(prisma: PrismaClient) {
 
   /** 调用 OpenAI 兼容 API */
   async function callAi(userPrompt: string, retries = 3): Promise<string> {
-    const url = `${config.ai.baseUrl}/chat/completions`;
+    const url = `${getAiConfig().baseUrl}/chat/completions`;
 
     const body = {
-      model: config.ai.model,
+      model: getAiConfig().model,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt },
       ],
       stream: false,
-      max_tokens: config.ai.maxTokens,
+      max_tokens: getAiConfig().maxTokens,
       temperature: 0.7,
     };
 
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (config.ai.apiKey) headers['Authorization'] = `Bearer ${config.ai.apiKey}`;
+    if (getAiConfig().apiKey) headers['Authorization'] = `Bearer ${getAiConfig().apiKey}`;
 
     let lastError: any;
     let delay = 1000;

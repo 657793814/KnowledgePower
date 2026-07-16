@@ -2,6 +2,9 @@
 node_modules/
 web/dist/
 
+# AI Config (包含敏感信息)
+config/ai-config.json
+
 # Java
 server/target/
 server/src/main/resources/application.yml.example
@@ -20,7 +23,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.iml
-memory/
 
 # Rust / Tauri
 src-tauri/target/
