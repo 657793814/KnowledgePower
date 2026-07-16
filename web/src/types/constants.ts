@@ -3,6 +3,7 @@ export const SUBJECT_LABELS: Record<string, string> = {
   math: '📐 数学',
   physics: '⚡ 物理',
   chemistry: '🧪 化学',
+  bio: '🧬 生物',
 };
 
 export const SUBJECT_KEYS = Object.keys(SUBJECT_LABELS);
@@ -34,6 +35,14 @@ export const SUBJECT_DOMAINS: Record<string, Record<string, string>> = {
     '有机化学基础': '🧫 有机化学基础',
     '化学计算': '📊 化学计算',
   },
+  bio: {
+    '细胞生物学': '🔬 细胞生物学',
+    '遗传与进化': '🧬 遗传与进化',
+    '人体生理': '❤️ 人体生理',
+    '植物学': '🌿 植物学',
+    '生态学': '🌍 生态学',
+    '微生物与生物技术': '🧫 微生物与生物技术',
+  },
 };
 
 // ===== 领域主题色 =====
@@ -58,6 +67,13 @@ export const DOMAIN_COLORS: Record<string, string> = {
   '溶液': '#00BCD4',
   '有机化学基础': '#8E44AD',
   '化学计算': '#FF5722',
+  // 生物
+  '细胞生物学': '#E91E63',
+  '遗传与进化': '#4CAF50',
+  '人体生理': '#FF5722',
+  '植物学': '#8BC34A',
+  '生态学': '#00BCD4',
+  '微生物与生物技术': '#9C27B0',
 };
 
 export const LEVEL_COLORS: Record<string, string> = {

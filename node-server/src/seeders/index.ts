@@ -26,6 +26,14 @@ import { seedPhysicsOptics } from './domains/physics-04-optics.js';
 import { seedPhysicsAcoustics } from './domains/physics-05-acoustics.js';
 import { seedPhysicsModern } from './domains/physics-06-modern.js';
 
+// 生物
+import { seedBioCell } from './domains/bio-01-cell.js';
+import { seedBioGenetics } from './domains/bio-02-genetics.js';
+import { seedBioHumanBody } from './domains/bio-03-human-body.js';
+import { seedBioPlants } from './domains/bio-04-plants.js';
+import { seedBioEcology } from './domains/bio-05-ecology.js';
+import { seedBioBiotech } from './domains/bio-06-biotech.js';
+
 // 化学
 import { seedChemistryStructure } from './domains/chem-01-structure.js';
 import { seedChemistryReaction } from './domains/chem-02-reaction.js';
@@ -67,6 +75,15 @@ async function main() {
   await seedPhysicsOptics();
   await seedPhysicsAcoustics();
   await seedPhysicsModern();
+
+  // ===== 生物 =====
+  console.log('\n🧬 生物\n' + '='.repeat(20));
+  await seedBioCell();
+  await seedBioGenetics();
+  await seedBioHumanBody();
+  await seedBioPlants();
+  await seedBioEcology();
+  await seedBioBiotech();
 
   // ===== 化学 =====
   console.log('\n🧪 化学\n' + '='.repeat(20));

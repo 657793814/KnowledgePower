@@ -9,6 +9,8 @@ import prisma from '../db.js';
 import { ok } from '../utils/response.js';
 import { buildExamService } from '../services/examService.js';
 import { buildAiService } from '../services/aiService.js';
+import { getAiConfig } from '../config.js';
+import axios from 'axios';
 
 const router = Router();
 const examService = buildExamService(prisma);
@@ -77,6 +79,33 @@ const KEYWORD_MAP: Record<string, string[]> = {
   '溶液|溶解度|浓度': ['CHEM-04-001', 'CHEM-04-002', 'CHEM-04-004'],
   '原子结构|电子|质子|中子': ['CHEM-01-004'],
   '化合价|化学式|分子式': ['CHEM-01-005', 'CHEM-01-006'],
+
+  // 生物
+  '细胞|细胞学说|细胞膜|细胞质|细胞核|线粒体|叶绿体|核糖体|高尔基体|内质网|溶酶体': ['BIO-01-001', 'BIO-01-002', 'BIO-01-003', 'BIO-01-004'],
+  '有丝分裂|减数分裂|细胞周期|染色体|染色质': ['BIO-01-005', 'BIO-01-006'],
+  '孟德尔|分离定律|自由组合|基因型|表型|显性|隐性': ['BIO-02-001'],
+  'DNA|双螺旋|脱氧核苷酸|碱基互补配对|半保留复制|基因表达': ['BIO-02-002', 'BIO-02-003'],
+  '基因突变|染色体变异|缺失|重复|倒位|易位|诱变': ['BIO-02-004'],
+  '自然选择|进化|种群基因频率|隔离|物种': ['BIO-02-005'],
+  '遗传病|白化病|色盲|血友病|21三体|唐氏': ['BIO-02-006'],
+  '消化|胃|小肠|肝脏|胰腺|胆汁|胃蛋白酶': ['BIO-03-001'],
+  '循环|心脏|血管|体循环|肺循环|动脉|静脉': ['BIO-03-002'],
+  '呼吸|肺|肺泡|膈肌|气体交换|氧气|二氧化碳': ['BIO-03-003'],
+  '神经|反射|反射弧|神经元|突触|条件反射': ['BIO-03-004'],
+  '免疫|抗体|抗原|B细胞|T细胞|疫苗|特异性免疫': ['BIO-03-005'],
+  '激素|生长激素|甲状腺激素|胰岛素|内分泌|血糖': ['BIO-03-006'],
+  '光合作用|叶绿体|光反应|暗反应|CO₂固定': ['BIO-04-001'],
+  '呼吸作用|有氧呼吸|无氧呼吸|细胞呼吸|线粒体': ['BIO-04-002'],
+  '植物激素|生长素|赤霉素|乙烯|顶端优势': ['BIO-04-003'],
+  '蒸腾作用|气孔|保卫细胞|水分运输': ['BIO-04-005'],
+  '种群|群落|生态|食物链|食物网|K值|环境容纳量': ['BIO-05-001', 'BIO-05-002', 'BIO-05-003'],
+  '能量流动|物质循环|碳循环|传递效率|10%|20%': ['BIO-05-004'],
+  '稳定性|抵抗力|恢复力|负反馈|自我调节': ['BIO-05-005'],
+  '生物多样性|自然保护区|保护|濒危|就地保护': ['BIO-05-006'],
+  '病毒|噬菌体|HIV|流感|细菌|真菌|酵母菌|发酵': ['BIO-06-001', 'BIO-06-002', 'BIO-06-003'],
+  '基因工程|质粒|限制酶|DNA连接酶|转基因': ['BIO-06-004'],
+  '培养基|灭菌|接种|平板划线|无菌|纯化': ['BIO-06-005'],
+  '细胞工程|杂交瘤|单克隆抗体|核移植|克隆|组织培养': ['BIO-06-006'],
 };
 
 function matchKeywords(text: string): string[] {
@@ -204,6 +233,55 @@ router.post('/analyze', async (req, res, next) => {
       domainResults: [],
       nodeResults: [],
     });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ─── POST /insight/ocr — 图片文字提取 ───
+
+router.post('/ocr', async (req, res, next) => {
+  try {
+    const { image } = req.body as { image?: string };
+    if (!image) {
+      return res.status(400).json({ error: '缺少图片数据' });
+    }
+
+    // 尝试用 AI 视觉模型提取文字
+    try {
+      const url = `${getAiConfig().baseUrl}/chat/completions`;
+      const body = {
+        model: getAiConfig().model,
+        messages: [
+          { role: 'system', content: '你是一个OCR助手。请从图片中提取出所有文字内容，保持原有的编号和格式。只返回提取的文字，不要任何额外说明。' },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: '请提取这张图片中的所有文字，包括题号：' },
+              { type: 'image_url', image_url: { url: image, detail: 'high' } },
+            ],
+          },
+        ],
+        stream: false,
+        max_tokens: 4096,
+        temperature: 0.1,
+      };
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (getAiConfig().apiKey) headers['Authorization'] = `Bearer ${getAiConfig().apiKey}`;
+
+      const resp = await axios.post(url, body, { headers, timeout: 120000 });
+      const text = resp.data?.choices?.[0]?.message?.content || '';
+
+      if (text.trim()) {
+        return ok(res, { text: text.trim(), source: 'ai-vision' });
+      }
+    } catch (e) {
+      console.warn('[insight] AI OCR 失败:', (e as Error).message);
+    }
+
+    // 降级返回
+    return ok(res, { text: '', source: 'none' });
   } catch (e) {
     next(e);
   }

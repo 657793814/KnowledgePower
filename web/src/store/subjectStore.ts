@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type SubjectKey = 'math' | 'physics' | 'chemistry';
+export type SubjectKey = 'math' | 'physics' | 'chemistry' | 'bio';
 
 interface SubjectStore {
   currentSubject: SubjectKey;

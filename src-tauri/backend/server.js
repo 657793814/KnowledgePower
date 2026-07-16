@@ -37302,6 +37302,8 @@ var ai_default = router9;
 
 // src/routes/insight.ts
 var import_express10 = __toESM(require_express2(), 1);
+init_config();
+init_axios2();
 var router10 = (0, import_express10.Router)();
 var examService3 = buildExamService(db_default);
 var aiService2 = buildAiService(db_default);
@@ -37363,7 +37365,33 @@ var KEYWORD_MAP = {
   "\u5B98\u80FD\u56E2|\u53D6\u4EE3|\u52A0\u6210|\u6D88\u53BB": ["CHEM-05-012"],
   "\u6EB6\u6DB2|\u6EB6\u89E3\u5EA6|\u6D53\u5EA6": ["CHEM-04-001", "CHEM-04-002", "CHEM-04-004"],
   "\u539F\u5B50\u7ED3\u6784|\u7535\u5B50|\u8D28\u5B50|\u4E2D\u5B50": ["CHEM-01-004"],
-  "\u5316\u5408\u4EF7|\u5316\u5B66\u5F0F|\u5206\u5B50\u5F0F": ["CHEM-01-005", "CHEM-01-006"]
+  "\u5316\u5408\u4EF7|\u5316\u5B66\u5F0F|\u5206\u5B50\u5F0F": ["CHEM-01-005", "CHEM-01-006"],
+  // 生物
+  "\u7EC6\u80DE|\u7EC6\u80DE\u5B66\u8BF4|\u7EC6\u80DE\u819C|\u7EC6\u80DE\u8D28|\u7EC6\u80DE\u6838|\u7EBF\u7C92\u4F53|\u53F6\u7EFF\u4F53|\u6838\u7CD6\u4F53|\u9AD8\u5C14\u57FA\u4F53|\u5185\u8D28\u7F51|\u6EB6\u9176\u4F53": ["BIO-01-001", "BIO-01-002", "BIO-01-003", "BIO-01-004"],
+  "\u6709\u4E1D\u5206\u88C2|\u51CF\u6570\u5206\u88C2|\u7EC6\u80DE\u5468\u671F|\u67D3\u8272\u4F53|\u67D3\u8272\u8D28": ["BIO-01-005", "BIO-01-006"],
+  "\u5B5F\u5FB7\u5C14|\u5206\u79BB\u5B9A\u5F8B|\u81EA\u7531\u7EC4\u5408|\u57FA\u56E0\u578B|\u8868\u578B|\u663E\u6027|\u9690\u6027": ["BIO-02-001"],
+  "DNA|\u53CC\u87BA\u65CB|\u8131\u6C27\u6838\u82F7\u9178|\u78B1\u57FA\u4E92\u8865\u914D\u5BF9|\u534A\u4FDD\u7559\u590D\u5236|\u57FA\u56E0\u8868\u8FBE": ["BIO-02-002", "BIO-02-003"],
+  "\u57FA\u56E0\u7A81\u53D8|\u67D3\u8272\u4F53\u53D8\u5F02|\u7F3A\u5931|\u91CD\u590D|\u5012\u4F4D|\u6613\u4F4D|\u8BF1\u53D8": ["BIO-02-004"],
+  "\u81EA\u7136\u9009\u62E9|\u8FDB\u5316|\u79CD\u7FA4\u57FA\u56E0\u9891\u7387|\u9694\u79BB|\u7269\u79CD": ["BIO-02-005"],
+  "\u9057\u4F20\u75C5|\u767D\u5316\u75C5|\u8272\u76F2|\u8840\u53CB\u75C5|21\u4E09\u4F53|\u5510\u6C0F": ["BIO-02-006"],
+  "\u6D88\u5316|\u80C3|\u5C0F\u80A0|\u809D\u810F|\u80F0\u817A|\u80C6\u6C41|\u80C3\u86CB\u767D\u9176": ["BIO-03-001"],
+  "\u5FAA\u73AF|\u5FC3\u810F|\u8840\u7BA1|\u4F53\u5FAA\u73AF|\u80BA\u5FAA\u73AF|\u52A8\u8109|\u9759\u8109": ["BIO-03-002"],
+  "\u547C\u5438|\u80BA|\u80BA\u6CE1|\u8188\u808C|\u6C14\u4F53\u4EA4\u6362|\u6C27\u6C14|\u4E8C\u6C27\u5316\u78B3": ["BIO-03-003"],
+  "\u795E\u7ECF|\u53CD\u5C04|\u53CD\u5C04\u5F27|\u795E\u7ECF\u5143|\u7A81\u89E6|\u6761\u4EF6\u53CD\u5C04": ["BIO-03-004"],
+  "\u514D\u75AB|\u6297\u4F53|\u6297\u539F|B\u7EC6\u80DE|T\u7EC6\u80DE|\u75AB\u82D7|\u7279\u5F02\u6027\u514D\u75AB": ["BIO-03-005"],
+  "\u6FC0\u7D20|\u751F\u957F\u6FC0\u7D20|\u7532\u72B6\u817A\u6FC0\u7D20|\u80F0\u5C9B\u7D20|\u5185\u5206\u6CCC|\u8840\u7CD6": ["BIO-03-006"],
+  "\u5149\u5408\u4F5C\u7528|\u53F6\u7EFF\u4F53|\u5149\u53CD\u5E94|\u6697\u53CD\u5E94|CO\u2082\u56FA\u5B9A": ["BIO-04-001"],
+  "\u547C\u5438\u4F5C\u7528|\u6709\u6C27\u547C\u5438|\u65E0\u6C27\u547C\u5438|\u7EC6\u80DE\u547C\u5438|\u7EBF\u7C92\u4F53": ["BIO-04-002"],
+  "\u690D\u7269\u6FC0\u7D20|\u751F\u957F\u7D20|\u8D64\u9709\u7D20|\u4E59\u70EF|\u9876\u7AEF\u4F18\u52BF": ["BIO-04-003"],
+  "\u84B8\u817E\u4F5C\u7528|\u6C14\u5B54|\u4FDD\u536B\u7EC6\u80DE|\u6C34\u5206\u8FD0\u8F93": ["BIO-04-005"],
+  "\u79CD\u7FA4|\u7FA4\u843D|\u751F\u6001|\u98DF\u7269\u94FE|\u98DF\u7269\u7F51|K\u503C|\u73AF\u5883\u5BB9\u7EB3\u91CF": ["BIO-05-001", "BIO-05-002", "BIO-05-003"],
+  "\u80FD\u91CF\u6D41\u52A8|\u7269\u8D28\u5FAA\u73AF|\u78B3\u5FAA\u73AF|\u4F20\u9012\u6548\u7387|10%|20%": ["BIO-05-004"],
+  "\u7A33\u5B9A\u6027|\u62B5\u6297\u529B|\u6062\u590D\u529B|\u8D1F\u53CD\u9988|\u81EA\u6211\u8C03\u8282": ["BIO-05-005"],
+  "\u751F\u7269\u591A\u6837\u6027|\u81EA\u7136\u4FDD\u62A4\u533A|\u4FDD\u62A4|\u6FD2\u5371|\u5C31\u5730\u4FDD\u62A4": ["BIO-05-006"],
+  "\u75C5\u6BD2|\u566C\u83CC\u4F53|HIV|\u6D41\u611F|\u7EC6\u83CC|\u771F\u83CC|\u9175\u6BCD\u83CC|\u53D1\u9175": ["BIO-06-001", "BIO-06-002", "BIO-06-003"],
+  "\u57FA\u56E0\u5DE5\u7A0B|\u8D28\u7C92|\u9650\u5236\u9176|DNA\u8FDE\u63A5\u9176|\u8F6C\u57FA\u56E0": ["BIO-06-004"],
+  "\u57F9\u517B\u57FA|\u706D\u83CC|\u63A5\u79CD|\u5E73\u677F\u5212\u7EBF|\u65E0\u83CC|\u7EAF\u5316": ["BIO-06-005"],
+  "\u7EC6\u80DE\u5DE5\u7A0B|\u6742\u4EA4\u7624|\u5355\u514B\u9686\u6297\u4F53|\u6838\u79FB\u690D|\u514B\u9686|\u7EC4\u7EC7\u57F9\u517B": ["BIO-06-006"]
 };
 function matchKeywords(text) {
   const matched = /* @__PURE__ */ new Set();
@@ -37451,6 +37479,45 @@ router10.post("/analyze", async (req, res, next) => {
       domainResults: [],
       nodeResults: []
     });
+  } catch (e) {
+    next(e);
+  }
+});
+router10.post("/ocr", async (req, res, next) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).json({ error: "\u7F3A\u5C11\u56FE\u7247\u6570\u636E" });
+    }
+    try {
+      const url2 = `${getAiConfig().baseUrl}/chat/completions`;
+      const body = {
+        model: getAiConfig().model,
+        messages: [
+          { role: "system", content: "\u4F60\u662F\u4E00\u4E2AOCR\u52A9\u624B\u3002\u8BF7\u4ECE\u56FE\u7247\u4E2D\u63D0\u53D6\u51FA\u6240\u6709\u6587\u5B57\u5185\u5BB9\uFF0C\u4FDD\u6301\u539F\u6709\u7684\u7F16\u53F7\u548C\u683C\u5F0F\u3002\u53EA\u8FD4\u56DE\u63D0\u53D6\u7684\u6587\u5B57\uFF0C\u4E0D\u8981\u4EFB\u4F55\u989D\u5916\u8BF4\u660E\u3002" },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "\u8BF7\u63D0\u53D6\u8FD9\u5F20\u56FE\u7247\u4E2D\u7684\u6240\u6709\u6587\u5B57\uFF0C\u5305\u62EC\u9898\u53F7\uFF1A" },
+              { type: "image_url", image_url: { url: image, detail: "high" } }
+            ]
+          }
+        ],
+        stream: false,
+        max_tokens: 4096,
+        temperature: 0.1
+      };
+      const headers = { "Content-Type": "application/json" };
+      if (getAiConfig().apiKey) headers["Authorization"] = `Bearer ${getAiConfig().apiKey}`;
+      const resp = await axios_default.post(url2, body, { headers, timeout: 12e4 });
+      const text = resp.data?.choices?.[0]?.message?.content || "";
+      if (text.trim()) {
+        return ok(res, { text: text.trim(), source: "ai-vision" });
+      }
+    } catch (e) {
+      console.warn("[insight] AI OCR \u5931\u8D25:", e.message);
+    }
+    return ok(res, { text: "", source: "none" });
   } catch (e) {
     next(e);
   }

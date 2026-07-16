@@ -13,10 +13,11 @@ const SUBJECT_COLORS: Record<SubjectKey, {
   math:     { main: '#6366f1', glow: 'rgba(99,102,241,0.5)', accent: '#a5b4fc', ring: 'rgba(165,180,252,0.2)' },
   physics:  { main: '#f59e0b', glow: 'rgba(245,158,11,0.5)', accent: '#fde68a', ring: 'rgba(253,230,138,0.2)' },
   chemistry:{ main: '#10b981', glow: 'rgba(16,185,129,0.5)', accent: '#6ee7b7', ring: 'rgba(110,231,183,0.2)' },
+  bio:      { main: '#ec4899', glow: 'rgba(236,72,153,0.5)', accent: '#f9a8d4', ring: 'rgba(249,168,212,0.2)' },
 };
 
 const SUBJECT_EMOJI: Record<SubjectKey, string> = {
-  math: '📐', physics: '⚛️', chemistry: '🧪',
+  math: '📐', physics: '⚛️', chemistry: '🧪', bio: '🧬',
 };
 
 // ─── 单个领域星球 ───
@@ -110,7 +111,7 @@ export default function CosmicHome() {
 
   useSpaceCanvas(canvasRef, () => setEntered(true));
 
-  const subjects: SubjectKey[] = ['math', 'physics', 'chemistry'];
+  const subjects: SubjectKey[] = ['math', 'physics', 'chemistry', 'bio'];
 
   const handleEnterSubject = (subject: SubjectKey) => {
     setSubject(subject);
@@ -248,83 +249,43 @@ export default function CosmicHome() {
         </div>
       </div>
 
-      {/* ═══ 三个学科核心星球（三角形排列）═══ */}
-      {/* 
-        整体布局：一个大轨道系统，三个学科核心在三角形顶点，
-        各自的领域星球绕各核心公转。
-      */}
+      {/* ═══ 四个学科核心星球（菱形排列）═══ */}
 
-      {/* 核心 1 — 数学（左上） */}
-      {(() => {
-        const subject: SubjectKey = 'math';
+      {/* 核心工具函数 */}
+      {(['math', 'physics', 'chemistry', 'bio'] as SubjectKey[]).map((subject, idx) => {
         const colors = SUBJECT_COLORS[subject];
         const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
+        const layouts = [
+          { top: '32%', left: '25%', w: 105 },   // math 左上
+          { top: '28%', left: '75%', w: 110 },   // physics 右上
+          { top: '68%', left: '75%', w: 100 },   // chemistry 右下
+          { top: '62%', left: '25%', w: 100 },   // bio 左下
+        ];
+        const l = layouts[idx];
+        const sizes = [36, 38, 34, 34];
+        const orbitConfigs = [
+          { baseR: 52, stepR: 18, dur: 18, durStep: 2, delayStep: 0.3 },
+          { baseR: 55, stepR: 20, dur: 20, durStep: 2.5, delayStep: 0.4 },
+          { baseR: 48, stepR: 16, dur: 16, durStep: 1.8, delayStep: 0.25 },
+          { baseR: 48, stepR: 16, dur: 17, durStep: 2, delayStep: 0.3 },
+        ];
+        const oc = orbitConfigs[idx];
         return (
           <div
+            key={subject}
             className="subject-core"
             style={{
               transform: 'translate(-50%, -50%)',
-              width: 110, height: 110, top: '38%', left: '32%',
+              width: l.w, height: l.w, top: l.top, left: l.left,
               background: `radial-gradient(circle at 30% 25%, ${colors.accent} 0%, ${colors.main} 40%, ${colors.main}88 100%)`,
               boxShadow: `0 0 40px ${colors.glow}`,
               '--planet-glow': colors.glow,
               '--planet-glow-dim': colors.glow.replace('0.5', '0.1'),
+              animationDelay: `${0.15 + idx * 0.2}s`,
             } as React.CSSProperties}
             onClick={() => handleEnterSubject(subject)}
           >
-            <span style={{ fontSize: 36, filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
-              {SUBJECT_EMOJI[subject]}
-            </span>
-            <div className="subject-name" style={{ color: colors.accent, textShadow: `0 0 30px ${colors.glow}` }}>
-              {SUBJECT_LABELS[subject]}
-            </div>
-
-            {/* 发光环 */}
-            <div className="ring-glow" style={{
-              position: 'absolute', inset: -20,
-              borderRadius: '50%',
-              background: `radial-gradient(circle, ${colors.glow.replace('0.5', '0.08')} 0%, transparent 70%)`,
-              pointerEvents: 'none', opacity: 0,
-              transition: 'opacity 0.6s ease',
-            }} />
-
-            {/* 领域星球 */}
-            {domains.map(([dk, dl], di) => (
-              <DomainPlanet
-                key={dk}
-                domainKey={dk}
-                domainLabel={dl}
-                color={DOMAIN_COLORS[dk] || colors.main}
-                orbitRadius={55 + (di % 3) * 20}
-                orbitDuration={18 + di * 2}
-                orbitDelay={di * 0.3}
-                subject={subject}
-                onEnterSubject={() => handleEnterSubject(subject)}
-              />
-            ))}
-          </div>
-        );
-      })()}
-
-      {/* 核心 2 — 物理（右上） */}
-      {(() => {
-        const subject: SubjectKey = 'physics';
-        const colors = SUBJECT_COLORS[subject];
-        const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
-        return (
-          <div
-            className="subject-core"
-            style={{
-              transform: 'translate(-50%, -50%)',
-              width: 120, height: 120, top: '35%', left: '68%',
-              background: `radial-gradient(circle at 30% 25%, ${colors.accent} 0%, ${colors.main} 40%, ${colors.main}88 100%)`,
-              boxShadow: `0 0 40px ${colors.glow}`,
-              '--planet-glow': colors.glow,
-              '--planet-glow-dim': colors.glow.replace('0.5', '0.1'),
-            } as React.CSSProperties}
-            onClick={() => handleEnterSubject(subject)}
-          >
-            <span style={{ fontSize: 40, filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
+            <span style={{ fontSize: sizes[idx], filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
               {SUBJECT_EMOJI[subject]}
             </span>
             <div className="subject-name" style={{ color: colors.accent, textShadow: `0 0 30px ${colors.glow}` }}>
@@ -341,62 +302,16 @@ export default function CosmicHome() {
               <DomainPlanet
                 key={dk} domainKey={dk} domainLabel={dl}
                 color={DOMAIN_COLORS[dk] || colors.main}
-                orbitRadius={60 + (di % 3) * 22}
-                orbitDuration={20 + di * 2.5}
-                orbitDelay={di * 0.4}
+                orbitRadius={oc.baseR + (di % 3) * oc.stepR}
+                orbitDuration={oc.dur + di * oc.durStep}
+                orbitDelay={di * oc.delayStep}
                 subject={subject}
                 onEnterSubject={() => handleEnterSubject(subject)}
               />
             ))}
           </div>
         );
-      })()}
-
-      {/* 核心 3 — 化学（下中） */}
-      {(() => {
-        const subject: SubjectKey = 'chemistry';
-        const colors = SUBJECT_COLORS[subject];
-        const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
-        return (
-          <div
-            className="subject-core"
-            style={{
-              transform: 'translate(-50%, -50%)',
-              width: 100, height: 100, top: '62%', left: '50%',
-              background: `radial-gradient(circle at 30% 25%, ${colors.accent} 0%, ${colors.main} 40%, ${colors.main}88 100%)`,
-              boxShadow: `0 0 40px ${colors.glow}`,
-              '--planet-glow': colors.glow,
-              '--planet-glow-dim': colors.glow.replace('0.5', '0.1'),
-            } as React.CSSProperties}
-            onClick={() => handleEnterSubject(subject)}
-          >
-            <span style={{ fontSize: 34, filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
-              {SUBJECT_EMOJI[subject]}
-            </span>
-            <div className="subject-name" style={{ color: colors.accent, textShadow: `0 0 30px ${colors.glow}` }}>
-              {SUBJECT_LABELS[subject]}
-            </div>
-            <div className="ring-glow" style={{
-              position: 'absolute', inset: -20,
-              borderRadius: '50%',
-              background: `radial-gradient(circle, ${colors.glow.replace('0.5', '0.08')} 0%, transparent 70%)`,
-              pointerEvents: 'none', opacity: 0,
-              transition: 'opacity 0.6s ease',
-            }} />
-            {domains.map(([dk, dl], di) => (
-              <DomainPlanet
-                key={dk} domainKey={dk} domainLabel={dl}
-                color={DOMAIN_COLORS[dk] || colors.main}
-                orbitRadius={50 + (di % 3) * 18}
-                orbitDuration={16 + di * 1.8}
-                orbitDelay={di * 0.25}
-                subject={subject}
-                onEnterSubject={() => handleEnterSubject(subject)}
-              />
-            ))}
-          </div>
-        );
-      })()}
+      })}
 
       {/* ═══ 底部导航 ═══ */}
       <div style={{
