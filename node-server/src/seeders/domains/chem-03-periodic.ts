@@ -231,7 +231,7 @@ export async function seedChemistryPeriodic() {
         '原子半径越小，电离能越大，电负性越大',
         '金属性：电负性小、电离能小、原子半径大',
       ],
-      ['第一电离能：$I_1 = \\text{最小能量（kJ/mol）}$', '电负性（Pauling）：$\\chi$', '电负性差值：$\\Delta\\chi > 1.7 \\rightarrow \\text{离子键}$', '$\\Delta\\chi < 1.7 \\rightarrow \\text{共价键}$'],
+      ['第一电离能：$I_1 = \\text{最小能量（kJ/mol）}$', '电负性（Pauling）：$\\chi$', '电负性差值：$\\Delta\\chi \gt 1.7 \\rightarrow \\text{离子键}$', '$\\Delta\\chi \lt 1.7 \\rightarrow \\text{共价键}$'],
       [
         { title: '例1', question: '比较N、O、F的第一电离能大小，并解释为什么N的第一电离能大于O？',
           steps: ['N、O、F是第2周期相邻元素', '同周期从左到右第一电离能整体增大', '但N的2p轨道为半充满稳定结构（2p³）→ N的I₁大于O', '所以第一电离能：N > O > F？不，F > N > O', '实际：F > N > O（F的核电荷大引力强）'],

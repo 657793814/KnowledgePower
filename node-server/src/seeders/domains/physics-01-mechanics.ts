@@ -501,7 +501,7 @@ export async function seedPhysicsMechanics() {
           steps: ['最高点受力：mg+T提供向心力：$mg+T=m\\frac{v^2}{r}$', '最小速度条件：T=0（绳只能拉不能推）', '$v_{\\min}=\\sqrt{gr}=\\sqrt{10}\≈3.16\\text{m/s}$', 'v=4m/s时：$T=m\\frac{v^2}{r}-mg=0.5\\times16-5=3\\text{N}$'],
           answer: '最小$\\sqrt{10}\≈3.16\\text{m/s}$；T=3N', solution: '绳模型最高点临界T=0，向心力完全由重力提供'},
         { title: '例4（杆模型——竖直面最高点）', question: '轻杆长1m固定0.5kg小球做竖直面圆周运动，g=10m/s²。求最高点最小速度；若v=1m/s求杆作用力。',
-          steps: ['杆可提供拉力和支持力（与绳不同）', '最小速度：v_{\\min}=0（杆可顶住小球）', '所需向心力$m\\frac{v^2}{r}=0.5\\text{N}<mg=5\\text{N}$', '杆提供向上支持力：$F_N=mg-m\\frac{v^2}{r}=4.5\\text{N}$'],
+          steps: ['杆可提供拉力和支持力（与绳不同）', '最小速度：v_{\\min}=0（杆可顶住小球）', '所需向心力$m\\frac{v^2}{r}=0.5\\text{N}\lt mg=5\\text{N}$', '杆提供向上支持力：$F_N=mg-m\\frac{v^2}{r}=4.5\\text{N}$'],
           answer: 'v_{\\min}=0；杆提供4.5N向上支持力', solution: '杆模型最高点v可为0——杆可提供向上的支持力'},
         { title: '例5（单摆模型）', question: '摆长L=2m单摆，摆球质量0.1kg，最高点摆线与竖直方向30°后释放，g=10m/s²。求最低点速度和绳拉力。',
           steps: ['机械能守恒：$mgL(1-\\cos30\\degree)=\\frac12mv^2$', '$v=\\sqrt{2gL(1-\\cos30\\degree)}=\\sqrt{40\\times0.134}\≈2.31\\text{m/s}$', '最低点：$T-mg=m\\frac{v^2}{L}$', '$T=mg+m\\frac{v^2}{L}=1+0.268=1.268\\text{N}$'],

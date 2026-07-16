@@ -288,7 +288,7 @@ export async function seedAlgebraDomain() {
         '最简二次根式：被开方数不含分母、不含能开得尽方的因数',
         '分母有理化：分子分母乘以适当的根式',
       ],
-      ['$\\sqrt{ab}=\\sqrt{a}\\cdot\\sqrt{b}\\ (a,b\\geq 0)$', '$\\sqrt{\\frac{a}{b}}=\\frac{\\sqrt{a}}{\\sqrt{b}}\\ (a\\geq 0,b>0)$', '$\\sqrt{a^2}=|a|$', '分母有理化：$\\frac{1}{\\sqrt{a}}=\\frac{\\sqrt{a}}{a}$'],
+      ['$\\sqrt{ab}=\\sqrt{a}\\cdot\\sqrt{b}\\ (a,b\\geq 0)$', '$\\sqrt{\\frac{a}{b}}=\\frac{\\sqrt{a}}{\\sqrt{b}}\\ (a\\geq 0,b\gt 0)$', '$\\sqrt{a^2}=|a|$', '分母有理化：$\\frac{1}{\\sqrt{a}}=\\frac{\\sqrt{a}}{a}$'],
       [
         { title: '例1', question: '化简：$\\sqrt{32} + \\sqrt{18} - \\sqrt{50}$',
           steps: ['化简每个根式：$\\sqrt{32}=4\\sqrt{2}$, $\\sqrt{18}=3\\sqrt{2}$, $\\sqrt{50}=5\\sqrt{2}$', '合并同类根式：$4\\sqrt{2}+3\\sqrt{2}-5\\sqrt{2} = 2\\sqrt{2}$'],

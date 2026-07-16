@@ -324,7 +324,7 @@ export async function seedPhysicsOptics() {
         '虹：太阳光在水滴中折射+反射+色散',
         '霓：二次反射，颜色顺序相反',
       ],
-      ['光速关系：$v_{\\text{红}} > v_{\\text{橙}} > \\cdots > v_{\\text{紫}}$', '折射率：$n_{\\text{红}} < n_{\\text{橙}} < \\cdots < n_{\\text{紫}}$', '波长范围：$\\lambda_{\\text{红}} \\approx 620\\text{nm}, \\lambda_{\\text{紫}} \\approx 400\\text{nm}$'],
+      ['光速关系：$v_{\\text{红}} \gt v_{\\text{橙}} \gt \\cdots \gt v_{\\text{紫}}$', '折射率：$n_{\\text{红}} \lt n_{\\text{橙}} \lt \\cdots \lt n_{\\text{紫}}$', '波长范围：$\\lambda_{\\text{红}} \\approx 620\\text{nm}, \\lambda_{\\text{紫}} \\approx 400\\text{nm}$'],
       [
         { title: '例1', question: '白光通过三棱镜后，哪种色光偏折最小？哪种最大？为什么？',
           steps: ['紫光折射率最大 → 偏折最大', '红光折射率最小 → 偏折最小', '因为 n = c/v，紫光在介质中速度最慢，偏折最大'],

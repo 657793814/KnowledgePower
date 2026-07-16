@@ -42,6 +42,18 @@ import { seedChemistrySolution } from './domains/chem-04-solution.js';
 import { seedChemistryOrganic } from './domains/chem-05-organic.js';
 import { seedChemistryCalculation } from './domains/chem-06-calculation.js';
 
+// 英语
+import { seedEnglishGrammarDomain } from './domains/eng-01-grammar.js';
+
+// 历史
+import { seedChineseHistoryDomain } from './domains/history-01-china.js';
+
+// 政治
+import { seedPoliticsDomain } from './domains/politics-01-fundamentals.js';
+
+// 地理
+import { seedGeographyDomain } from './domains/geography-01-fundamentals.js';
+
 async function main() {
   console.log('========================================');
   console.log('  KnowledgePower 种子数据初始化');
@@ -93,6 +105,22 @@ async function main() {
   await seedChemistrySolution();
   await seedChemistryOrganic();
   await seedChemistryCalculation();
+
+  // ===== 英语 =====
+  console.log('\n🔤 英语\n' + '='.repeat(20));
+  await seedEnglishGrammarDomain();
+
+  // ===== 历史 =====
+  console.log('\n📜 历史\n' + '='.repeat(20));
+  await seedChineseHistoryDomain();
+
+  // ===== 政治 =====
+  console.log('\n🏛️ 政治\n' + '='.repeat(20));
+  await seedPoliticsDomain();
+
+  // ===== 地理 =====
+  console.log('\n🌍 地理\n' + '='.repeat(20));
+  await seedGeographyDomain();
 
   // ===== 题库 =====
   console.log('\n📝 题库\n' + '='.repeat(20));

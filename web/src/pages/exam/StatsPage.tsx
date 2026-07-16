@@ -8,6 +8,7 @@ import {
 import { fetchStats, fetchWrongBook } from '@/api/exam';
 import { aiRecommend } from '@/api/ai';
 import type { ExamStatsVO, DomainStat } from '@/types';
+import { SUBJECT_LABELS, SUBJECT_EMOJI } from '@/types';
 import { DOMAIN_COLORS } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { useSubjectStore } from '@/store/subjectStore';
@@ -147,9 +148,7 @@ export default function StatsPage() {
             📈 学习统计
           </Typography.Title>
           <Typography.Text type="secondary" style={{ fontSize: 13 }}>
-            {currentSubject === 'math' ? '📐' : currentSubject === 'physics' ? '⚛️' : '🧪'} {
-              currentSubject === 'math' ? '数学' : currentSubject === 'physics' ? '物理' : '化学'
-            }
+            {SUBJECT_EMOJI[currentSubject] || '📐'} {SUBJECT_LABELS[currentSubject]?.replace(/^[^ ]+ /, '') || currentSubject}
           </Typography.Text>
         </div>
         <Button

@@ -4,9 +4,18 @@ export const SUBJECT_LABELS: Record<string, string> = {
   physics: '⚡ 物理',
   chemistry: '🧪 化学',
   bio: '🧬 生物',
+  eng: '🇬🇧 英语',
+  history: '📜 历史',
+  politics: '⚖️ 政治',
+  geo: '🌍 地理',
 };
 
 export const SUBJECT_KEYS = Object.keys(SUBJECT_LABELS);
+
+export const SUBJECT_EMOJI: Record<string, string> = {
+  math: '📐', physics: '⚛️', chemistry: '🧪', bio: '🧬',
+  eng: '🇬🇧', history: '📜', politics: '⚖️', geo: '🌍',
+};
 
 // ===== 各学科下的领域 =====
 export const SUBJECT_DOMAINS: Record<string, Record<string, string>> = {
@@ -43,6 +52,33 @@ export const SUBJECT_DOMAINS: Record<string, Record<string, string>> = {
     '生态学': '🌍 生态学',
     '微生物与生物技术': '🧫 微生物与生物技术',
   },
+  eng: {
+    '词法与构词': '📝 词法与构词',
+    '动词时态与语态': '⏰ 动词时态与语态',
+    '句法': '🔗 句法',
+    '从句': '🧩 从句',
+    '阅读与写作': '📖 阅读与写作',
+    '语法综合': '🔤 语法综合',
+  },
+  history: {
+    '中国古代史': '🏯 中国古代史',
+    '中国近现代史': '📜 中国近现代史',
+    '世界古代史': '🏛️ 世界古代史',
+    '世界近现代史': '🌏 世界近现代史',
+  },
+  politics: {
+    '哲学': '🤔 哲学',
+    '经济': '💰 经济',
+    '政治': '⚖️ 政治',
+    '文化与生活': '🎭 文化与生活',
+  },
+  geo: {
+    '自然地理': '⛰️ 自然地理',
+    '人文地理': '🏙️ 人文地理',
+    '区域地理': '🗺️ 区域地理',
+    '地图与地理工具': '🧭 地图与地理工具',
+    '环境与可持续发展': '🌱 环境与可持续发展',
+  },
 };
 
 // ===== 领域主题色 =====
@@ -74,6 +110,29 @@ export const DOMAIN_COLORS: Record<string, string> = {
   '植物学': '#8BC34A',
   '生态学': '#00BCD4',
   '微生物与生物技术': '#9C27B0',
+  // 英语
+  '词法与构词': '#FF9800',
+  '动词时态与语态': '#03A9F4',
+  '句法': '#E91E63',
+  '从句': '#4CAF50',
+  '阅读与写作': '#FF5722',
+  '语法综合': '#607D8B',
+  // 历史
+  '中国古代史': '#8D6E63',
+  '中国近现代史': '#795548',
+  '世界古代史': '#6D4C41',
+  '世界近现代史': '#5D4037',
+  // 政治
+  '哲学': '#7B1FA2',
+  '经济': '#F44336',
+  '政治': '#1565C0',
+  '文化与生活': '#FF6F00',
+  // 地理
+  '自然地理': '#4CAF50',
+  '人文地理': '#FF9800',
+  '区域地理': '#2196F3',
+  '地图与地理工具': '#009688',
+  '环境与可持续发展': '#8BC34A',
 };
 
 export const LEVEL_COLORS: Record<string, string> = {

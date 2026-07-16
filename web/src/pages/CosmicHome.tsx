@@ -14,17 +14,22 @@ const SUBJECT_COLORS: Record<SubjectKey, {
   physics:  { main: '#f59e0b', glow: 'rgba(245,158,11,0.5)', accent: '#fde68a', ring: 'rgba(253,230,138,0.2)' },
   chemistry:{ main: '#10b981', glow: 'rgba(16,185,129,0.5)', accent: '#6ee7b7', ring: 'rgba(110,231,183,0.2)' },
   bio:      { main: '#ec4899', glow: 'rgba(236,72,153,0.5)', accent: '#f9a8d4', ring: 'rgba(249,168,212,0.2)' },
+  eng:      { main: '#FF9800', glow: 'rgba(255,152,0,0.5)', accent: '#ffcc80', ring: 'rgba(255,204,128,0.2)' },
+  history:  { main: '#8D6E63', glow: 'rgba(141,110,99,0.5)', accent: '#bcaaa4', ring: 'rgba(188,170,164,0.2)' },
+  politics: { main: '#7B1FA2', glow: 'rgba(123,31,162,0.5)', accent: '#ce93d8', ring: 'rgba(206,147,216,0.2)' },
+  geo:      { main: '#43A047', glow: 'rgba(67,160,71,0.5)', accent: '#a5d6a7', ring: 'rgba(165,214,167,0.2)' },
 };
 
 const SUBJECT_EMOJI: Record<SubjectKey, string> = {
   math: '📐', physics: '⚛️', chemistry: '🧪', bio: '🧬',
+  eng: '🇬🇧', history: '📜', politics: '⚖️', geo: '🌍',
 };
 
 // ─── 单个领域星球 ───
-function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuration, orbitDelay, subject, onEnterSubject }: {
+function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuration, orbitDelay, domainIndex, subject, onEnterSubject }: {
   domainKey: string; domainLabel: string; color: string;
   orbitRadius: number; orbitDuration: number; orbitDelay: number;
-  subject: SubjectKey; onEnterSubject: () => void;
+  domainIndex: number; subject: SubjectKey; onEnterSubject: () => void;
 }) {
   const [showLabel, setShowLabel] = useState(false);
   // 非领域部分的标签（去除前缀）
@@ -111,7 +116,7 @@ export default function CosmicHome() {
 
   useSpaceCanvas(canvasRef, () => setEntered(true));
 
-  const subjects: SubjectKey[] = ['math', 'physics', 'chemistry', 'bio'];
+  const subjects: SubjectKey[] = ['math', 'physics', 'chemistry', 'bio', 'eng', 'history', 'politics', 'geo'];
 
   const handleEnterSubject = (subject: SubjectKey) => {
     setSubject(subject);
@@ -192,9 +197,7 @@ export default function CosmicHome() {
         .subject-core:hover .ring-glow {
           opacity: 1 !important;
         }
-        .subject-core:nth-child(3) { animation-delay: 0.15s; }
-        .subject-core:nth-child(4) { animation-delay: 0.35s; }
-        .subject-core:nth-child(5) { animation-delay: 0.55s; }
+        .subject-core:nth-child(n+3) { animation-delay: var(--anim-delay, 0.15s); }
 
         .subject-name {
           position: absolute;
@@ -249,43 +252,39 @@ export default function CosmicHome() {
         </div>
       </div>
 
-      {/* ═══ 四个学科核心星球（菱形排列）═══ */}
-
-      {/* 核心工具函数 */}
-      {(['math', 'physics', 'chemistry', 'bio'] as SubjectKey[]).map((subject, idx) => {
+      {/* ═══ 8个学科核心星球（2行×4列）═══ */}
+      {subjects.map((subject, idx) => {
         const colors = SUBJECT_COLORS[subject];
         const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
-        const layouts = [
-          { top: '32%', left: '25%', w: 105 },   // math 左上
-          { top: '28%', left: '75%', w: 110 },   // physics 右上
-          { top: '68%', left: '75%', w: 100 },   // chemistry 右下
-          { top: '62%', left: '25%', w: 100 },   // bio 左下
-        ];
-        const l = layouts[idx];
-        const sizes = [36, 38, 34, 34];
-        const orbitConfigs = [
+        const row = idx < 4 ? 0 : 1;
+        const col = idx % 4;
+        const colCenters = ['14%', '38%', '62%', '86%'];
+        const isLarge = row === 0;
+        const w = isLarge ? 72 : 62;
+        const fontSize = isLarge ? 28 : 24;
+        const topPos = row === 0 ? '30%' : '62%';
+        // 轨道配置：理科大星球轨道半径更大，文科小星球轨道更紧凑
+        const orbitCfgs = [
           { baseR: 52, stepR: 18, dur: 18, durStep: 2, delayStep: 0.3 },
-          { baseR: 55, stepR: 20, dur: 20, durStep: 2.5, delayStep: 0.4 },
-          { baseR: 48, stepR: 16, dur: 16, durStep: 1.8, delayStep: 0.25 },
-          { baseR: 48, stepR: 16, dur: 17, durStep: 2, delayStep: 0.3 },
+          { baseR: 38, stepR: 14, dur: 14, durStep: 1.5, delayStep: 0.25 },
         ];
-        const oc = orbitConfigs[idx];
+        const oc = orbitCfgs[row];
         return (
           <div
             key={subject}
             className="subject-core"
             style={{
               transform: 'translate(-50%, -50%)',
-              width: l.w, height: l.w, top: l.top, left: l.left,
+              width: w, height: w, top: topPos, left: colCenters[col],
               background: `radial-gradient(circle at 30% 25%, ${colors.accent} 0%, ${colors.main} 40%, ${colors.main}88 100%)`,
               boxShadow: `0 0 40px ${colors.glow}`,
               '--planet-glow': colors.glow,
               '--planet-glow-dim': colors.glow.replace('0.5', '0.1'),
-              animationDelay: `${0.15 + idx * 0.2}s`,
+              animationDelay: `${0.1 + idx * 0.1}s`,
             } as React.CSSProperties}
             onClick={() => handleEnterSubject(subject)}
           >
-            <span style={{ fontSize: sizes[idx], filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
+            <span style={{ fontSize, filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
               {SUBJECT_EMOJI[subject]}
             </span>
             <div className="subject-name" style={{ color: colors.accent, textShadow: `0 0 30px ${colors.glow}` }}>
@@ -304,7 +303,9 @@ export default function CosmicHome() {
                 color={DOMAIN_COLORS[dk] || colors.main}
                 orbitRadius={oc.baseR + (di % 3) * oc.stepR}
                 orbitDuration={oc.dur + di * oc.durStep}
-                orbitDelay={di * oc.delayStep}
+                // 用负延迟让星球初始位置均匀分散在轨道上，不扎堆
+                orbitDelay={-(di * oc.dur / domains.length)}
+                domainIndex={di}
                 subject={subject}
                 onEnterSubject={() => handleEnterSubject(subject)}
               />
