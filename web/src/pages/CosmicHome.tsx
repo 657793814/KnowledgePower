@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from 'antd';
 import { SUBJECT_LABELS, SUBJECT_DOMAINS, DOMAIN_COLORS } from '@/types';
@@ -20,20 +20,18 @@ const SUBJECT_COLORS: Record<SubjectKey, {
   geo:      { main: '#43A047', glow: 'rgba(67,160,71,0.5)', accent: '#a5d6a7', ring: 'rgba(165,214,167,0.2)' },
 };
 
-const SUBJECT_EMOJI: Record<SubjectKey, string> = {
-  math: '📐', physics: '⚛️', chemistry: '🧪', bio: '🧬',
-  eng: '🇬🇧', history: '📜', politics: '⚖️', geo: '🌍',
-};
-
-// ─── 单个领域星球 ───
-function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuration, orbitDelay, domainIndex, subject, onEnterSubject }: {
+// ─── 单个领域星球（3D 旋涡星系风格） ───
+function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuration, orbitDelay }: {
   domainKey: string; domainLabel: string; color: string;
   orbitRadius: number; orbitDuration: number; orbitDelay: number;
-  domainIndex: number; subject: SubjectKey; onEnterSubject: () => void;
 }) {
   const [showLabel, setShowLabel] = useState(false);
-  // 非领域部分的标签（去除前缀）
   const shortLabel = String(domainLabel).replace(/^[^\s]+\s/, '');
+
+  // 生成旋涡臂颜色
+  const armColor1 = color;
+  const armColor2 = color + '88';
+  const coreColor = '#ffffff';
 
   return (
     <div
@@ -45,12 +43,12 @@ function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuratio
         pointerEvents: 'none',
       } as React.CSSProperties}
     >
-      {/* 轨道圆环（极淡） */}
+      {/* 轨道圆环 */}
       <div style={{
         position: 'absolute', top: -orbitRadius, left: -orbitRadius,
         width: orbitRadius * 2, height: orbitRadius * 2,
         borderRadius: '50%',
-        border: '1px solid rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.06)',
         pointerEvents: 'none',
       }} />
 
@@ -62,26 +60,68 @@ function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuratio
         }}
         onMouseEnter={() => setShowLabel(true)}
         onMouseLeave={() => setShowLabel(false)}
-        onClick={onEnterSubject}
       >
-        {/* 星球本体 */}
+        {/* 旋涡星系主体 */}
         <div style={{
-          width: 16, height: 16, borderRadius: '50%',
-          background: `radial-gradient(circle at 35% 30%, ${color}cc, ${color}88)`,
-          boxShadow: `0 0 12px ${color}`,
-          cursor: 'pointer',
+          width: 28,
+          height: 28,
           position: 'relative',
+          cursor: 'pointer',
           transition: 'all 0.3s ease',
           pointerEvents: 'auto',
-        }}
-          className="domain-dot"
-        />
+          transform: 'rotate(-30deg)',
+        }}>
+          {/* 旋涡臂 */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            background: `
+              radial-gradient(circle at 50% 50%, ${coreColor} 0%, ${coreColor}44 15%, transparent 30%),
+              conic-gradient(from 0deg, ${armColor1}88, ${armColor2}44, ${armColor1}66, ${armColor2}33, ${armColor1}88)
+            `,
+            filter: 'blur(2px)',
+            opacity: 0.9,
+          }} />
+          
+          {/* 第二层旋涡臂 */}
+          <div style={{
+            position: 'absolute',
+            inset: '4px',
+            borderRadius: '50%',
+            background: `conic-gradient(from 180deg, ${armColor1}66, ${armColor2}33, ${armColor1}55, ${armColor2}22, ${armColor1}66)`,
+            filter: 'blur(1.5px)',
+            opacity: 0.7,
+          }} />
+          
+          {/* 核心亮点 */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${coreColor}, ${armColor1})`,
+            boxShadow: `0 0 8px ${armColor1}, 0 0 16px ${armColor1}88`,
+          }} />
+          
+          {/* 光晕 */}
+          <div style={{
+            position: 'absolute',
+            inset: -8,
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${armColor1}22 0%, transparent 70%)`,
+            pointerEvents: 'none',
+          }} />
+        </div>
 
-        {/* 悬浮标签 */}
+        {/* 标签 */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: 22,
+          top: 32,
           transform: 'translateX(-50%)',
           opacity: showLabel ? 1 : 0,
           transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -105,23 +145,181 @@ function DomainPlanet({ domainKey, domainLabel, color, orbitRadius, orbitDuratio
   );
 }
 
-// ─── 主组件 ───
-export default function CosmicHome() {
+// ─── 星系网格单元（3D 行星+旋涡星系风格） ───
+function GalaxyCell({ subject, row, col, cellSize }: {
+  subject: SubjectKey; row: number; col: number; cellSize: number;
+}) {
   const navigate = useNavigate();
   const { setSubject } = useSubjectStore();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const colors = SUBJECT_COLORS[subject];
+  const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
+  const isLarge = row === 0;
+  const planetSize = isLarge ? 72 : 56; // 增大星球尺寸
+
+  const orbitCfgs = [
+    { baseR: 52, stepR: 18, dur: 18, durStep: 2 },
+    { baseR: 40, stepR: 14, dur: 14, durStep: 1.5 },
+  ];
+  const oc = orbitCfgs[row];
+
+  const handleEnterSubject = () => {
+    setSubject(subject);
+    navigate('/graph');
+  };
+
+  // 入场动画延迟：理科第一行稍快，文科第二行稍慢
+  const appearDelay = 0.1 + row * 3 + col * 0.15;
+
+  return (
+    <div
+      onClick={handleEnterSubject}
+      style={{
+        width: cellSize,
+        height: cellSize,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        position: 'relative',
+        // 用 opacity 做入场，transform scale 只做 hover 缩放 — 避免与 CSS animation 冲突
+        opacity: 0,
+        animation: `coreAppear 0.8s cubic-bezier(0.22,1,0.36,1) ${appearDelay}s forwards`,
+        willChange: 'transform',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1.08)';
+        (e.currentTarget as HTMLElement).style.boxShadow = `0 0 60px ${colors.glow}`;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+      }}
+    >
+      {/* 中心星球 — 3D 行星效果 */}
+      <div style={{
+        width: planetSize,
+        height: planetSize,
+        borderRadius: '50%',
+        position: 'absolute',
+        zIndex: 10,
+        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+      }}>
+        {/* 星球主体 */}
+        <div style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          background: `
+            radial-gradient(circle at 30% 25%, ${colors.accent} 0%, transparent 50%),
+            radial-gradient(circle at 70% 75%, ${colors.main}44 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, ${colors.main}cc 0%, ${colors.main}88 60%, ${colors.main}66 100%)
+          `,
+          boxShadow: `
+            inset -${Math.round(planetSize * 0.15)}px -${Math.round(planetSize * 0.15)}px ${Math.round(planetSize * 0.3)}px rgba(0,0,0,0.5),
+            inset ${Math.round(planetSize * 0.1)}px ${Math.round(planetSize * 0.1)}px ${Math.round(planetSize * 0.2)}px rgba(255,255,255,0.1),
+            0 0 ${planetSize * 0.6}px ${colors.glow},
+            0 0 ${planetSize}px ${colors.glow.replace('0.5', '0.2')}
+          `,
+        }} />
+        
+        {/* 行星光环（部分科目有） */}
+        {(subject === 'math' || subject === 'physics' || subject === 'geo') && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%) rotateX(75deg)',
+            width: planetSize * 2,
+            height: planetSize * 2,
+            borderRadius: '50%',
+            border: `2px solid ${colors.ring}`,
+            boxShadow: `0 0 ${planetSize * 0.3}px ${colors.glow}`,
+            pointerEvents: 'none',
+          }} />
+        )}
+        
+        {/* 表面纹理线 */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '50%',
+          overflow: 'hidden',
+          pointerEvents: 'none',
+        }}>
+          {[...Array(3)].map((_, i) => (
+            <div key={i} style={{
+              position: 'absolute',
+              top: `${25 + i * 25}%`,
+              left: '0',
+              right: '0',
+              height: '2px',
+              background: `linear-gradient(90deg, transparent, ${colors.accent}33, transparent)`,
+              transform: `rotate(${i * 15}deg)`,
+              transformOrigin: 'center',
+            }} />
+          ))}
+        </div>
+      </div>
+
+      {/* 光晕 — hover 显示 */}
+      <div style={{
+        position: 'absolute', inset: -16,
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${colors.glow.replace('0.5', '0.06')} 0%, transparent 70%)`,
+        pointerEvents: 'none',
+        opacity: 0,
+        transition: 'opacity 0.6s ease',
+      }}
+        className="ring-glow"
+      />
+
+      {/* 科目名称标签 — 悬浮显示 */}
+      <div style={{
+        position: 'absolute',
+        bottom: -32,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        opacity: 0,
+        transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        whiteSpace: 'nowrap',
+        pointerEvents: 'none',
+        fontSize: 14,
+        fontWeight: 700,
+        letterSpacing: 3,
+        color: colors.accent,
+        textShadow: `0 0 20px ${colors.glow}`,
+      }}
+        className="core-label"
+      >
+        {SUBJECT_LABELS[subject]}
+      </div>
+
+      {/* 领域星球 — 每个科目有自己的轨道系统 */}
+      {domains.map(([dk, dl], di) => (
+        <DomainPlanet
+          key={dk} domainKey={dk} domainLabel={dl}
+          color={DOMAIN_COLORS[dk] || colors.main}
+          orbitRadius={oc.baseR + (di % 3) * oc.stepR}
+          orbitDuration={oc.dur + di * oc.durStep}
+          // 负延迟让星球初始位置均匀分散在轨道上，不扎堆
+          orbitDelay={-(di * oc.dur / domains.length)}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── 主组件 ───
+export default function CosmicHome() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [entered, setEntered] = useState(false);
   const [hoveredSubject, setHoveredSubject] = useState<SubjectKey | null>(null);
 
   useSpaceCanvas(canvasRef, () => setEntered(true));
 
   const subjects: SubjectKey[] = ['math', 'physics', 'chemistry', 'bio', 'eng', 'history', 'politics', 'geo'];
-
-  const handleEnterSubject = (subject: SubjectKey) => {
-    setSubject(subject);
-    navigate('/graph');
-  };
 
   return (
     <div
@@ -158,59 +356,14 @@ export default function CosmicHome() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        @keyframes planetPulse {
-          0%, 100% { box-shadow: 0 0 20px var(--planet-glow); }
-          50% { box-shadow: 0 0 40px var(--planet-glow), 0 0 80px var(--planet-glow-dim); }
-        }
-        @keyframes subjectEnter {
-          from { opacity: 0; transform: scale(0); filter: blur(20px); }
-          to { opacity: 1; transform: scale(1); filter: blur(0); }
+        /* 核心入场动画 — 从中心放大出现，不含 translate 位移 */
+        @keyframes coreAppear {
+          from { opacity: 0; transform: scale(0.8); }
+          to   { opacity: 1; transform: scale(1); }
         }
         @keyframes floatHint {
           0%, 100% { transform: translateX(-50%) translateY(0); }
           50% { transform: translateX(-50%) translateY(-6px); }
-        }
-        @keyframes ringSpin {
-          from { transform: translate(-50%, -50%) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .subject-core {
-          position: absolute;
-          top: 50%; left: 50%;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          animation: subjectEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.4s ease;
-        }
-        .subject-core:hover {
-          transform: translate(-50%, -50%) scale(1.15) !important;
-          z-index: 100;
-        }
-        .subject-core:hover .subject-name {
-          opacity: 1 !important;
-        }
-        .subject-core:hover .ring-glow {
-          opacity: 1 !important;
-        }
-        .subject-core:nth-child(n+3) { animation-delay: var(--anim-delay, 0.15s); }
-
-        .subject-name {
-          position: absolute;
-          bottom: -42px;
-          left: 50%;
-          transform: translateX(-50%);
-          opacity: 0;
-          transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-          white-space: nowrap;
-          pointer-events: none;
-          font-size: clamp(14px, 1.5vw, 18px);
-          font-weight: 700;
-          letter-spacing: 4px;
         }
 
         .domain-dot:hover {
@@ -252,67 +405,34 @@ export default function CosmicHome() {
         </div>
       </div>
 
-      {/* ═══ 8个学科核心星球（2行×4列）═══ */}
-      {subjects.map((subject, idx) => {
-        const colors = SUBJECT_COLORS[subject];
-        const domains = Object.entries(SUBJECT_DOMAINS[subject] || {});
-        const row = idx < 4 ? 0 : 1;
-        const col = idx % 4;
-        const colCenters = ['14%', '38%', '62%', '86%'];
-        const isLarge = row === 0;
-        const w = isLarge ? 72 : 62;
-        const fontSize = isLarge ? 28 : 24;
-        const topPos = row === 0 ? '30%' : '62%';
-        // 轨道配置：理科大星球轨道半径更大，文科小星球轨道更紧凑
-        const orbitCfgs = [
-          { baseR: 52, stepR: 18, dur: 18, durStep: 2, delayStep: 0.3 },
-          { baseR: 38, stepR: 14, dur: 14, durStep: 1.5, delayStep: 0.25 },
-        ];
-        const oc = orbitCfgs[row];
-        return (
-          <div
-            key={subject}
-            className="subject-core"
-            style={{
-              transform: 'translate(-50%, -50%)',
-              width: w, height: w, top: topPos, left: colCenters[col],
-              background: `radial-gradient(circle at 30% 25%, ${colors.accent} 0%, ${colors.main} 40%, ${colors.main}88 100%)`,
-              boxShadow: `0 0 40px ${colors.glow}`,
-              '--planet-glow': colors.glow,
-              '--planet-glow-dim': colors.glow.replace('0.5', '0.1'),
-              animationDelay: `${0.1 + idx * 0.1}s`,
-            } as React.CSSProperties}
-            onClick={() => handleEnterSubject(subject)}
-          >
-            <span style={{ fontSize, filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' }}>
-              {SUBJECT_EMOJI[subject]}
-            </span>
-            <div className="subject-name" style={{ color: colors.accent, textShadow: `0 0 30px ${colors.glow}` }}>
-              {SUBJECT_LABELS[subject]}
-            </div>
-            <div className="ring-glow" style={{
-              position: 'absolute', inset: -20,
-              borderRadius: '50%',
-              background: `radial-gradient(circle, ${colors.glow.replace('0.5', '0.08')} 0%, transparent 70%)`,
-              pointerEvents: 'none', opacity: 0,
-              transition: 'opacity 0.6s ease',
-            }} />
-            {domains.map(([dk, dl], di) => (
-              <DomainPlanet
-                key={dk} domainKey={dk} domainLabel={dl}
-                color={DOMAIN_COLORS[dk] || colors.main}
-                orbitRadius={oc.baseR + (di % 3) * oc.stepR}
-                orbitDuration={oc.dur + di * oc.durStep}
-                // 用负延迟让星球初始位置均匀分散在轨道上，不扎堆
-                orbitDelay={-(di * oc.dur / domains.length)}
-                domainIndex={di}
-                subject={subject}
-                onEnterSubject={() => handleEnterSubject(subject)}
-              />
-            ))}
-          </div>
-        );
-      })}
+      {/* ═══ 8个学科星系（2行×4列网格）═══ */}
+      {/* 用 CSS calc 做居中定位，完全不依赖 JS 读取 window 尺寸，杜绝位移 */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, min(22vw, 200px))',
+        gridTemplateRows: 'repeat(2, min(22vw, 200px))',
+        gap: '40px',
+        zIndex: 10,
+      }}>
+        {subjects.map((subject, idx) => {
+          const row = idx < 4 ? 0 : 1;
+          const col = idx % 4;
+          const cellSize = Math.min(window.innerWidth * 0.22, 200);
+          return (
+            <GalaxyCell
+              key={subject}
+              subject={subject}
+              row={row}
+              col={col}
+              cellSize={cellSize}
+            />
+          );
+        })}
+      </div>
 
       {/* ═══ 底部导航 ═══ */}
       <div style={{
@@ -341,7 +461,11 @@ export default function CosmicHome() {
                   border: '1px solid transparent',
                   pointerEvents: 'auto',
                 }}
-                onClick={() => handleEnterSubject(s)}
+                onClick={() => {
+                  const { setSubject } = useSubjectStore.getState();
+                  setSubject(s);
+                  window.location.href = '/graph';
+                }}
                 onMouseEnter={e => {
                   (e.target as HTMLElement).style.opacity = '0.8';
                   (e.target as HTMLElement).style.borderColor = colors.glow;
