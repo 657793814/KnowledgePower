@@ -16,6 +16,7 @@ import UsersPage from './pages/admin/UsersPage';
 import PracticePage from './pages/exam/PracticePage';
 import StatsPage from './pages/exam/StatsPage';
 import WrongBookPage from './pages/exam/WrongBookPage';
+import ModelTrainPage from './pages/exam/ModelTrainPage';
 import AnimationDemo from './pages/AnimationDemo';
 import InsightPage from './pages/InsightPage';
 
@@ -39,6 +40,7 @@ export default function App() {
               <StatsPage />
             </ProtectedRoute>
           } />
+          <Route path="/exam/model-train" element={<ModelTrainPage />} />
           <Route path="/exam/wrong-book" element={
             <ProtectedRoute>
               <WrongBookPage />

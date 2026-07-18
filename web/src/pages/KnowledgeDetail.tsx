@@ -1,13 +1,15 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { Spin, Tag, Button, Divider } from 'antd';
-import { ArrowLeftOutlined, ArrowRightOutlined, BranchesOutlined } from '@ant-design/icons';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Spin, Tag, Button, Divider, Collapse } from 'antd';
+import { ArrowLeftOutlined, ArrowRightOutlined, BranchesOutlined, AimOutlined } from '@ant-design/icons';
 import { useKnowledgeDetail } from '@/hooks/useGraphData';
-import { VisualContainer, AnimationContainer } from '@/components';
+import { VisualContainer, AnimationContainer, ModelImage, ModelVideo } from '@/components';
 import { NODE_ANIMATION_MAP } from '@/components/Animation/AnimationContainer';
-import { DOMAIN_COLORS, LEVEL_COLORS } from '@/types';
+import { DOMAIN_COLORS, LEVEL_COLORS, SUBJECT_LABELS } from '@/types';
 import AiChatPanel from '@/components/ai/AiChatPanel';
 import { useEffect, useState } from 'react';
 import { renderFormula } from '@/utils/renderFormula';
+import { fetchModelTrainQuestions } from '@/api/exam';
+import type { ExamQuestionVO } from '@/types';
 import './KnowledgeDetail.css';
 
 function FormulaBlock({ formula }: { formula: string }) {
@@ -17,6 +19,24 @@ function FormulaBlock({ formula }: { formula: string }) {
       marginTop: 8, textAlign: 'center', overflowX: 'auto',
     }}
       dangerouslySetInnerHTML={{ __html: renderFormula(formula) }} />
+  );
+}
+
+/** 在每个 section 底部渲染嵌入的图片/视频 */
+function renderSectionMedia(section: any): React.ReactNode {
+  return (
+    <>
+      {section.images?.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          <ModelImage images={section.images} />
+        </div>
+      )}
+      {section.video && (
+        <div style={{ marginTop: 12 }}>
+          <ModelVideo video={section.video} />
+        </div>
+      )}
+    </>
   );
 }
 
@@ -81,10 +101,24 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
         <div className="detail-section" key={index}>
           <h3>{section.title || '📋 核心要点'}</h3>
           <ul style={{ paddingLeft: 20, lineHeight: 2.2 }}>
-            {section.items?.map((item: string, i: number) => (
-              <li key={i} style={{ fontSize: 14, color: '#374151' }}
-                dangerouslySetInnerHTML={{ __html: renderFormula(item) }} />
-            ))}
+            {section.items?.map((item: string, i: number) => {
+              const linkMatch = item.match(/\[([^\]]+)\]\(([^)]+)\)/);
+              if (linkMatch) {
+                const [, label, nodeId] = linkMatch;
+                return (
+                  <li key={i} style={{ fontSize: 14, color: '#374151' }}>
+                    <Link to={`/knowledge/${nodeId}`} style={{ color: '#6366f1', textDecoration: 'none' }}>
+                      {label}
+                    </Link>
+                  </li>
+                );
+              }
+              return (
+                <li key={i} style={{ fontSize: 14, color: '#374151' }}>
+                  {item}
+                </li>
+              );
+            })}
           </ul>
         </div>
       );
@@ -346,6 +380,131 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
         </div>
       );
 
+    case 'model-intro':
+      return (
+        <div className="detail-section" key={index} style={{ background: '#f0f9ff' }}>
+          <h3 style={{ color: '#0369a1' }}>{section.title || '🎯 模型定义'}</h3>
+          <p style={{ fontSize: 15, lineHeight: 1.8, color: '#0c4a6e' }}
+            dangerouslySetInnerHTML={{ __html: renderFormula(section.content) }} />
+          {section.formulas?.map((f: string, i: number) => (
+            <FormulaBlock key={i} formula={f} />
+          ))}
+        </div>
+      );
+
+    case 'model-principle':
+      return (
+        <div className="detail-section" key={index} style={{ background: '#fefce8' }}>
+          <h3 style={{ color: '#d97706' }}>{section.title || '⚙️ 核心原理'}</h3>
+          <div style={{ fontSize: 14, lineHeight: 1.8, color: '#92400e' }}>
+            {(section.content || '').split('\n').map((line: string, i: number) => (
+              line.trim() ? <p key={i} style={{ marginBottom: 6 }} dangerouslySetInnerHTML={{ __html: renderFormula(line) }} /> : null
+            ))}
+          </div>
+          {section.formulas?.map((f: string, i: number) => (
+            <FormulaBlock key={i} formula={f} />
+          ))}
+        </div>
+      );
+
+    case 'recognition':
+    case 'tips':
+      return (
+        <div className="detail-section" key={index} style={{ background: section.type === 'recognition' ? '#fdf4ff' : '#f0fdf4' }}>
+          <h3 style={{ color: section.type === 'recognition' ? '#a21caf' : '#16a34a' }}>{section.title || '🔍 辨识特征'}</h3>
+          <ul style={{ paddingLeft: 20, lineHeight: 2.4 }}>
+            {section.items?.map((item: string, i: number) => (
+              <li key={i} style={{ fontSize: 14, color: '#374151' }}
+                dangerouslySetInnerHTML={{ __html: renderFormula(item) }} />
+            ))}
+          </ul>
+        </div>
+      );
+
+    case 'standard-steps':
+      return (
+        <div className="detail-section" key={index} style={{ background: '#f8fafc' }}>
+          <h3 style={{ color: '#1e40af' }}>{section.title || '📝 解题通法'}</h3>
+          {section.items?.length > 0 && (
+            <div style={{ counterReset: 'step' }}>
+              {section.items.map((item: string, i: number) => {
+                const colonIdx = item.indexOf('：');
+                const label = colonIdx > 0 ? item.substring(0, colonIdx) : '';
+                const desc = colonIdx > 0 ? item.substring(colonIdx + 1) : item;
+                return (
+                  <div key={i} style={{
+                    display: 'flex', gap: 12, marginBottom: 8,
+                    padding: '10px 14px', background: '#fff', borderRadius: 6,
+                    borderLeft: '3px solid #3b82f6'
+                  }}>
+                    <span style={{
+                      background: '#3b82f6', color: '#fff', borderRadius: '50%',
+                      width: 24, height: 24, display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0,
+                      marginTop: 2,
+                    }}>{i + 1}</span>
+                    <div>
+                      {label && <strong style={{ fontSize: 13 }}>{label}</strong>}
+                      <span style={{ fontSize: 14, lineHeight: 1.6, color: '#1e293b', paddingTop: 2, marginLeft: label ? 6 : 0 }}
+                        dangerouslySetInnerHTML={{ __html: renderFormula(desc) }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+
+    case 'variant':
+      return (
+        <div className="detail-section" key={index}>
+          <h3 style={{ color: '#7c3aed' }}>{'🔁 ' + (section.title || '变式拓展')}</h3>
+          {section.items?.map((ex: any, i: number) => (
+            <div key={i} className="practice-question" style={{ borderLeft: '3px solid #7c3aed', paddingLeft: 12, marginBottom: 12, background: '#faf5ff' }}>
+              <p style={{ fontWeight: 600, marginBottom: 8, fontSize: 14, color: '#4c1d95' }}
+                dangerouslySetInnerHTML={{ __html: renderFormula(ex.question) }} />
+              {ex.steps?.map((s: string, j: number) => (
+                <div key={j} style={{ fontSize: 13, color: '#64748b', padding: '2px 0' }}
+                  dangerouslySetInnerHTML={{ __html: renderFormula(s.startsWith('第') ? s : `第${j + 1}步：${s}`) }} />
+              ))}
+              {ex.answer && (
+                <Tag color="purple" style={{ marginTop: 4 }}>答案：<span dangerouslySetInnerHTML={{ __html: renderFormula(ex.answer) }} /></Tag>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+
+    case 'image':
+      return (
+        <div className="detail-section" key={index}>
+          <h3>{section.title || '🖼️ 配图'}</h3>
+          <ModelImage
+            src={section.src}
+            images={section.images}
+            alt={section.alt}
+            caption={section.caption}
+          />
+          {section.content && (
+            <div style={{ fontSize: 14, lineHeight: 1.8, color: '#374151', marginTop: 8 }}
+              dangerouslySetInnerHTML={{ __html: renderFormula(section.content) }} />
+          )}
+        </div>
+      );
+
+    case 'video':
+      return (
+        <div className="detail-section" key={index}>
+          <h3>{section.title || '🎬 视频'}</h3>
+          <ModelVideo video={section.video || { url: section.src }} title={section.title} />
+          {section.content && (
+            <div style={{ fontSize: 14, lineHeight: 1.8, color: '#374151', marginTop: 8 }}
+              dangerouslySetInnerHTML={{ __html: renderFormula(section.content) }} />
+          )}
+        </div>
+      );
+
     default:
       return (
         <div className="detail-section" key={index}>
@@ -369,6 +528,16 @@ export default function KnowledgeDetail() {
     window.addEventListener('scroll', handler);
     return () => window.removeEventListener('scroll', handler);
   }, []);
+
+  // ─── 模型题目 ───
+  const [modelQuestions, setModelQuestions] = useState<ExamQuestionVO[]>([]);
+  useEffect(() => {
+    if (id && detail?.visualType === 'model') {
+      fetchModelTrainQuestions(id, 50).then(setModelQuestions).catch(() => setModelQuestions([]));
+    } else {
+      setModelQuestions([]);
+    }
+  }, [id, detail?.visualType]);
 
   if (loading) {
     return (
@@ -400,9 +569,14 @@ export default function KnowledgeDetail() {
         </Button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
           <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }} dangerouslySetInnerHTML={{ __html: renderFormula(detail.title) }} />
-          <Tag color={DOMAIN_COLORS[detail.domain]}>{detail.domain}</Tag>
+          <Tag color={DOMAIN_COLORS[detail.domain]}>{SUBJECT_LABELS[detail.subject] || detail.subject} · {detail.domain}</Tag>
           <Tag color={detail.level === '初中' ? 'green' : 'orange'}>{detail.level}</Tag>
           {detail.milestoneType && <Tag color="purple">📌 {detail.milestoneType === 'domain_end' ? '领域总结' : '章节总结'}</Tag>}
+          {detail.visualType === 'model' && (
+            <Button type="primary" size="small" icon={<AimOutlined />} onClick={() => navigate(`/exam/model-train?nodeId=${detail.id}`)}>
+              🎯 专题训练
+            </Button>
+          )}
         </div>
         {detail.subtitle && (
           <p style={{ fontSize: 16, color: '#64748b', margin: 0 }} dangerouslySetInnerHTML={{ __html: renderFormula(detail.subtitle) }} />
@@ -417,9 +591,12 @@ export default function KnowledgeDetail() {
         </div>
       </div>
 
-      {/* 内容区块 */}
+      {/* 内容区块 — 每个 section 后自动渲染嵌入的图片/视频 */}
       {content?.sections?.map((section: any, i: number) => (
-        <SectionRenderer key={i} section={section} index={i} />
+        <>
+          <SectionRenderer section={section} index={i} />
+          {renderSectionMedia(section)}
+        </>
       ))}
 
       <Divider />
@@ -467,6 +644,53 @@ export default function KnowledgeDetail() {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ─── 模型题目（题型模型的练习题） ─── */}
+      {detail?.visualType === 'model' && modelQuestions.length > 0 && (
+        <div className="detail-section" style={{ background: '#fffbeb' }}>
+          <h3 style={{ color: '#d97706' }}>📝 模型练习题（{modelQuestions.length} 题）</h3>
+          {modelQuestions.map((q) => {
+            return (
+            <div key={q.id} className="practice-question" style={{
+              borderLeft: '3px solid #f59e0b', paddingLeft: 12, marginBottom: 12,
+              padding: '10px 12px', background: 'rgba(255,255,255,0.6)', borderRadius: 8,
+            }}>
+              <div style={{ fontSize: 13, lineHeight: 1.8, color: '#374151' }}
+                dangerouslySetInnerHTML={{ __html: renderFormula(q.title) }} />
+              {q.options && (() => {
+                try {
+                  const opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+                  if (typeof opts === 'object' && !Array.isArray(opts)) {
+                    return Object.entries(opts).map(([k, v]) => (
+                      <div key={k} style={{ fontSize: 12, color: '#4b5563', marginTop: 2 }}
+                        dangerouslySetInnerHTML={{ __html: renderFormula(`${k}. ${v}`) }} />
+                    ));
+                  }
+                  if (Array.isArray(opts)) {
+                    return opts.map((o: string, i: number) => (
+                      <div key={i} style={{ fontSize: 12, color: '#4b5563', marginTop: 2 }}
+                        dangerouslySetInnerHTML={{ __html: renderFormula(o) }} />
+                    ));
+                  }
+                } catch {}
+                return null;
+              })()}
+              {/* 展开答案 */}
+              <details style={{ marginTop: 4, cursor: 'pointer' }}>
+                <summary style={{ color: '#999', fontSize: 11, userSelect: 'none' }}>
+                  查看答案
+                </summary>
+                <div style={{ marginTop: 4 }}>
+                  <Tag color="green" style={{ fontSize: 13, padding: '2px 8px', cursor: 'default' }}>
+                    {q.answer}
+                  </Tag>
+                </div>
+              </details>
+            </div>
+            );
+          })}
         </div>
       )}
 

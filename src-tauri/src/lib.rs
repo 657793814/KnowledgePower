@@ -158,14 +158,24 @@ pub fn run() {
                     let _ = std::fs::create_dir_all(&data_dir);
                     let db_path = data_dir.join("knowledgepower.db");
 
+                    // 首次启动时，从打包资源复制预置数据库到用户数据目录
+                    if !db_path.exists() {
+                        let bundled_db = backend_dir.join("prisma").join("knowledgepower.db");
+                        if bundled_db.exists() {
+                            match std::fs::copy(&bundled_db, &db_path) {
+                                Ok(_) => log::info!("已从打包资源复制预置数据库到用户数据目录"),
+                                Err(e) => log::warn!("复制预置数据库失败: {}，将创建空数据库", e),
+                            }
+                        } else {
+                            log::info!("打包资源中无预置数据库，Prisma 首次启动时会创建空数据库");
+                        }
+                    } else {
+                        log::info!("数据库文件已存在: {:?}", db_path);
+                    }
+
                     if server_js.exists() {
                         log::info!("启动 Node.js 后端: {:?}", server_js);
                         log::info!("数据库路径: {:?}", db_path);
-
-                        // DB 文件不存在？Prisma 会自动创建
-                        if !db_path.exists() {
-                            log::info!("数据库文件不存在，Prisma 首次启动时会创建");
-                        }
 
                         let db_url = format!("file:{}", db_path.display());
                         let node_binary = find_node();

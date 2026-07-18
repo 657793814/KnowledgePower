@@ -18,3 +18,5 @@ export { default as FreeFall } from './Animation/animations/FreeFall';
 export { default as EquationBalance } from './Animation/animations/EquationBalance';
 export { default as KnowledgeCard } from './Card/KnowledgeCard';
 export { Loading } from './common/Loading';
+export { default as ModelImage } from './ModelImage';
+export { default as ModelVideo } from './ModelVideo';

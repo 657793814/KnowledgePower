@@ -37,7 +37,7 @@ public class DomainCombinatoricsSeeder {
                 .summary("分类加法计数原理 + 分步乘法计数原理 = 排列组合的两大基石")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"两大原理","content":"分类加法计数原理：做一件事有 $n$ 类方案，每类有 $m_i$ 种方法，总方法数为 $m_1+m_2+...+m_n$。\\n分步乘法计数原理：做一件事需分 $n$ 步，每步有 $m_i$ 种方法，总方法数为 $m_1\\\\times m_2\\\\times...\\\\times m_n$。"},
+                    {"type":"definition","title":"两大原理","content":"分类加法计数原理：做一件事有 $n$ 类方案，每类有 $m_i$ 种方法，总方法数为 $m_1+m_2+...+m_n$。\\n分步乘法计数原理：做一件事需分 $n$ 步，每步有 $m_i$ 种方法，总方法数为 $m_1\\times m_2\\times...\\times m_n$。"},
                     {"type":"keypoints","title":"核心区别","items":[
                         "分类加法：「或」的关系——要么这样，要么那样",
                         "分步乘法：「且」的关系——先这样，再那样",
@@ -58,7 +58,7 @@ public class DomainCombinatoricsSeeder {
                 .summary("排列：从 n 个不同元素中取 m 个，顺序重要。符号 A(n,m)")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"从 $n$ 个不同元素中取 $m$ 个排成一列，叫排列。同排列数公式：$$A_n^m=n(n-1)(n-2)\\\\cdots(n-m+1)=\\\\frac{n!}{(n-m)!}$$"},
+                    {"type":"definition","title":"定义","content":"从 $n$ 个不同元素中取 $m$ 个排成一列，叫排列。同排列数公式：$$A_n^m=n(n-1)(n-2)\\cdots(n-m+1)=\\frac{n!}{(n-m)!}$$"},
                     {"type":"keypoints","title":"重要概念","items":[
                         "全排列：$A_n^n=n!$（$n$ 个元素全部排列）",
                         "$0!=1$（规定）",
@@ -84,7 +84,7 @@ public class DomainCombinatoricsSeeder {
                 .summary("组合：从 n 个不同元素中取 m 个，顺序不重要。符号 C(n,m)")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"从 $n$ 个不同元素中取 $m$ 个组成一组（不计顺序），叫组合。组合数公式：$$C_n^m=\\\\frac{A_n^m}{A_m^m}=\\\\frac{n!}{m!(n-m)!}$$"},
+                    {"type":"definition","title":"定义","content":"从 $n$ 个不同元素中取 $m$ 个组成一组（不计顺序），叫组合。组合数公式：$$C_n^m=\\frac{A_n^m}{A_m^m}=\\frac{n!}{m!(n-m)!}$$"},
                     {"type":"keypoints","title":"排列与组合的区别","items":[
                         "排列：顺序重要（排座位、冠亚季军）",
                         "组合：顺序不重要（选委员、买彩票号码）",
@@ -110,7 +110,7 @@ public class DomainCombinatoricsSeeder {
                 .summary("二项式定理揭示了 (a+b)ⁿ 展开式的系数规律——杨辉三角")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定理","content":"$$(a+b)^n=\\\\sum_{k=0}^n C_n^k a^{n-k}b^k$$ $$=C_n^0 a^n+C_n^1 a^{n-1}b+C_n^2 a^{n-2}b^2+\\\\cdots+C_n^n b^n$$"},
+                    {"type":"definition","title":"定理","content":"$$(a+b)^n=\\sum_{k=0}^n C_n^k a^{n-k}b^k$$ $$=C_n^0 a^n+C_n^1 a^{n-1}b+C_n^2 a^{n-2}b^2+\\cdots+C_n^n b^n$$"},
                     {"type":"keypoints","title":"杨辉三角（帕斯卡三角）","items":[
                         "第 0 行：1",
                         "第 1 行：1  1",
@@ -138,23 +138,23 @@ public class DomainCombinatoricsSeeder {
                 .summary("概率描述随机事件发生的可能性，取值 0 到 1 之间")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"事件 $A$ 的概率 $P(A)$ 是 $A$ 发生可能性大小的度量。古典概型：$P(A)=\\\\frac{\\\\text{事件}A\\\\text{包含的结果数}}{\\\\text{全部可能结果数}}$"},
+                    {"type":"definition","title":"定义","content":"事件 $A$ 的概率 $P(A)$ 是 $A$ 发生可能性大小的度量。古典概型：$P(A)=\\frac{\\text{事件}A\\text{包含的结果数}}{\\text{全部可能结果数}}$"},
                     {"type":"keypoints","title":"概率的性质","items":[
-                        "$0\\\\leq P(A)\\\\leq 1$",
-                        "$P(\\\\Omega)=1$（必然事件的概率为 1）",
-                        "$P(\\\\varnothing)=0$（不可能事件的概率为 0）",
-                        "$P(\\\\overline{A})=1-P(A)$（对立事件）"
+                        "$0\\leq P(A)\\leq 1$",
+                        "$P(\\Omega)=1$（必然事件的概率为 1）",
+                        "$P(\\varnothing)=0$（不可能事件的概率为 0）",
+                        "$P(\\overline{A})=1-P(A)$（对立事件）"
                     ]},
                     {"type":"keypoints","title":"概率的运算","items":[
-                        "互斥事件：$P(A\\\\cup B)=P(A)+P(B)$",
-                        "任意事件：$P(A\\\\cup B)=P(A)+P(B)-P(A\\\\cap B)$",
-                        "独立事件：$P(A\\\\cap B)=P(A)\\\\cdot P(B)$",
-                        "条件概率：$P(B|A)=\\\\frac{P(A\\\\cap B)}{P(A)}$"
+                        "互斥事件：$P(A\\cup B)=P(A)+P(B)$",
+                        "任意事件：$P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$",
+                        "独立事件：$P(A\\cap B)=P(A)\\cdot P(B)$",
+                        "条件概率：$P(B|A)=\\frac{P(A\\cap B)}{P(A)}$"
                     ]},
                     {"type":"keypoints","title":"常见分布","items":[
                         "两点分布（伯努利）：只有两个结果",
-                        "二项分布：$n$ 次独立重复试验（$X\\\\sim B(n,p)$）",
-                        "正态分布：钟形曲线（$X\\\\sim N(\\\\mu,\\\\sigma^2)$）"
+                        "二项分布：$n$ 次独立重复试验（$X\\sim B(n,p)$）",
+                        "正态分布：钟形曲线（$X\\sim N(\\mu,\\sigma^2)$）"
                     ]},
                     {"type":"example","title":"示例","items":[
                         {"question":"抛两枚硬币，至少一个正面的概率","steps":["全部可能：{正正,正反,反正,反反} 4 种","至少一个正面：{正正,正反,反正} 3 种","P=3/4"],"answer":"0.75"}
@@ -171,11 +171,11 @@ public class DomainCombinatoricsSeeder {
                 {"sections":[
                     {"type":"definition","title":"定义","content":"统计是收集、整理、分析数据的科学，用于从部分推断整体。"},
                     {"type":"keypoints","title":"描述统计","items":[
-                        "均值（平均数）：$\\\\overline{x}=\\\\frac{1}{n}\\\\sum_{i=1}^n x_i$",
+                        "均值（平均数）：$\\overline{x}=\\frac{1}{n}\\sum_{i=1}^n x_i$",
                         "中位数：数据排序后中间位置的数",
                         "众数：出现频率最高的数",
-                        "方差：$\\\\sigma^2=\\\\frac{1}{n}\\\\sum(x_i-\\\\overline{x})^2$",
-                        "标准差：$\\\\sigma=\\\\sqrt{\\\\sigma^2}$"
+                        "方差：$\\sigma^2=\\frac{1}{n}\\sum(x_i-\\overline{x})^2$",
+                        "标准差：$\\sigma=\\sqrt{\\sigma^2}$"
                     ]},
                     {"type":"keypoints","title":"抽样方法","items":[
                         "简单随机抽样：每个个体等概率被抽中",

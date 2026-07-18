@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Tag } from 'antd';
-import { DOMAIN_COLORS } from '@/types';
+import { DOMAIN_COLORS, SUBJECT_LABELS } from '@/types';
 import type { KnowledgeNode } from '@/types';
 import { renderFormula } from '@/utils/renderFormula';
 
@@ -34,7 +34,7 @@ export default function KnowledgeCard({ node }: Props) {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <Tag color={DOMAIN_COLORS[node.domain] || '#94a3b8'} style={{ fontSize: 11, margin: 0 }}>
-          {node.domain}
+          {SUBJECT_LABELS[node.subject] || node.subject} · {node.domain}
         </Tag>
         <Tag color={node.level === '初中' ? 'green' : 'orange'} style={{ fontSize: 11, margin: 0 }}>
           {node.level}

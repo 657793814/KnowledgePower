@@ -117,8 +117,6 @@ router.get('/paper/:paperId', async (req, res, next) => {
   }
 });
 
-// ========== 自由练习 ==========
-
 router.get('/random', async (req, res, next) => {
   try {
     const { subject, domain, level, count = '10' } = req.query;
@@ -187,6 +185,39 @@ router.get('/stats', requireAuth, async (req, res, next) => {
     const { subject } = req.query;
     const stats = await examService.getStats(req.user!.userId, subject as string | undefined);
     ok(res, stats);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ========== 模型专题训练 ==========
+
+router.get('/model-train', async (req, res, next) => {
+  try {
+    const { nodeId, count = '5' } = req.query;
+    if (!nodeId) {
+      fail(res, 400, '缺少 nodeId 参数');
+      return;
+    }
+    const cnt = Math.max(1, Math.min(50, parseInt(count as string, 10)));
+    const nodeStr = String(nodeId);
+
+    // 只取模型自身节点的题目（不取关联节点）
+    const questions = await prisma.examQuestion.findMany({
+      where: {
+        nodeId: nodeStr,
+        deleted: 0,
+        status: 1,
+      },
+      select: {
+        id: true, nodeId: true, tags: true,
+        difficulty: true, questionType: true,
+        title: true, answer: true, options: true, explanation: true,
+      },
+      take: cnt,
+    });
+
+    ok(res, questions);
   } catch (e) {
     next(e);
   }

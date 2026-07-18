@@ -97,6 +97,7 @@ export interface ExamQuestionVO {
   difficulty: number;
   title: string;
   options?: string;  // JSON string
+  answer: string;
   explanation?: string;
   tags?: string;
 }

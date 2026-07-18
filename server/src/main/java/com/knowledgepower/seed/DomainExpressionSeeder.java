@@ -37,7 +37,7 @@ public class DomainExpressionSeeder {
                 {
                     "text": "整式是代数式的基本形式，由单项式和多项式组成。",
                     "sections": [
-                        {"type": "definition", "title": "整式定义", "content": "整式是只包含加法、减法、乘法和正整数指数幂的代数式。$2x+3$ 是整式，$\\\\frac{1}{x}$ 不是整式。"},
+                        {"type": "definition", "title": "整式定义", "content": "整式是只包含加法、减法、乘法和正整数指数幂的代数式。$2x+3$ 是整式，$\\frac{1}{x}$ 不是整式。"},
                         {"type": "keypoints", "title": "单项式", "items": [
                             "系数 × 字母的幂的乘积，如 $3x^2y$",
                             "系数：数字部分（3）",
@@ -77,7 +77,7 @@ public class DomainExpressionSeeder {
                         ]},
                         {"type": "example", "title": "示例", "items": [
                             {"question": "计算 $(3x^2+2x-1)+(x^2-3x+4)$", "steps": ["去括号：$3x^2+2x-1+x^2-3x+4$", "合并同类项：$(3+1)x^2+(2-3)x+(-1+4)$", "=$4x^2-x+3$"], "answer": "$4x^2-x+3$"},
-                            {"question": "计算 $(2x+1)(x-3)$", "steps": ["分配：$2x\\\\cdot x + 2x\\\\cdot(-3) + 1\\\\cdot x + 1\\\\cdot(-3)$", "=$2x^2-6x+x-3$", "=$2x^2-5x-3$"], "answer": "$2x^2-5x-3$"}
+                            {"question": "计算 $(2x+1)(x-3)$", "steps": ["分配：$2x\\cdot x + 2x\\cdot(-3) + 1\\cdot x + 1\\cdot(-3)$", "=$2x^2-6x+x-3$", "=$2x^2-5x-3$"], "answer": "$2x^2-5x-3$"}
                         ]}
                     ]
                 }
@@ -97,13 +97,13 @@ public class DomainExpressionSeeder {
                         {"type": "keypoints", "title": "四种方法", "items": [
                             "① 提取公因式法：$ma+mb+mc=m(a+b+c)$",
                             "② 公式法（平方差）：$a^2-b^2=(a+b)(a-b)$",
-                            "③ 公式法（完全平方）：$a^2\\\\pm2ab+b^2=(a\\\\pm b)^2$",
+                            "③ 公式法（完全平方）：$a^2\\pm2ab+b^2=(a\\pm b)^2$",
                             "④ 十字相乘法：$x^2+(p+q)x+pq=(x+p)(x+q)$"
                         ]},
                         {"type": "example", "title": "示例", "items": [
                             {"question": "因式分解 $6x^2y+9xy^2$", "steps": ["公因式：$3xy$", "=$3xy(2x+3y)$"], "answer": "$3xy(2x+3y)$"},
                             {"question": "因式分解 $x^2-5x+6$", "steps": ["找两个数积=6，和=-5：-2和-3", "=$(x-2)(x-3)$"], "answer": "$(x-2)(x-3)$"},
-                            {"question": "因式分解 $4x^2-12x+9$", "steps": ["=$ (2x)^2-2\\\\cdot2x\\\\cdot3+3^2$", "=$(2x-3)^2$"], "answer": "$(2x-3)^2$"}
+                            {"question": "因式分解 $4x^2-12x+9$", "steps": ["=$ (2x)^2-2\\cdot2x\\cdot3+3^2$", "=$(2x-3)^2$"], "answer": "$(2x-3)^2$"}
                         ]}
                     ]
                 }
@@ -119,10 +119,10 @@ public class DomainExpressionSeeder {
                 {
                     "text": "分式是两个整式的比值，核心约束是分母不为零。",
                     "sections": [
-                        {"type": "definition", "title": "分式定义", "content": "形如 $\\\\frac{A}{B}$（$B$ 含字母且 $B\\\\neq 0$）的式子叫分式。如 $\\\\frac{1}{x}$、$\\\\frac{x+1}{x-2}$"},
+                        {"type": "definition", "title": "分式定义", "content": "形如 $\\frac{A}{B}$（$B$ 含字母且 $B\\neq 0$）的式子叫分式。如 $\\frac{1}{x}$、$\\frac{x+1}{x-2}$"},
                         {"type": "keypoints", "title": "分式基本性质", "items": [
                             "分子分母同乘（或同除）一个不为零的整式，分式的值不变",
-                            "$\\\\frac{A}{B}=\\\\frac{A\\\\times C}{B\\\\times C}$（$C\\\\neq 0$）",
+                            "$\\frac{A}{B}=\\frac{A\\times C}{B\\times C}$（$C\\neq 0$）",
                             "约分：分子分母同除公因式",
                             "通分：取各分母的最简公分母"
                         ]},
@@ -133,8 +133,8 @@ public class DomainExpressionSeeder {
                             "结果必须化为最简分式"
                         ]},
                         {"type": "example", "title": "示例", "items": [
-                            {"question": "化简 $\\\\frac{x^2-1}{x^2+2x+1}$", "steps": ["分子：$x^2-1=(x+1)(x-1)$", "分母：$x^2+2x+1=(x+1)^2$", "原式=$\\\\frac{(x+1)(x-1)}{(x+1)^2}=\\\\frac{x-1}{x+1}$"], "answer": "$\\\\frac{x-1}{x+1}$"},
-                            {"question": "计算 $\\\\frac{1}{x-1}+\\\\frac{1}{x+1}$", "steps": ["通分：$\\\\frac{x+1}{(x-1)(x+1)}+\\\\frac{x-1}{(x-1)(x+1)}$", "=$\\\\frac{2x}{x^2-1}$"], "answer": "$\\\\frac{2x}{x^2-1}$"}
+                            {"question": "化简 $\\frac{x^2-1}{x^2+2x+1}$", "steps": ["分子：$x^2-1=(x+1)(x-1)$", "分母：$x^2+2x+1=(x+1)^2$", "原式=$\\frac{(x+1)(x-1)}{(x+1)^2}=\\frac{x-1}{x+1}$"], "answer": "$\\frac{x-1}{x+1}$"},
+                            {"question": "计算 $\\frac{1}{x-1}+\\frac{1}{x+1}$", "steps": ["通分：$\\frac{x+1}{(x-1)(x+1)}+\\frac{x-1}{(x-1)(x+1)}$", "=$\\frac{2x}{x^2-1}$"], "answer": "$\\frac{2x}{x^2-1}$"}
                         ]}
                     ]
                 }
@@ -145,27 +145,27 @@ public class DomainExpressionSeeder {
                 .id("MATH-02-005").title("根式").subtitle("平方根与立方根")
                 .domain("式").level("初中").difficulty(2).sortOrder(410)
                 .visualType("static").milestoneType(null)
-                .summary("根式是开方运算的产物：$\\\\sqrt{a}$ 表示 a 的平方根，$\\\\sqrt[3]{a}$ 表示立方根")
+                .summary("根式是开方运算的产物：$\\sqrt{a}$ 表示 a 的平方根，$\\sqrt[3]{a}$ 表示立方根")
                 .contentJson("""
                 {
                     "text": "根式计算和化简是中学代数的基本功。",
                     "sections": [
-                        {"type": "definition", "title": "定义", "content": "如果 $x^n=a$（$n$ 为正整数），则 $x$ 是 $a$ 的 $n$ 次方根。写为 $x=\\\\sqrt[n]{a}$。"},
+                        {"type": "definition", "title": "定义", "content": "如果 $x^n=a$（$n$ 为正整数），则 $x$ 是 $a$ 的 $n$ 次方根。写为 $x=\\sqrt[n]{a}$。"},
                         {"type": "keypoints", "title": "根式的性质", "items": [
-                            "$(\\\\sqrt{a})^2 = a$（$a\\\\geq 0$）",
-                            "$\\\\sqrt{a^2}=|a|$（注意绝对值！）",
-                            "$\\\\sqrt{ab}=\\\\sqrt{a}\\\\cdot\\\\sqrt{b}$（$a,b\\\\geq 0$）",
-                            "$\\\\sqrt{\\\\frac{a}{b}}=\\\\frac{\\\\sqrt{a}}{\\\\sqrt{b}}$（$a\\\\geq 0,b>0$）",
+                            "$(\\sqrt{a})^2 = a$（$a\\geq 0$）",
+                            "$\\sqrt{a^2}=|a|$（注意绝对值！）",
+                            "$\\sqrt{ab}=\\sqrt{a}\\cdot\\sqrt{b}$（$a,b\\geq 0$）",
+                            "$\\sqrt{\\frac{a}{b}}=\\frac{\\sqrt{a}}{\\sqrt{b}}$（$a\\geq 0,b>0$）",
                             "最简根式：被开方数不含开得尽的因数和分母"
                         ]},
                         {"type": "keypoints", "title": "分母有理化", "items": [
                             "把分母中的根号去掉",
-                            "$\\\\frac{1}{\\\\sqrt{a}}=\\\\frac{\\\\sqrt{a}}{a}$",
-                            "$\\\\frac{1}{\\\\sqrt{a}+\\\\sqrt{b}}=\\\\frac{\\\\sqrt{a}-\\\\sqrt{b}}{a-b}$（共轭法）"
+                            "$\\frac{1}{\\sqrt{a}}=\\frac{\\sqrt{a}}{a}$",
+                            "$\\frac{1}{\\sqrt{a}+\\sqrt{b}}=\\frac{\\sqrt{a}-\\sqrt{b}}{a-b}$（共轭法）"
                         ]},
                         {"type": "example", "title": "示例", "items": [
-                            {"question": "化简 $\\\\sqrt{50}$", "steps": ["$\\\\sqrt{50}=\\\\sqrt{25\\\\times 2}$", "$=5\\\\sqrt{2}$"], "answer": "$5\\\\sqrt{2}$"},
-                            {"question": "有理化 $\\\\frac{2}{\\\\sqrt{3}-1}$", "steps": ["$\\\\frac{2(\\\\sqrt{3}+1)}{(\\\\sqrt{3}-1)(\\\\sqrt{3}+1)}$", "=$\\\\frac{2(\\\\sqrt{3}+1)}{3-1}$", "=$\\\\sqrt{3}+1$"], "answer": "$\\\\sqrt{3}+1$"}
+                            {"question": "化简 $\\sqrt{50}$", "steps": ["$\\sqrt{50}=\\sqrt{25\\times 2}$", "$=5\\sqrt{2}$"], "answer": "$5\\sqrt{2}$"},
+                            {"question": "有理化 $\\frac{2}{\\sqrt{3}-1}$", "steps": ["$\\frac{2(\\sqrt{3}+1)}{(\\sqrt{3}-1)(\\sqrt{3}+1)}$", "=$\\frac{2(\\sqrt{3}+1)}{3-1}$", "=$\\sqrt{3}+1$"], "answer": "$\\sqrt{3}+1$"}
                         ]}
                     ]
                 }
@@ -176,28 +176,28 @@ public class DomainExpressionSeeder {
                 .id("MATH-02-006").title("指数式").subtitle("a^n 与科学记数法")
                 .domain("式").level("初中").difficulty(2).sortOrder(510)
                 .visualType("static").milestoneType(null)
-                .summary("指数是乘方的简写：$a^n=a\\\\times a\\\\times\\\\cdots\\\\times a$（n个a相乘）")
+                .summary("指数是乘方的简写：$a^n=a\\times a\\times\\cdots\\times a$（n个a相乘）")
                 .contentJson("""
                 {
                     "text": "从整数指数到分数指数，指数不断扩展。",
                     "sections": [
                         {"type": "definition", "title": "指数定义", "content": "$a^n$（$n$ 为正整数）表示 $n$ 个 $a$ 相乘。$a$ 为底数，$n$ 为指数。"},
                         {"type": "keypoints", "title": "指数律（同底数幂）", "items": [
-                            "$a^m \\\\cdot a^n = a^{m+n}$（同底数幂相乘）",
-                            "$a^m \\\\div a^n = a^{m-n}$（$a\\\\neq 0$）",
+                            "$a^m \\cdot a^n = a^{m+n}$（同底数幂相乘）",
+                            "$a^m \\div a^n = a^{m-n}$（$a\\neq 0$）",
                             "$(a^m)^n = a^{mn}$（幂的乘方）",
                             "$(ab)^n = a^n b^n$（积的乘方）",
-                            "$a^0 = 1$（$a\\\\neq 0$）",
-                            "$a^{-n} = \\\\frac{1}{a^n}$（$a\\\\neq 0$）"
+                            "$a^0 = 1$（$a\\neq 0$）",
+                            "$a^{-n} = \\frac{1}{a^n}$（$a\\neq 0$）"
                         ]},
                         {"type": "keypoints", "title": "科学记数法", "items": [
-                            "将一个数写成 $a\\\\times 10^n$（$1\\\\leq |a| < 10$）",
-                            "大数：$1230000 = 1.23\\\\times 10^6$",
-                            "小数：$0.000045 = 4.5\\\\times 10^{-5}$"
+                            "将一个数写成 $a\\times 10^n$（$1\\leq |a| < 10$）",
+                            "大数：$1230000 = 1.23\\times 10^6$",
+                            "小数：$0.000045 = 4.5\\times 10^{-5}$"
                         ]},
                         {"type": "example", "title": "示例", "items": [
-                            {"question": "计算 $2^3 \\\\times 2^4$", "steps": ["同底数幂相乘，指数相加", "$=2^{3+4}=2^7=128$"], "answer": "$128$"},
-                            {"question": "计算 $(x^2y^3)^2 \\\\div (xy)^3$", "steps": ["$(x^4y^6)\\\\div(x^3y^3)$", "$=x^{4-3}y^{6-3}=xy^3$"], "answer": "$xy^3$"}
+                            {"question": "计算 $2^3 \\times 2^4$", "steps": ["同底数幂相乘，指数相加", "$=2^{3+4}=2^7=128$"], "answer": "$128$"},
+                            {"question": "计算 $(x^2y^3)^2 \\div (xy)^3$", "steps": ["$(x^4y^6)\\div(x^3y^3)$", "$=x^{4-3}y^{6-3}=xy^3$"], "answer": "$xy^3$"}
                         ]}
                     ]
                 }
@@ -208,27 +208,27 @@ public class DomainExpressionSeeder {
                 .id("MATH-02-007").title("对数式").subtitle("log 的诞生")
                 .domain("式").level("高中").difficulty(3).sortOrder(610)
                 .visualType("static").milestoneType(null)
-                .summary("对数是幂的逆运算：$\\\\log_a b = c \\\\iff a^c = b$")
+                .summary("对数是幂的逆运算：$\\log_a b = c \\iff a^c = b$")
                 .contentJson("""
                 {
                     "text": "对数是指数的逆运算，把乘方变成加减法，大大简化计算。",
                     "sections": [
-                        {"type": "definition", "title": "对数定义", "content": "如果 $a^c=b$（$a>0,a\\\\neq 1,b>0$），则称 $c$ 是以 $a$ 为底 $b$ 的对数，记作 $\\\\log_a b = c$。"},
+                        {"type": "definition", "title": "对数定义", "content": "如果 $a^c=b$（$a>0,a\\neq 1,b>0$），则称 $c$ 是以 $a$ 为底 $b$ 的对数，记作 $\\log_a b = c$。"},
                         {"type": "keypoints", "title": "对数律", "items": [
-                            "$\\\\log_a a = 1$，$\\\\log_a 1 = 0$",
-                            "$\\\\log_a(MN) = \\\\log_a M + \\\\log_a N$（乘变加）",
-                            "$\\\\log_a\\\\frac{M}{N} = \\\\log_a M - \\\\log_a N$（除变减）",
-                            "$\\\\log_a M^n = n\\\\log_a M$（指变乘）",
-                            "$\\\\log_a b = \\\\frac{\\\\log_c b}{\\\\log_c a}$（换底公式）"
+                            "$\\log_a a = 1$，$\\log_a 1 = 0$",
+                            "$\\log_a(MN) = \\log_a M + \\log_a N$（乘变加）",
+                            "$\\log_a\\frac{M}{N} = \\log_a M - \\log_a N$（除变减）",
+                            "$\\log_a M^n = n\\log_a M$（指变乘）",
+                            "$\\log_a b = \\frac{\\log_c b}{\\log_c a}$（换底公式）"
                         ]},
                         {"type": "keypoints", "title": "常用对数与自然对数", "items": [
-                            "$\\\\lg x = \\\\log_{10} x$（常用对数）",
-                            "$\\\\ln x = \\\\log_e x$（自然对数，$e\\\\approx 2.718$）",
-                            "$\\\\log_a b = \\\\frac{\\\\lg b}{\\\\lg a}$（换底为常用对数）"
+                            "$\\lg x = \\log_{10} x$（常用对数）",
+                            "$\\ln x = \\log_e x$（自然对数，$e\\approx 2.718$）",
+                            "$\\log_a b = \\frac{\\lg b}{\\lg a}$（换底为常用对数）"
                         ]},
                         {"type": "example", "title": "示例", "items": [
-                            {"question": "计算 $\\\\log_2 8 + \\\\log_2 4$", "steps": ["$\\\\log_2 8=3$（因为 $2^3=8$）", "$\\\\log_2 4=2$（因为 $2^2=4$）", "=$3+2=5$"], "answer": "$5$"},
-                            {"question": "用对数律化简 $\\\\lg\\\\frac{100x}{y^2}$", "steps": ["$=\\\\lg 100 + \\\\lg x - \\\\lg y^2$", "$=2 + \\\\lg x - 2\\\\lg y$"], "answer": "$2 + \\\\lg x - 2\\\\lg y$"}
+                            {"question": "计算 $\\log_2 8 + \\log_2 4$", "steps": ["$\\log_2 8=3$（因为 $2^3=8$）", "$\\log_2 4=2$（因为 $2^2=4$）", "=$3+2=5$"], "answer": "$5$"},
+                            {"question": "用对数律化简 $\\lg\\frac{100x}{y^2}$", "steps": ["$=\\lg 100 + \\lg x - \\lg y^2$", "$=2 + \\lg x - 2\\lg y$"], "answer": "$2 + \\lg x - 2\\lg y$"}
                         ]}
                     ]
                 }
@@ -256,8 +256,8 @@ public class DomainExpressionSeeder {
                         {"type": "keypoints", "title": "易错点", "items": [
                             "因式分解要分解到不能再分为止",
                             "分式方程必须验根（分母不能为零）",
-                            "$\\\\sqrt{a^2}=|a|$ 不是 $a$",
-                            "$\\\\log_a(MN) \\\\neq \\\\log_a M \\\\cdot \\\\log_a N$"
+                            "$\\sqrt{a^2}=|a|$ 不是 $a$",
+                            "$\\log_a(MN) \\neq \\log_a M \\cdot \\log_a N$"
                         ]}
                     ]
                 }

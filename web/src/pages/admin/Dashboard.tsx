@@ -99,7 +99,7 @@ export default function AdminDashboard() {
       dataIndex: 'domain',
       key: 'domain',
       width: 100,
-      render: (d: string) => <Tag color={DOMAIN_COLORS[d]}>{d}</Tag>,
+      render: (d: string, record: KnowledgeNode) => <Tag color={DOMAIN_COLORS[d]}>{SUBJECT_LABELS[record.subject] || record.subject} · {d}</Tag>,
     },
     {
       title: '层级',

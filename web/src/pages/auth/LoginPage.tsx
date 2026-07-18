@@ -5,7 +5,6 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { login } from '@/api/auth';
 import { useAuth } from '@/components/Auth/AuthProvider';
 
-// 星空粒子参数
 const STAR_COUNT = 120;
 const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
   id: i,
@@ -17,12 +16,7 @@ const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
   delay: Math.random() * 5,
 }));
 
-// 流星
-const METEOR = {
-  top: 12,
-  left: 60,
-  delay: 5,
-};
+const METEOR = { top: 12, left: 60, delay: 5 };
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -30,10 +24,8 @@ export default function LoginPage() {
   const location = useLocation();
   const { loginSuccess } = useAuth();
   const cardRef = useRef<HTMLDivElement>(null);
-
   const from = (location.state as any)?.from?.pathname || '/';
 
-  // 鼠标追踪 → 卡片 3D 倾斜
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -53,7 +45,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const result = await login(values.username, values.password);
-      loginSuccess(result.token, result.user as { id: number; username: string; nickname: string | null; avatar: string | null; role: 'admin' | 'user' | 'guest' });
+      loginSuccess(result.token, result.user as any);
       message.success(`欢迎回来，${result.user.nickname || result.user.username}！`);
       navigate(from, { replace: true });
     } catch (e: any) {
@@ -91,89 +83,44 @@ export default function LoginPage() {
           0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.06; }
           50% { transform: translate(-30px, 40px) scale(1.15); opacity: 0.12; }
         }
-        .login-star {
-          position: absolute;
-          border-radius: 50%;
-          background: #fff;
-          animation: twinkle var(--duration) ease-in-out infinite;
-          animation-delay: var(--delay);
+        .login-star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--duration) ease-in-out infinite; animation-delay: var(--delay); }
+        .login-meteor { position: absolute; width: 120px; height: 1.5px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.7)); transform: rotate(35deg); animation: meteor 2s linear infinite; animation-delay: var(--delay); }
+        .login-card { transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1); will-change: transform; }
+        .login-card:hover { box-shadow: 0 20px 80px rgba(99,102,241,0.2), 0 0 120px rgba(99,102,241,0.08) !important; }
+        /* ⭐ 输入框样式修复：白色字体 + 白色边框 */
+        .login-input { color: #ffffff !important; }
+        .login-input::placeholder { color: rgba(255,255,255,0.35) !important; }
+        .login-input:-webkit-autofill,
+        .login-input:-webkit-autofill:hover,
+        .login-input:-webkit-autofill:focus {
+          -webkit-text-fill-color: #ffffff !important;
+          -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.06) inset !important;
+          caret-color: #ffffff !important;
         }
-        .login-meteor {
-          position: absolute;
-          width: 120px; height: 1.5px;
-          background: linear-gradient(to right, transparent, rgba(255,255,255,0.7));
-          transform: rotate(35deg);
-          animation: meteor 2s linear infinite;
-          animation-delay: var(--delay);
-        }
-        .login-card {
-          transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
-          will-change: transform;
-        }
-        .login-card:hover {
-          box-shadow: 0 20px 80px rgba(99,102,241,0.2), 0 0 120px rgba(99,102,241,0.08) !important;
+        /* Ant Design Input.Password 内部 input */
+        .ant-input-affix-wrapper .ant-input { color: #ffffff !important; }
+        .ant-input-affix-wrapper .ant-input::placeholder { color: rgba(255,255,255,0.35) !important; }
+        .ant-input-affix-wrapper { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.10) !important; }
+        .ant-input-affix-wrapper:hover, .ant-input-affix-wrapper-focused {
+          border-color: rgba(99,102,241,0.5) !important;
+          box-shadow: 0 0 12px rgba(99,102,241,0.1) !important;
         }
       `}</style>
 
       {/* 星云层 */}
-      <div style={{
-        position: 'absolute', width: 700, height: 700, borderRadius: '50%',
-        top: '5%', left: '-5%',
-        background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)',
-        animation: 'nebula1 20s ease-in-out infinite',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', width: 500, height: 500, borderRadius: '50%',
-        bottom: '5%', right: '3%',
-        background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 65%)',
-        animation: 'nebula2 25s ease-in-out infinite',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', width: 400, height: 400, borderRadius: '50%',
-        top: '40%', left: '50%',
-        background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)',
-        animation: 'nebula1 18s ease-in-out infinite 8s',
-        pointerEvents: 'none',
-      }} />
+      <div style={{ position: 'absolute', width: 700, height: 700, borderRadius: '50%', top: '5%', left: '-5%', background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)', animation: 'nebula1 20s ease-in-out infinite', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', bottom: '5%', right: '3%', background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 65%)', animation: 'nebula2 25s ease-in-out infinite', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', top: '40%', left: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)', animation: 'nebula1 18s ease-in-out infinite 8s', pointerEvents: 'none' }} />
 
       {/* 星星 */}
       {STARS.map(s => (
-        <div
-          key={s.id}
-          className="login-star"
-          style={{
-            left: `${s.x}%`, top: `${s.y}%`,
-            width: s.size, height: s.size,
-            opacity: s.opacity,
-            '--duration': `${s.duration}s`,
-            '--delay': `${s.delay}s`,
-          } as React.CSSProperties}
-        />
+        <div key={s.id} className="login-star" style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size, opacity: s.opacity, '--duration': `${s.duration}s`, '--delay': `${s.delay}s` } as React.CSSProperties} />
       ))}
-
-      {/* 流星 */}
-      <div className="login-meteor" style={{
-        top: `${METEOR.top}%`, left: `${METEOR.left}%`,
-        '--delay': `${METEOR.delay}s`,
-      } as React.CSSProperties} />
+      <div className="login-meteor" style={{ top: `${METEOR.top}%`, left: `${METEOR.left}%`, '--delay': `${METEOR.delay}s` } as React.CSSProperties} />
 
       {/* 登录卡片 */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <div
-          ref={cardRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          className="login-card"
-          style={{
-            width: 400,
-            animation: 'fadeUp 0.8s ease-out',
-          }}
-        >
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div ref={cardRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="login-card" style={{ width: 400, animation: 'fadeUp 0.8s ease-out' }}>
           <Card style={{
             borderRadius: 20,
             background: 'rgba(255,255,255,0.04)',
@@ -192,8 +139,7 @@ export default function LoginPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 0 30px rgba(99,102,241,0.15)',
               }}>
-                <img src="/logo.png" alt="logo"
-                  style={{ width: 52, height: 52, borderRadius: 12 }} />
+                <img src="/logo.png" alt="logo" style={{ width: 52, height: 52, borderRadius: 12 }} />
               </div>
               <Typography.Title level={3} style={{
                 margin: 0,
@@ -204,8 +150,7 @@ export default function LoginPage() {
                 知识动力
               </Typography.Title>
               <Typography.Text style={{
-                color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 6, display: 'block',
-                letterSpacing: 4,
+                color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 6, display: 'block', letterSpacing: 4,
               }}>
                 探索知识的宇宙
               </Typography.Text>
@@ -217,11 +162,11 @@ export default function LoginPage() {
                 <Input
                   prefix={<UserOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />}
                   placeholder="用户名"
+                  className="login-input"
                   style={{
                     background: 'rgba(255,255,255,0.06)',
                     border: '1px solid rgba(255,255,255,0.10)',
                     borderRadius: 12,
-                    color: '#fff',
                     height: 48,
                   }}
                 />
@@ -230,11 +175,11 @@ export default function LoginPage() {
                 <Input.Password
                   prefix={<LockOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />}
                   placeholder="密码"
+                  className="login-input"
                   style={{
                     background: 'rgba(255,255,255,0.06)',
                     border: '1px solid rgba(255,255,255,0.10)',
                     borderRadius: 12,
-                    color: '#fff',
                     height: 48,
                   }}
                 />
@@ -257,7 +202,6 @@ export default function LoginPage() {
               </Form.Item>
             </Form>
 
-            {/* 返回链接 */}
             <div style={{ textAlign: 'center', paddingBottom: 4 }}>
               <Link to="/" style={{
                 color: 'rgba(255,255,255,0.25)', fontSize: 13,
@@ -273,12 +217,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* 版本号 */}
-      <div style={{
-        position: 'absolute', bottom: '2%', right: '3%',
-        color: 'rgba(255,255,255,0.05)', fontSize: 10, letterSpacing: 2,
-        pointerEvents: 'none',
-      }}>
+      <div style={{ position: 'absolute', bottom: '2%', right: '3%', color: 'rgba(255,255,255,0.04)', fontSize: 9, letterSpacing: 2, pointerEvents: 'none' }}>
         KnowledgePower v0.1
       </div>
     </div>

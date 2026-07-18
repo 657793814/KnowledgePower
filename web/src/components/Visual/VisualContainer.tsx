@@ -12,6 +12,10 @@ import MoleculeView from './molecule-view/MoleculeView';
 import OpticsDemo from './optics-demo/OpticsDemo';
 import CirclePower from './circle-power/CirclePower';
 import ProbabilitySim from './probability-sim/ProbabilitySim';
+import PathOptimization from './path-optimization/PathOptimization';
+import HandInHand from './hand-in-hand/HandInHand';
+import CircularMotion from './circular-motion/CircularMotion';
+import ParticleDeflection from './particle-deflection/ParticleDeflection';
 
 interface Props {
   visualType?: string;
@@ -35,6 +39,10 @@ const visualRegistry: Record<string, React.FC<any>> = {
   'optics-demo': OpticsDemo,
   'circle-power': CirclePower,
   'probability-sim': ProbabilitySim,
+  'path-optimization': PathOptimization,
+  'hand-in-hand': HandInHand,
+  'circular-motion': CircularMotion,
+  'particle-deflection': ParticleDeflection,
 };
 
 /** 互动演示容器 — 根据配置自动选择对应演示组件 */

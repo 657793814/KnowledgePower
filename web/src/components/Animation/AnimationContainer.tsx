@@ -19,6 +19,7 @@ import EquationSolve from './animations/EquationSolve';
 import NumberExpansion from './animations/NumberExpansion';
 import FreeFall from './animations/FreeFall';
 import EquationBalance from './animations/EquationBalance';
+import GeneralHorseDrinking from './animations/GeneralHorseDrinking';
 import ComplexPlane from '@/components/Visual/complex-plane/ComplexPlane';
 
 /** 动画组件注册表 */
@@ -28,6 +29,7 @@ export const animationRegistry: Record<string, React.FC<any>> = {
   'number-expansion': NumberExpansion,
   'free-fall': FreeFall,
   'equation-balance': EquationBalance,
+  'general-horse-drinking': GeneralHorseDrinking,
   'complex-rotation': ComplexPlane,
   'complex-plane-draggable': ComplexPlane,
 };
@@ -58,6 +60,9 @@ export const NODE_ANIMATION_MAP: Record<string, string> = {
   // 函数
   'MATH-04-004': 'function-shift',     // 二次函数 → 平移动画
   'MATH-04-005': 'function-shift',     // 函数的变换
+
+  // 几何模型
+  'MATH-05-016': 'general-horse-drinking',  // 将军饮马模型（13种题型动画演示）
 };
 
 /** 题目→动画映射（部分题目可以关联动画演示） */

@@ -34,3 +34,8 @@ export const removeFromWrongBook = (questionId: number) =>
 /** 标记错题已复习 */
 export const markReviewed = (questionId: number) =>
   request.post(`/exam/wrong-book/${questionId}/review`);
+
+/** 获取模型专题训练题目 */
+export const fetchModelTrainQuestions = (nodeId: string, count = 5) =>
+  request.get<ExamQuestionVO[]>('/exam/model-train', { params: { nodeId, count } })
+    .then(r => r.data);

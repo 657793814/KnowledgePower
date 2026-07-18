@@ -28,8 +28,8 @@ export const fetchKnowledgeList = (params: {
   .then(r => r.data);
 
 /** 搜索知识点 */
-export const searchKnowledge = (q: string, subject?: string) =>
-  request.get<KnowledgeNode[]>('/knowledge/search', { params: { q, subject } })
+export const searchKnowledge = (q: string, subject?: string, page?: number, pageSize?: number) =>
+  request.get<{ items: KnowledgeNode[]; total: number; page: number; pageSize: number }>('/knowledge/search', { params: { q, subject, page, pageSize } })
     .then(r => r.data);
 
 /** 新增知识点 */

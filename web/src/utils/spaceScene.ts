@@ -1,5 +1,5 @@
 /**
- * 🚀 动漫级宇宙场景 — Canvas 渲染引擎 (v2)
+ * 🚀 动漫级宇宙场景 — Canvas 渲染引擎 (v3)
  * 
  * 视觉参考：君の名は。/ 天気の子 / すずめの戸締まり
  * 
@@ -10,6 +10,7 @@
  * - 流星（偶发拖尾）
  * - 光尘（悬浮微粒，浮游感）
  * - 渐变晕影 + 色调映射 + 辉光
+ * - 中心黑洞引力透镜（爱因斯坦环 + 星体拉扯放大）
  */
 
 // ─── 类型 ───
@@ -25,6 +26,8 @@ interface Star {
   x: number; y: number; z: number;
   size: number; brightness: number;
   twinkleSpeed: number; twinklePhase: number;
+  /** 原始坐标（用于透镜重计算） */
+  origX: number; origY: number; origZ: number;
 }
 
 interface NebulaCloud {
@@ -75,13 +78,96 @@ export class SpaceScene {
   private w = 0;
   private h = 0;
 
+  // ─── 引力透镜参数 ───
+  private lensActive = false;
+  private lensCx = 0;
+  private lensCy = 0;
+  /** 透镜强度（越大效果越强） */
+  private lensStrength = 0;
+
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
+  }
+
+  // ═══════════════════════════════════════════════
+  //  引力透镜控制
+  // ═══════════════════════════════════════════════
+
+  /** 设置或关闭中心黑洞引力透镜 */
+  setGravitationalLensing(active: boolean, strength = 0) {
+    this.lensActive = active;
+    this.lensCx = this.w / 2;
+    this.lensCy = this.h / 2;
+    this.lensStrength = active ? strength : 0;
+  }
+
+  /**
+   * 应用引力透镜：将屏幕坐标周围的星辰扭曲
+   * 模拟爱因斯坦环效果
+   */
+  private applyLens(sx: number, sy: number, size: number, brightness: number):
+    { sx: number; sy: number; sizeMult: number; brightMult: number } {
+    if (!this.lensActive || this.lensStrength <= 0) {
+      return { sx, sy, sizeMult: 1, brightMult: 1 };
+    }
+
+    const dx = sx - this.lensCx;
+    const dy = sy - this.lensCy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    // 透镜影响范围：10px ~ 400px
+    const minDist = 8;
+    const maxDist = 400;
+    if (dist < minDist || dist > maxDist) {
+      return { sx, sy, sizeMult: 1, brightMult: 1 };
+    }
+
+    // 爱因斯坦环半径 = sqrt(透镜强度)，在这附近产生最强烈扭曲
+    const ringRadius = Math.sqrt(this.lensStrength) * 20;
+
+    // 强度随距离衰减 — 在爱因斯坦环处最强
+    const distRatio = dist / ringRadius;
+    const lensForce = Math.exp(-Math.pow(distRatio - 1, 2) / 0.3) * 0.8
+      + Math.exp(-Math.pow(distRatio, 2) / 0.8) * 0.3;
+
+    // 偏移角度 — 产生切向扭曲（模拟旋转黑洞的 frame dragging）
+    const twistAngle = Math.sin(dist / 30 + this.time * 0.3) * 0.15;
+
+    // 径向位移：星体被向外推（形成环）
+    const displacement = lensForce * this.lensStrength * 0.08;
+    const dispFactor = displacement / Math.max(dist, 1);
+
+    // 切向偏移
+    const angle = Math.atan2(dy, dx) + twistAngle;
+
+    // 新位置 = 沿径向向外 + 切向偏移
+    const newDist = dist + displacement;
+    const radialFactor = newDist / dist;
+    let newSx = this.lensCx + dx * radialFactor;
+    let newSy = this.lensCy + dy * radialFactor;
+
+    // 再加一点切向扭曲
+    newSx += Math.cos(angle + Math.PI / 2) * lensForce * 6;
+    newSy += Math.sin(angle + Math.PI / 2) * lensForce * 6;
+
+    // 放大倍数：环处最大
+    const magnification = 1 + lensForce * 1.5;
+    // 亮度增加
+    const brightMult = 1 + lensForce * 1.2;
+
+    return {
+      sx: newSx,
+      sy: newSy,
+      sizeMult: magnification,
+      brightMult,
+    };
   }
 
   init(width: number, height: number, _dpr: number) {
     this.w = width;
     this.h = height;
+    this.lensCx = width / 2;
+    this.lensCy = height / 2;
     this.createStars();
     this.createNebula();
     this.createAurora();
@@ -92,6 +178,8 @@ export class SpaceScene {
   resize(width: number, height: number) {
     this.w = width;
     this.h = height;
+    this.lensCx = width / 2;
+    this.lensCy = height / 2;
     this.createStars();
     this.createMotes();
   }
@@ -103,10 +191,12 @@ export class SpaceScene {
   private createStars() {
     this.stars = [];
     for (let i = 0; i < STAR_COUNT; i++) {
+      const x = (Math.random() - 0.5) * 2.4;
+      const y = (Math.random() - 0.5) * 2.4;
+      const z = 0.5 + Math.random() * 3.5;
       this.stars.push({
-        x: (Math.random() - 0.5) * 2.4,
-        y: (Math.random() - 0.5) * 2.4,
-        z: 0.5 + Math.random() * 3.5,
+        x, y, z,
+        origX: x, origY: y, origZ: z,
         size: 0.3 + Math.random() * 2.0,
         brightness: 0.3 + Math.random() * 0.7,
         twinkleSpeed: 0.3 + Math.random() * 2.5,
@@ -126,20 +216,33 @@ export class SpaceScene {
 
       if (sx < -10 || sx > w + 10 || sy < -10 || sy > h + 10) continue;
 
+      // ─── 引力透镜 ───
+      const lensed = this.applyLens(sx, sy, star.size * depth, star.brightness);
+
+      const finalSx = lensed.sx;
+      const finalSy = lensed.sy;
+      const sizeMult = lensed.sizeMult;
+      const brightMult = lensed.brightMult;
+
+      // 裁剪超出屏幕的
+      if (finalSx < -20 || finalSx > w + 20 || finalSy < -20 || finalSy > h + 20) continue;
+
       const twinkle = Math.sin(this.time * star.twinkleSpeed + star.twinklePhase) * 0.5 + 0.5;
-      const alpha = star.brightness * (0.3 + twinkle * 0.7);
-      const size = star.size * depth;
+      const alpha = star.brightness * (0.3 + twinkle * 0.7) * brightMult;
+      const size = star.size * depth * sizeMult;
 
       // 小星星直接画点
       if (size < 0.6) {
         ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
-        ctx.fillRect(sx, sy, 1, 1);
+        ctx.fillRect(finalSx, finalSy, 1, 1);
         continue;
       }
 
       // 大星星带色彩变化
-      const warmShift = star.brightness > 0.7 ? 0.08 : star.brightness < 0.4 ? 0.58 : 0;
-      if (warmShift > 0 && size > 1.0) {
+      if (brightMult > 1.2 && size > 1.5) {
+        // 透镜放大区 — 带暖色光晕
+        ctx.fillStyle = `rgba(255, ${Math.round(230 + twinkle * 25)}, ${Math.round(200 - twinkle * 60)}, ${Math.min(1, alpha * 1.2)})`;
+      } else if (star.brightness > 0.7 && size > 1.0) {
         const warm = Math.min(1, twinkle * 1.5);
         ctx.fillStyle = `rgba(255, ${Math.round(230 + warm * 25)}, ${Math.round(220 - warm * 50)}, ${alpha * 0.9})`;
       } else if (star.brightness < 0.4 && size > 1.0) {
@@ -149,17 +252,29 @@ export class SpaceScene {
       }
 
       ctx.beginPath();
-      ctx.arc(sx, sy, size, 0, Math.PI * 2);
+      ctx.arc(finalSx, finalSy, size, 0, Math.PI * 2);
       ctx.fill();
 
       // 辉光
+      const glowSize = size * 5 * (brightMult > 1.2 ? brightMult : 1);
       if (size > 1.2 && alpha > 0.6) {
-        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, size * 5);
-        g.addColorStop(0, `rgba(255,255,255,${alpha * 0.25})`);
+        const g = ctx.createRadialGradient(finalSx, finalSy, 0, finalSx, finalSy, glowSize);
+        g.addColorStop(0, `rgba(255,255,255,${alpha * 0.25 * brightMult})`);
         g.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(sx, sy, size * 5, 0, Math.PI * 2);
+        ctx.arc(finalSx, finalSy, glowSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 透镜高亮标记 — 环上星星额外光晕
+      if (brightMult > 1.8) {
+        const ringGlow = ctx.createRadialGradient(finalSx, finalSy, 0, finalSx, finalSy, size * 12);
+        ringGlow.addColorStop(0, `rgba(200,220,255,${alpha * 0.15 * brightMult})`);
+        ringGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = ringGlow;
+        ctx.beginPath();
+        ctx.arc(finalSx, finalSy, size * 12, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -193,19 +308,15 @@ export class SpaceScene {
     ];
 
     const mainDefs = [
-      // 紫蓝主晕
       { x: 0.45, y: 0.3, rx: 0.25, ry: 0.18, stops: [
         [0, 'rgba(140,80,255,0.35)'], [0.3, 'rgba(100,50,200,0.20)'], [0.6, 'rgba(60,20,140,0.08)'], [1, 'transparent'],
       ]},
-      // 暖金晕
       { x: 0.55, y: 0.4, rx: 0.2, ry: 0.15, stops: [
         [0, 'rgba(255,180,60,0.30)'], [0.3, 'rgba(220,130,30,0.18)'], [0.7, 'rgba(180,80,10,0.05)'], [1, 'transparent'],
       ]},
-      // 翠绿晕
       { x: 0.35, y: 0.45, rx: 0.18, ry: 0.14, stops: [
         [0, 'rgba(60,220,160,0.28)'], [0.3, 'rgba(30,160,110,0.15)'], [0.6, 'rgba(10,100,70,0.06)'], [1, 'transparent'],
       ]},
-      // 粉紫晕
       { x: 0.7, y: 0.35, rx: 0.2, ry: 0.14, stops: [
         [0, 'rgba(220,100,200,0.25)'], [0.3, 'rgba(180,60,150,0.12)'], [0.7, 'rgba(120,30,100,0.04)'], [1, 'transparent'],
       ]},
@@ -251,8 +362,24 @@ export class SpaceScene {
       const rx = n.radiusX * w * (0.9 + Math.sin(this.time * 0.15 + n.phase) * 0.1);
       const ry = n.radiusY * h * (0.9 + Math.cos(this.time * 0.12 + n.phase) * 0.1);
 
+      // ─── 星云引力透镜效果 ───
+      let finalX = x;
+      let finalY = y;
+      if (this.lensActive && this.lensStrength > 0) {
+        const dx = x - this.lensCx;
+        const dy = y - this.lensCy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 20 && dist < this.lensStrength * 4) {
+          const lensForce = Math.exp(-dist / (this.lensStrength * 1.5)) * 0.4;
+          const displacement = lensForce * 60;
+          const factor = (dist + displacement) / dist;
+          finalX = this.lensCx + dx * factor;
+          finalY = this.lensCy + dy * factor;
+        }
+      }
+
       // 使用多层径向渐变实现动漫风格云团
-      const grad = ctx.createRadialGradient(x, y, 0, x, y, rx);
+      const grad = ctx.createRadialGradient(finalX, finalY, 0, finalX, finalY, rx);
       for (const stop of n.stops) {
         grad.addColorStop(stop.pos, stop.color.replace(/[\d.]+\)$/, m => {
           const opacity = parseFloat(m.replace(')', ''));
@@ -261,12 +388,12 @@ export class SpaceScene {
       }
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(x, y, rx, 0, Math.PI * 2);
+      ctx.arc(finalX, finalY, rx, 0, Math.PI * 2);
       ctx.fill();
 
-      // 第二层细调（小半径高亮度内核）
+      // 第二层细调
       if (n.stops.length >= 3 && parseFloat(n.stops[0].color.match(/[\d.]+$/)?.[0] || '0') > 0.2) {
-        const coreGrad = ctx.createRadialGradient(x, y, 0, x, y, rx * 0.3);
+        const coreGrad = ctx.createRadialGradient(finalX, finalY, 0, finalX, finalY, rx * 0.3);
         coreGrad.addColorStop(0, n.stops[0].color.replace(/[\d.]+\)$/, m => {
           const opacity = parseFloat(m.replace(')', ''));
           return `${opacity * 1.5 * n.opacity})`;
@@ -274,7 +401,7 @@ export class SpaceScene {
         coreGrad.addColorStop(1, 'transparent');
         ctx.fillStyle = coreGrad;
         ctx.beginPath();
-        ctx.arc(x, y, rx * 0.3, 0, Math.PI * 2);
+        ctx.arc(finalX, finalY, rx * 0.3, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -373,15 +500,29 @@ export class SpaceScene {
       const px = m.x * w;
       const py = m.y * h;
 
+      // ─── 光尘透镜 ───
+      let finalPx = px;
+      let finalPy = py;
+      if (this.lensActive && this.lensStrength > 0) {
+        const dx = px - this.lensCx;
+        const dy = py - this.lensCy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 10 && dist < 300) {
+          const lensForce = Math.exp(-dist / 150) * 0.5;
+          finalPx = this.lensCx + dx * (1 + lensForce * 0.3);
+          finalPy = this.lensCy + dy * (1 + lensForce * 0.3);
+        }
+      }
+
       ctx.fillStyle = `rgba(200, 180, 255, ${m.opacity})`;
       ctx.beginPath();
-      ctx.arc(px, py, m.size, 0, Math.PI * 2);
+      ctx.arc(finalPx, finalPy, m.size, 0, Math.PI * 2);
       ctx.fill();
 
       if (m.size > 0.8) {
         ctx.fillStyle = `rgba(200, 180, 255, ${m.opacity * 0.3})`;
         ctx.beginPath();
-        ctx.arc(px, py, m.size * 3, 0, Math.PI * 2);
+        ctx.arc(finalPx, finalPy, m.size * 3, 0, Math.PI * 2);
         ctx.fill();
       }
     }

@@ -5,7 +5,7 @@ import { PlayCircleOutlined, ReloadOutlined, RobotOutlined } from '@ant-design/i
 import { fetchRandomQuestions, submitAnswers } from '@/api/exam';
 import { aiExplain } from '@/api/ai';
 import type { ExamQuestionVO, ExamResultVO } from '@/types';
-import { DOMAIN_COLORS, SUBJECT_DOMAINS } from '@/types';
+import { DOMAIN_COLORS, SUBJECT_DOMAINS, SUBJECT_LABELS } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { useSubjectStore } from '@/store/subjectStore';
 import { renderFormula } from '@/utils/renderFormula';
@@ -206,7 +206,7 @@ export default function PracticePage() {
             <Card key={q.id} size="small" style={{ marginBottom: 12, borderLeft: `4px solid ${DOMAIN_COLORS[q.domain] || '#94a3b8'}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <Space size={4}>
-                  <Tag color={DOMAIN_COLORS[q.domain]}>{q.domain}</Tag>
+                  <Tag color={DOMAIN_COLORS[q.domain]}>{SUBJECT_LABELS[q.subject] || q.subject} · {q.domain}</Tag>
                   <Tag>{q.level}</Tag>
                   <Tag color="orange">{'★'.repeat(q.difficulty)}{'☆'.repeat(5 - q.difficulty)}</Tag>
                   <span style={{ fontSize: 12, color: '#94a3b8' }}>{q.nodeTitle}</span>

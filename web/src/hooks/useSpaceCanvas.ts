@@ -58,5 +58,5 @@ export function useSpaceCanvas(
     };
   }, [canvasRef]);
 
-  return {};
+  return { sceneRef };
 }

@@ -37,7 +37,7 @@ public class DomainSequenceSeeder {
                 .summary("数列是按一定次序排列的数，通项公式 aₙ 是核心")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"按一定次序排列的一列数叫数列，记作 $\\\\{a_n\\\\}$。$a_n$ 叫通项公式，表示第 $n$ 项的值。"},
+                    {"type":"definition","title":"定义","content":"按一定次序排列的一列数叫数列，记作 $\\{a_n\\}$。$a_n$ 叫通项公式，表示第 $n$ 项的值。"},
                     {"type":"keypoints","title":"分类","items":[
                         "有穷数列：项数有限",
                         "无穷数列：项数无限",
@@ -69,13 +69,13 @@ public class DomainSequenceSeeder {
                 {"sections":[
                     {"type":"definition","title":"定义","content":"从第 2 项起，每一项与它的前一项的差等于同一个常数 $d$（公差），这样的数列叫等差数列：$$a_n=a_1+(n-1)d$$"},
                     {"type":"keypoints","title":"求和公式","items":[
-                        "高斯求和：$S_n=\\\\\\frac{n(a_1+a_n)}{2}$",
-                        "一般形式：$S_n=na_1+\\\\\\frac{n(n-1)}{2}d$",
+                        "高斯求和：$S_n=\\frac{n(a_1+a_n)}{2}$",
+                        "一般形式：$S_n=na_1+\\frac{n(n-1)}{2}d$",
                         "高斯小时候：1+2+...+100=(1+100)×100/2=5050"
                     ]},
                     {"type":"keypoints","title":"等差中项","items":[
-                        "三个数成等差数列 $\\\\\\iff 2b=a+c$",
-                        "等差数列中：$a_n=\\\\\\frac{a_{n-1}+a_{n+1}}{2}$",
+                        "三个数成等差数列 $\\iff 2b=a+c$",
+                        "等差数列中：$a_n=\\frac{a_{n-1}+a_{n+1}}{2}$",
                         "等差数列中任意连续三项都成等差"
                     ]},
                     {"type":"example","title":"示例","items":[
@@ -93,13 +93,13 @@ public class DomainSequenceSeeder {
                 {"sections":[
                     {"type":"definition","title":"定义","content":"从第 2 项起，每一项与它的前一项的比等于同一个常数 $q$（公比），这样的数列叫等比数列：$$a_n=a_1 q^{n-1}$$"},
                     {"type":"keypoints","title":"求和公式","items":[
-                        "$q\\\\\\neq1$ 时：$S_n=a_1\\\\\\frac{1-q^n}{1-q}$",
+                        "$q\\neq1$ 时：$S_n=a_1\\frac{1-q^n}{1-q}$",
                         "$q=1$ 时：$S_n=na_1$（常数列）",
                         "记忆：分子是「1 减 q 的 n 次方」，分母是「1 减 q」"
                     ]},
                     {"type":"keypoints","title":"等比中项","items":[
-                        "三个数成等比数列 $\\\\\\iff b^2=ac$",
-                        "等比数列中：$a_n^2=a_{n-1}\\\\\\cdot a_{n+1}$"
+                        "三个数成等比数列 $\\iff b^2=ac$",
+                        "等比数列中：$a_n^2=a_{n-1}\\cdot a_{n+1}$"
                     ]},
                     {"type":"keypoints","title":"与指数函数的关系","items":[
                         "等比数列的通项 $a_n=a_1 q^{n-1}$ 是指数函数形式",
@@ -121,13 +121,13 @@ public class DomainSequenceSeeder {
                 {"sections":[
                     {"type":"definition","title":"求和的意义","content":"数列求和就是求 $S_n=a_1+a_2+...+a_n$。除了等差等比公式外，还有多种常用技巧。"},
                     {"type":"keypoints","title":"裂项相消法","items":[
-                        "适用于 $a_n=\\\\\\frac{1}{n(n+1)}$ 形式",
-                        "$\\\\\\frac{1}{n(n+1)}=\\\\\\frac{1}{n}-\\\\\\frac{1}{n+1}$",
+                        "适用于 $a_n=\\frac{1}{n(n+1)}$ 形式",
+                        "$\\frac{1}{n(n+1)}=\\frac{1}{n}-\\frac{1}{n+1}$",
                         "前后项相互抵消，简洁优雅"
                     ]},
                     {"type":"keypoints","title":"错位相减法","items":[
                         "适用于等差×等比=混合型数列",
-                        "例：$a_n=n\\\\\\cdot2^n$",
+                        "例：$a_n=n\\cdot2^n$",
                         "方法：写出 $S_n$，乘以公比后错位相减"
                     ]},
                     {"type":"keypoints","title":"分组求和法","items":[
@@ -135,7 +135,7 @@ public class DomainSequenceSeeder {
                         "分别求和后再相加即可"
                     ]},
                     {"type":"example","title":"示例","items":[
-                        {"question":"求 $\\\\\\frac{1}{1\\\\\\times2}+\\\\\\frac{1}{2\\\\\\times3}+...$","steps":["=1-1/2+1/2-1/3+1/3-1/4+...","=1-1/(n+1)","=n/(n+1)"],"answer":"n/(n+1)"}
+                        {"question":"求 $\\frac{1}{1\\times2}+\\frac{1}{2\\times3}+...$","steps":["=1-1/2+1/2-1/3+1/3-1/4+...","=1-1/(n+1)","=n/(n+1)"],"answer":"n/(n+1)"}
                     ]}
                 ]}""")
                 .status(1).build());
@@ -147,7 +147,7 @@ public class DomainSequenceSeeder {
                 .summary("导数描述函数在某一点的变化率——几何意义是该点切线的斜率")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"函数 $y=f(x)$ 在 $x=x_0$ 处的导数定义为：$$f'(x_0)=\\\\\\lim_{\\\\\\Delta x\\\\\\to 0}\\\\\\frac{f(x_0+\\\\\\Delta x)-f(x_0)}{\\\\\\Delta x}$$"},
+                    {"type":"definition","title":"定义","content":"函数 $y=f(x)$ 在 $x=x_0$ 处的导数定义为：$$f'(x_0)=\\lim_{\\Delta x\\to 0}\\frac{f(x_0+\\Delta x)-f(x_0)}{\\Delta x}$$"},
                     {"type":"keypoints","title":"几何意义","items":[
                         "导数 $f'(x_0)$ = 曲线在点 $(x_0,f(x_0))$ 处切线的斜率",
                         "切线方程：$y-f(x_0)=f'(x_0)(x-x_0)$",
@@ -171,17 +171,17 @@ public class DomainSequenceSeeder {
                 .summary("掌握基本初等函数的导数公式和四则运算法则")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"基本导数公式","content":"$$(C)'=0$$ $$(x^n)'=nx^{n-1}$$ $$(e^x)'=e^x$$ $$(\\\\\\ln x)'=\\\\\\frac{1}{x}$$ $$(\\\\\\sin x)'=\\\\\\cos x$$ $$(\\\\\\cos x)'=-\\\\\\sin x$$"},
+                    {"type":"definition","title":"基本导数公式","content":"$$(C)'=0$$ $$(x^n)'=nx^{n-1}$$ $$(e^x)'=e^x$$ $$(\\ln x)'=\\frac{1}{x}$$ $$(\\sin x)'=\\cos x$$ $$(\\cos x)'=-\\sin x$$"},
                     {"type":"keypoints","title":"四则运算法则","items":[
-                        "$(u\\\\\\pm v)'=u'\\\\\\pm v'$",
+                        "$(u\\pm v)'=u'\\pm v'$",
                         "$(uv)'=u'v+uv'$（乘积法则）",
-                        "$(\\\\\\frac{u}{v})'=\\\\\\frac{u'v-uv'}{v^2}$（商的法则）"
+                        "$(\\frac{u}{v})'=\\frac{u'v-uv'}{v^2}$（商的法则）"
                     ]},
                     {"type":"keypoints","title":"复合函数求导（链式法则）","items":[
                         "$y=f(g(x))$，令 $u=g(x)$",
-                        "$\\\\\\frac{dy}{dx}=\\\\\\frac{dy}{du}\\\\\\cdot\\\\\\frac{du}{dx}$",
+                        "$\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dx}$",
                         "外层导数 × 内层导数",
-                        "例：$(\\\\\\sin 2x)'=2\\\\\\cos 2x$"
+                        "例：$(\\sin 2x)'=2\\cos 2x$"
                     ]},
                     {"type":"example","title":"示例","items":[
                         {"question":"求 f(x)=3x²+ln x 的导数","steps":["(3x²)'=6x","(ln x)'=1/x","f'(x)=6x+1/x"],"answer":"f'(x)=6x+1/x"},
@@ -231,32 +231,32 @@ public class DomainSequenceSeeder {
                 {"sections":[
                     {"type":"definition","title":"什么是放缩","content":"放缩法是一种估计算法：把复杂的表达式放大或缩小到一个容易处理的范围，通过比较间接证明不等式或判定极限。"},
                     {"type":"keypoints","title":"两大切线放缩（导数压轴题的核心）","items":[
-                        "指数放缩：$e^x \\\\geq x+1$（当 $x=0$ 时取等）",
-                        "对数放缩：$\\\\ln x \\\\leq x-1$（当 $x=1$ 时取等）",
-                        "推论：$\\\\ln(x+1) \\\\leq x$，$e^x \\\\geq ex$（取 $x=1$ 处切线）",
+                        "指数放缩：$e^x \\geq x+1$（当 $x=0$ 时取等）",
+                        "对数放缩：$\\ln x \\leq x-1$（当 $x=1$ 时取等）",
+                        "推论：$\\ln(x+1) \\leq x$，$e^x \\geq ex$（取 $x=1$ 处切线）",
                         "记忆法：指数图像在切线之上，对数图像在切线之下",
-                        "推广：$e^x \\\\geq 1+x+\\\\frac{x^2}{2}+...$（泰勒展开放缩）"
+                        "推广：$e^x \\geq 1+x+\\frac{x^2}{2}+...$（泰勒展开放缩）"
                     ]},
                     {"type":"keypoints","title":"常用放缩不等式","items":[
-                        "$\\\\sin x < x < \\\\tan x$（$x>0$）—— 三角函数放缩",
-                        "$\\\\frac{x}{1+x} \\\\leq \\\\ln(1+x) \\\\leq x$（$x>-1$）—— 对数放缩加强",
-                        "$e^x \\\\geq 1+x+\\\\frac{x^2}{2}$（更高阶逼近）",
-                        "$\\\\frac{1}{n+1} < \\\\ln(1+\\\\frac{1}{n}) < \\\\frac{1}{n}$"
+                        "$\\sin x < x < \\tan x$（$x>0$）—— 三角函数放缩",
+                        "$\\frac{x}{1+x} \\leq \\ln(1+x) \\leq x$（$x>-1$）—— 对数放缩加强",
+                        "$e^x \\geq 1+x+\\frac{x^2}{2}$（更高阶逼近）",
+                        "$\\frac{1}{n+1} < \\ln(1+\\frac{1}{n}) < \\frac{1}{n}$"
                     ]},
                     {"type":"keypoints","title":"数列放缩技巧","items":[
-                        "裂项放缩：$\\\\frac{1}{n^2} < \\\\frac{1}{n-1} - \\\\frac{1}{n} = \\\\frac{1}{n(n-1)}$",
-                        "等比放缩：$\\\\frac{1}{2^n-1} < \\\\frac{1}{2^{n-1}}$（放大分母）",
-                        "先放缩后求和：$a_n < b_n$ 且 $\\\\sum b_n$ 收敛，则 $\\\\sum a_n$ 收敛",
+                        "裂项放缩：$\\frac{1}{n^2} < \\frac{1}{n-1} - \\frac{1}{n} = \\frac{1}{n(n-1)}$",
+                        "等比放缩：$\\frac{1}{2^n-1} < \\frac{1}{2^{n-1}}$（放大分母）",
+                        "先放缩后求和：$a_n < b_n$ 且 $\\sum b_n$ 收敛，则 $\\sum a_n$ 收敛",
                         "放缩的度——既不放大到爆炸，也不缩小到无意义",
                         "常用策略：保留前几项不动，从某项开始放缩"
                     ]},
                     {"type":"keypoints","title":"放缩的极限应用——夹逼准则","items":[
-                        "若 $a_n \\\\leq b_n \\\\leq c_n$ 且 $\\\\lim a_n = \\\\lim c_n = L$，则 $\\\\lim b_n = L$",
-                        "例：$\\\\lim_{n\\\\to\\\\infty}\\\\frac{\\\\sin n}{n} = 0$（因为 $-\\\\frac{1}{n} \\\\leq \\\\frac{\\\\sin n}{n} \\\\leq \\\\frac{1}{n}$）"
+                        "若 $a_n \\leq b_n \\leq c_n$ 且 $\\lim a_n = \\lim c_n = L$，则 $\\lim b_n = L$",
+                        "例：$\\lim_{n\\to\\infty}\\frac{\\sin n}{n} = 0$（因为 $-\\frac{1}{n} \\leq \\frac{\\sin n}{n} \\leq \\frac{1}{n}$）"
                     ]},
                     {"type":"example","title":"示例","items":[
-                        {"question":"证明 $e^x \\\\geq x+1$（x∈R）","steps":["设 f(x)=e^x-(x+1)","f'(x)=e^x-1","f'(x)=0 → x=0","f(0)=0 是最小值","∴ e^x ≥ x+1"],"answer":"构造函数利用导数证明"},
-                        {"question":"用放缩比较 $\\\\ln 2$ 的大小范围","steps":["由 $\\\\frac{1}{n+1} < \\\\ln(1+\\\\frac{1}{n}) < \\\\frac{1}{n}$","取 n=1：$\\\\frac{1}{2} < \\\\ln 2 < 1$","取 n=2：$\\\\frac{1}{3} < \\\\ln\\\\frac{3}{2} < \\\\frac{1}{2}$，叠加可得更精确估计"],"answer":"$0.5 < \\\\ln 2 < 1$"}
+                        {"question":"证明 $e^x \\geq x+1$（x∈R）","steps":["设 f(x)=e^x-(x+1)","f'(x)=e^x-1","f'(x)=0 → x=0","f(0)=0 是最小值","∴ e^x ≥ x+1"],"answer":"构造函数利用导数证明"},
+                        {"question":"用放缩比较 $\\ln 2$ 的大小范围","steps":["由 $\\frac{1}{n+1} < \\ln(1+\\frac{1}{n}) < \\frac{1}{n}$","取 n=1：$\\frac{1}{2} < \\ln 2 < 1$","取 n=2：$\\frac{1}{3} < \\ln\\frac{3}{2} < \\frac{1}{2}$，叠加可得更精确估计"],"answer":"$0.5 < \\ln 2 < 1$"}
                     ]}
                 ]}""")
                 .status(1).build());

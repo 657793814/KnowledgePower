@@ -13,7 +13,11 @@
       "Bash(npx prisma *)",
       "Bash(curl -s http://localhost:8082/@fs/Users/liuzuodong/Documents/workspace/math-knowledge/web/src/components/Graph/KnowledgeGraph.tsx)",
       "Bash(curl -s 'http://localhost:8082/src/components/Graph/KnowledgeGraph.tsx')",
-      "Bash(curl -s 'http://localhost:8082/@fs/Users/liuzuodong/Documents/workspace/math-knowledge/web/src/components/Graph/KnowledgeGraph.tsx')"
+      "Bash(curl -s 'http://localhost:8082/@fs/Users/liuzuodong/Documents/workspace/math-knowledge/web/src/components/Graph/KnowledgeGraph.tsx')",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(sqlite3 *)",
+      "Bash(sort -t'|' -k1,1 -k2,2)"
     ]
   }
 }

@@ -377,7 +377,7 @@ export async function seedCombinatoricsDomain() {
   await sn('MATH-06-012', '正态分布', '最常用的连续型分布', 'math', '排列组合与统计', '高中', 4, 210, null,
     '正态分布是自然界中最常见的分布——中间多、两头少',
     richContent(
-      '正态分布（高斯分布）是连续型随机变量最重要的一种分布，其概率密度函数为 $f(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$，其中μ为均值（决定曲线的中心位置），σ为标准差（决定曲线的"胖瘦"）。标准正态分布 $\\varphi(x)=\\frac{1}{\\sqrt{2\\pi}}e^{-\\frac{x^2}{2}}$ 是μ=0,σ=1的特殊情况。"3σ原则"：$P(\mu-\sigma \lt X \lt \mu+\sigma)\approx68.3\%$，$P(\mu-2\sigma \lt X \lt \mu+2\sigma)\approx95.4\%$，$P(\mu-3\sigma \lt X \lt \mu+3\sigma)\approx99.7\%。',
+      '正态分布（高斯分布）是连续型随机变量最重要的一种分布，其概率密度函数为 $f(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$，其中μ为均值（决定曲线的中心位置），σ为标准差（决定曲线的"胖瘦"）。标准正态分布 $\\varphi(x)=\\frac{1}{\\sqrt{2\\pi}}e^{-\\frac{x^2}{2}}$ 是μ=0,σ=1的特殊情况。"3σ原则"：$P(\\mu-\\sigma \lt X \lt \\mu+\\sigma)\\approx68.3\%$，$P(\\mu-2\\sigma \lt X \lt \\mu+2\\sigma)\\approx95.4\%$，$P(\\mu-3\\sigma \lt X \lt \\mu+3\\sigma)\\approx99.7\%。',
       [
         '正态分布曲线关于x=μ对称',
         'σ越大曲线越"胖"（数据分散），σ越小越"瘦"（数据集中）',

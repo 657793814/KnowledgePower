@@ -39,18 +39,18 @@ public class DomainGeometrySeeder {
                 {"sections":[
                     {"type":"definition","title":"基本元素","content":"点：位置，没有大小（几何中最基本的元素）\\n线：点运动的轨迹，分为直线、射线、线段\\n面：线运动的轨迹，有平面和曲面\\n体：面运动的轨迹，有体积"},
                     {"type":"keypoints","title":"直线、射线、线段","items":[
-                        "直线：两端无限延伸（用 $\\\\overleftrightarrow{AB}$ 表示）",
-                        "射线：一个端点向一方无限延伸（用 $\\\\\\overrightarrow{AB}$ 表示）",
-                        "线段：两个端点之间（用 $\\\\\\overline{AB}$ 表示）",
+                        "直线：两端无限延伸（用 $\\overleftrightarrow{AB}$ 表示）",
+                        "射线：一个端点向一方无限延伸（用 $\\overrightarrow{AB}$ 表示）",
+                        "线段：两个端点之间（用 $\\overline{AB}$ 表示）",
                         "两点确定一条直线",
                         "两点之间，线段最短（距离定义）"
                     ]},
                     {"type":"keypoints","title":"角","items":[
                         "角：从同一点出发的两条射线组成的图形",
-                        "锐角：$0^\\\\\\circ<\\\\theta<90^\\\\\\circ$",
-                        "直角：$\\\\theta=90^\\\\\\circ$",
-                        "钝角：$90^\\\\\\circ<\\\\theta<180^\\\\\\circ$",
-                        "平角：$\\\\theta=180^\\\\\\circ$，周角：$\\\\theta=360^\\\\\\circ$"
+                        "锐角：$0^\\circ<\\theta<90^\\circ$",
+                        "直角：$\\theta=90^\\circ$",
+                        "钝角：$90^\\circ<\\theta<180^\\circ$",
+                        "平角：$\\theta=180^\\circ$，周角：$\\theta=360^\\circ$"
                     ]}
                 ]}""")
                 .status(1).build());
@@ -62,15 +62,15 @@ public class DomainGeometrySeeder {
                 .summary("三角形是最基本的多边形，内角和 180°，稳定性是它的核心特质")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"由三条线段首尾顺次连接组成的封闭图形叫三角形。记作 $\\\\\\triangle ABC$。"},
+                    {"type":"definition","title":"定义","content":"由三条线段首尾顺次连接组成的封闭图形叫三角形。记作 $\\triangle ABC$。"},
                     {"type":"keypoints","title":"分类","items":[
                         "按角分：锐角三角形、直角三角形、钝角三角形",
                         "按边分：不等边三角形、等腰三角形、等边三角形",
                         "等腰三角形：两腰相等，两底角相等",
-                        "等边三角形：三边相等，三角都是 $60^\\\\\\circ$"
+                        "等边三角形：三边相等，三角都是 $60^\\circ$"
                     ]},
                     {"type":"keypoints","title":"性质","items":[
-                        "内角和：$\\\\\\angle A+\\\\\\angle B+\\\\\\angle C=180^\\\\\\circ$",
+                        "内角和：$\\angle A+\\angle B+\\angle C=180^\\circ$",
                         "任意两边之和大于第三边",
                         "任意两边之差小于第三边",
                         "大边对大角，大角对大边",
@@ -95,7 +95,7 @@ public class DomainGeometrySeeder {
                 .summary("全等三角形：大小、形状完全一样，可以完全重叠")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"两个三角形大小和形状完全相同，能够完全重合。记作 $\\\\\\triangle ABC\\\\\\cong\\\\\\triangle A'B'C'$。"},
+                    {"type":"definition","title":"定义","content":"两个三角形大小和形状完全相同，能够完全重合。记作 $\\triangle ABC\\cong\\triangle A'B'C'$。"},
                     {"type":"keypoints","title":"全等判定定理","items":[
                         "SSS（边边边）：三边对应相等",
                         "SAS（边角边）：两边及其夹角对应相等",
@@ -122,7 +122,7 @@ public class DomainGeometrySeeder {
                 .summary("相似三角形：形状一样但大小不同，对应边成比例，对应角相等")
                 .contentJson("""
                 {"sections":[
-                    {"type":"definition","title":"定义","content":"对应角相等、对应边成比例的三角形叫相似三角形。记作 $\\\\\\triangle ABC\\\\sim\\\\\\triangle A'B'C'$。相似比是对应边的比值。"},
+                    {"type":"definition","title":"定义","content":"对应角相等、对应边成比例的三角形叫相似三角形。记作 $\\triangle ABC\\sim\\triangle A'B'C'$。相似比是对应边的比值。"},
                     {"type":"keypoints","title":"相似判定","items":[
                         "AA（角角）：两角对应相等（第三角自动相等）",
                         "SAS：两边成比例且夹角相等",
@@ -420,9 +420,9 @@ public class DomainGeometrySeeder {
                         "球：半圆绕直径旋转而成"
                     ]},
                     {"type":"keypoints","title":"体积与表面积","items":[
-                        "柱体：$V=Sh$，$S_\\\\\\text{侧}=Ch$",
-                        "锥体：$V=\\\\\\frac{1}{3}Sh$",
-                        "球体：$V=\\\\\\frac{4}{3}\\\\pi r^3$，$S=4\\\\pi r^2$"
+                        "柱体：$V=Sh$，$S_\\text{侧}=Ch$",
+                        "锥体：$V=\\frac{1}{3}Sh$",
+                        "球体：$V=\\frac{4}{3}\\pi r^3$，$S=4\\pi r^2$"
                     ]}
                 ]}""")
                 .status(1).build());
@@ -439,16 +439,16 @@ public class DomainGeometrySeeder {
                         "一般式：$Ax+By+C=0$",
                         "斜截式：$y=kx+b$（$k$ 斜率，$b$ 截距）",
                         "点斜式：$y-y_1=k(x-x_1)$",
-                        "两点式：$\\\\\\frac{y-y_1}{y_2-y_1}=\\\\\\frac{x-x_1}{x_2-x_1}$"
+                        "两点式：$\\frac{y-y_1}{y_2-y_1}=\\frac{x-x_1}{x_2-x_1}$"
                     ]},
                     {"type":"keypoints","title":"圆的标准方程","items":[
                         "$(x-a)^2+(y-b)^2=r^2$，圆心 $(a,b)$，半径 $r$",
                         "一般式：$x^2+y^2+Dx+Ey+F=0$"
                     ]},
                     {"type":"keypoints","title":"距离公式","items":[
-                        "两点距离：$d=\\\\\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$",
-                        "点到直线：$d=\\\\\\frac{|Ax_0+By_0+C|}{\\\\\\sqrt{A^2+B^2}}$",
-                        "平行线距离：$d=\\\\\\frac{|C_1-C_2|}{\\\\\\sqrt{A^2+B^2}}$"
+                        "两点距离：$d=\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$",
+                        "点到直线：$d=\\frac{|Ax_0+By_0+C|}{\\sqrt{A^2+B^2}}$",
+                        "平行线距离：$d=\\frac{|C_1-C_2|}{\\sqrt{A^2+B^2}}$"
                     ]}
                 ]}""")
                 .status(1).build());
@@ -463,23 +463,23 @@ public class DomainGeometrySeeder {
                     {"type":"definition","title":"圆锥曲线的起源","content":"用不同角度的平面去截一个圆锥面，得到三种曲线：椭圆（截平面倾斜角小于母线角）、抛物线（平行于母线）、双曲线（倾斜角大于母线角）。"},
                     {"type":"keypoints","title":"椭圆","items":[
                         "定义：到两焦点 $F_1,F_2$ 距离之和为常数 $2a$（$>|F_1F_2|$）的点的轨迹",
-                        "标准方程：$\\\\frac{x^2}{a^2}+\\\\frac{y^2}{b^2}=1$（$a>b>0$，焦点在 $x$ 轴）",
-                        "关系：$c^2=a^2-b^2$，$e=\\\\frac{c}{a}<1$",
-                        "顶点：$(\\\\pm a,0),(0,\\\\pm b)$，长轴 $2a$，短轴 $2b$",
+                        "标准方程：$\\frac{x^2}{a^2}+\\frac{y^2}{b^2}=1$（$a>b>0$，焦点在 $x$ 轴）",
+                        "关系：$c^2=a^2-b^2$，$e=\\frac{c}{a}<1$",
+                        "顶点：$(\\pm a,0),(0,\\pm b)$，长轴 $2a$，短轴 $2b$",
                         "特殊情形：$a=b=r$ 时退化为圆 $x^2+y^2=r^2$"
                     ]},
                     {"type":"keypoints","title":"双曲线","items":[
                         "定义：到两焦点 $F_1,F_2$ 距离之差的绝对值为常数 $2a$（$<|F_1F_2|$）的点的轨迹",
-                        "标准方程：$\\\\frac{x^2}{a^2}-\\\\frac{y^2}{b^2}=1$（焦点在 $x$ 轴）",
-                        "关系：$c^2=a^2+b^2$，$e=\\\\frac{c}{a}>1$",
-                        "渐近线：$y=\\\\pm\\\\frac{b}{a}x$（双曲线特有的直线）",
-                        "顶点：$(\\\\pm a,0)$，实轴 $2a$，虚轴 $2b$"
+                        "标准方程：$\\frac{x^2}{a^2}-\\frac{y^2}{b^2}=1$（焦点在 $x$ 轴）",
+                        "关系：$c^2=a^2+b^2$，$e=\\frac{c}{a}>1$",
+                        "渐近线：$y=\\pm\\frac{b}{a}x$（双曲线特有的直线）",
+                        "顶点：$(\\pm a,0)$，实轴 $2a$，虚轴 $2b$"
                     ]},
                     {"type":"keypoints","title":"抛物线","items":[
                         "定义：到焦点 $F$ 距离等于到准线 $l$ 距离的点的轨迹",
                         "标准方程：$y^2=2px$（$p>0$，开口向右），$y^2=-2px$（向左）",
                         "$x^2=2py$（向上），$x^2=-2py$（向下）",
-                        "焦点：$(\\\\frac{p}{2},0)$，准线：$x=-\\\\frac{p}{2}$（$y^2=2px$ 情形）",
+                        "焦点：$(\\frac{p}{2},0)$，准线：$x=-\\frac{p}{2}$（$y^2=2px$ 情形）",
                         "$e=1$（抛物线的离心率恒为 1）"
                     ]},
                     {"type":"keypoints","title":"三种曲线的对比","items":[
@@ -489,8 +489,8 @@ public class DomainGeometrySeeder {
                         "圆锥曲线的光学性质：椭圆（反射到另一焦点）、双曲线（反射到另一支焦点）、抛物线（反射到焦点方向）"
                     ]},
                     {"type":"example","title":"示例","items":[
-                        {"question":"椭圆 $\\\\frac{x^2}{25}+\\\\frac{y^2}{16}=1$ 的 a、b、c、e 各是多少？","steps":["a²=25 ⇒ a=5","b²=16 ⇒ b=4","c²=a²-b²=9 ⇒ c=3","e=c/a=3/5=0.6"],"answer":"a=5,b=4,c=3,e=0.6"},
-                        {"question":"双曲线 $\\\\frac{x^2}{9}-\\\\frac{y^2}{16}=1$ 的渐近线方程？","steps":["a²=9 ⇒ a=3","b²=16 ⇒ b=4","渐近线：y=±(b/a)x=±(4/3)x"],"answer":"y=±(4/3)x"}
+                        {"question":"椭圆 $\\frac{x^2}{25}+\\frac{y^2}{16}=1$ 的 a、b、c、e 各是多少？","steps":["a²=25 ⇒ a=5","b²=16 ⇒ b=4","c²=a²-b²=9 ⇒ c=3","e=c/a=3/5=0.6"],"answer":"a=5,b=4,c=3,e=0.6"},
+                        {"question":"双曲线 $\\frac{x^2}{9}-\\frac{y^2}{16}=1$ 的渐近线方程？","steps":["a²=9 ⇒ a=3","b²=16 ⇒ b=4","渐近线：y=±(b/a)x=±(4/3)x"],"answer":"y=±(4/3)x"}
                     ]}
                 ]}""")
                 .status(1).build());

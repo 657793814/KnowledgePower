@@ -16,7 +16,9 @@ import knowledgeSearchRouter from './routes/knowledgeSearch.js';
 import examRouter from './routes/exam.js';
 import aiRouter from './routes/ai.js';
 import insightRouter from './routes/insight.js';
+import uploadRouter from './routes/upload.js';
 import prisma from './db.js';
+import { initializeDatabase } from './init-db.js';
 
 const app = express();
 
@@ -49,6 +51,7 @@ app.use('/knowledge/search', knowledgeSearchRouter);
 app.use('/exam', examRouter);
 app.use('/ai', aiRouter);
 app.use('/insight', insightRouter);
+app.use('/upload', uploadRouter);
 
 // 健康检查
 app.get('/health', (_req, res) => {
@@ -69,8 +72,10 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 });
 
 // 启动
-app.listen(config.port, () => {
-  console.log(`🧮 KnowledgePower Node Server 启动成功 → http://localhost:${config.port}`);
+initializeDatabase().then(() => {
+  app.listen(config.port, () => {
+    console.log(`🧮 KnowledgePower Node Server 启动成功 → http://localhost:${config.port}`);
+  });
 });
 
 // 优雅退出

@@ -359,7 +359,7 @@ export default function StatsPage() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <Button
                       size="small"
-                      onClick={() => navigate(`/knowledge/${d.domain}`)}
+                      onClick={() => navigate(`/graph/${encodeURIComponent(d.domain)}`)}
                       style={{ borderRadius: 6 }}
                     >
                       复习知识
