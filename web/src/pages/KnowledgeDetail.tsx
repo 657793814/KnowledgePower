@@ -579,14 +579,14 @@ export default function KnowledgeDetail() {
           )}
         </div>
         {detail.subtitle && (
-          <p style={{ fontSize: 16, color: '#64748b', margin: 0 }} dangerouslySetInnerHTML={{ __html: renderFormula(detail.subtitle) }} />
+          <p style={{ fontSize: 16, color: 'var(--color-text-secondary, #4b5563)', margin: 0 }} dangerouslySetInnerHTML={{ __html: renderFormula(detail.subtitle) }} />
         )}
         {detail.summary && (
-          <p style={{ fontSize: 14, color: '#94a3b8', marginTop: 8, fontStyle: 'italic' }}>
+          <p style={{ fontSize: 14, color: 'var(--color-text-secondary, #4b5563)', marginTop: 8, fontStyle: 'italic' }}>
             💡 <span dangerouslySetInnerHTML={{ __html: renderFormula(detail.summary) }} />
           </p>
         )}
-        <div style={{ marginTop: 4, fontSize: 13, color: '#bbb' }}>
+        <div style={{ marginTop: 4, fontSize: 13, color: 'var(--color-text-secondary, #4b5563)' }}>
           难度：{'★'.repeat(detail.difficulty)}{'☆'.repeat(5 - detail.difficulty)}
         </div>
       </div>

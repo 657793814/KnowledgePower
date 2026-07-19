@@ -6,10 +6,13 @@ import {
   EditOutlined, PieChartOutlined, DeleteOutlined,
   PlayCircleOutlined, UserOutlined, LogoutOutlined,
   LoginOutlined, UserAddOutlined, SettingOutlined,
+  BgColorsOutlined,
 } from '@ant-design/icons';
 import { SUBJECT_DOMAINS } from '@/types';
 import { useSubjectStore } from '@/store/subjectStore';
 import { useAuth } from '@/components/Auth/AuthProvider';
+import { useTheme } from '@/themes/ThemeContext';
+import type { ThemeId } from '@/themes/theme-presets';
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,13 +25,11 @@ export default function MainLayout() {
   const [searchText, setSearchText] = useState('');
   const [collapsed, setCollapsed] = useState(false);
   const { user, isLoggedIn, isAdmin, logout } = useAuth();
+  const { themeId, themes, setTheme } = useTheme();
 
-  // 获取当前学科下的领域菜单
   const domainLabels = SUBJECT_DOMAINS[currentSubject] || {};
 
-  // 当学科切换时，如果在旧学科的领域页面上，回到首页
   useEffect(() => {
-    // 如果路径是 /graph/:domain，但 domain 不在当前学科的领域列表中，回首页
     const match = location.pathname.match(/^\/graph\/(.+)/);
     if (match) {
       const domain = decodeURIComponent(match[1]);
@@ -51,26 +52,45 @@ export default function MainLayout() {
     onClick: () => navigate(`/graph/${encodeURIComponent(key)}`),
   }));
 
-  // 当前选中的领域（如果有）
   const match = location.pathname.match(/^\/graph\/(.+)/);
   const currentDomain = match ? decodeURIComponent(match[1]) : undefined;
-  // 如果是知识详情页，选中第一个匹配的领域
   const selectedKey = currentDomain && domainLabels[currentDomain] ? currentDomain : undefined;
 
+  const themeMenuItems = themes.map((t) => ({
+    key: t.id,
+    icon: (
+      <span
+        style={{
+          display: 'inline-block',
+          width: 10,
+          height: 10,
+          borderRadius: '50%',
+          backgroundColor: t.cssVars['--color-primary'],
+          marginRight: 4,
+        }}
+      />
+    ),
+    label: `${t.emoji} ${t.name}`,
+    onClick: () => setTheme(t.id as ThemeId),
+  }));
+
   return (
-    <Layout style={{ height: '100vh', overflow: 'hidden' }}>
+    <Layout style={{ height: '100vh', overflow: 'hidden', background: 'transparent' }}>
       <Header style={{
-        background: '#fff',
+        background: 'var(--color-header-bg)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 24px',
-        borderBottom: '1px solid #f0f0f0',
+        borderBottom: '1px solid var(--color-border)',
         flexShrink: 0,
         gap: 16,
+        transition: 'background 0.3s ease, border-color 0.3s ease',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => navigate('/')}>
           <img src="/logo.png" alt="logo" style={{ width: 28, height: 28 }} />
-          <Typography.Title level={4} style={{ margin: 0, whiteSpace: 'nowrap' }}>
+          <Typography.Title level={4} style={{ margin: 0, whiteSpace: 'nowrap', color: 'var(--color-text)' }}>
             知识动力
           </Typography.Title>
         </div>
@@ -86,7 +106,22 @@ export default function MainLayout() {
         />
         <div style={{ flex: 1 }} />
 
-        {/* 用户区 */}
+        <Dropdown menu={{ items: themeMenuItems }} trigger={['click']}>
+          <Button
+            type="text"
+            style={{
+              height: 48,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              color: 'var(--color-text-secondary)',
+            }}
+            title="切换主题"
+          >
+            <BgColorsOutlined style={{ fontSize: 16 }} />
+          </Button>
+        </Dropdown>
+
         {isLoggedIn ? (
           <Dropdown menu={{
             items: [
@@ -110,7 +145,7 @@ export default function MainLayout() {
               },
             ],
           }}>
-            <Button type="text" style={{ height: 48, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Button type="text" style={{ height: 48, display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-text)' }}>
               <UserOutlined style={{ fontSize: 16 }} />
               <span>{user?.nickname || user?.username}</span>
             </Button>
@@ -123,27 +158,31 @@ export default function MainLayout() {
           </Space>
         )}
       </Header>
-      <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <Layout style={{ flex: 1, overflow: 'hidden', background: 'transparent' }}>
         <Sider
           width={220}
           collapsed={collapsed}
           style={{
-            background: '#fff',
-            borderRight: '1px solid #f0f0f0',
+            background: 'var(--color-sidebar-bg)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            borderRight: '1px solid var(--color-border)',
             overflow: 'auto',
             flexShrink: 0,
+            transition: 'background 0.3s ease, border-color 0.3s ease',
           }}
         >
           <Menu
             mode="inline"
             selectedKeys={selectedKey ? [selectedKey] : []}
-            style={{ border: 'none', marginTop: 8 }}
+            style={{ border: 'none', marginTop: 8, background: 'transparent' }}
             items={domainMenuItems}
           />
-          <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '8px 0' }} />
           <Menu
             mode="inline"
             selectable={false}
+            style={{ background: 'transparent' }}
             items={[
               {
                 key: 'practice',
@@ -165,10 +204,11 @@ export default function MainLayout() {
               }] : []),
             ]}
           />
-          <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '8px 0' }} />
           <Menu
             mode="inline"
             selectable={false}
+            style={{ background: 'transparent' }}
             items={[
               {
                 key: 'insight',
@@ -185,10 +225,11 @@ export default function MainLayout() {
             ]}
           />
           {isAdmin && <>
-            <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+            <div style={{ borderTop: '1px solid var(--color-border)', margin: '8px 0' }} />
             <Menu
               mode="inline"
               selectable={false}
+              style={{ background: 'transparent' }}
               items={[
                 {
                   key: 'admin-dashboard',
@@ -206,7 +247,11 @@ export default function MainLayout() {
             />
           </>}
         </Sider>
-        <Content style={{ background: '#f5f7fa', overflow: 'auto', height: '100%' }}>
+        <Content style={{
+          background: 'transparent',
+          overflow: 'auto',
+          height: '100%',
+        }}>
           <Outlet />
         </Content>
       </Layout>

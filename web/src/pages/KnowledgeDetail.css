@@ -1,4 +1,4 @@
-/* 知识点详情页样式 */
+/* 知识点详情页样式 — 毛玻璃版本 */
 .detail-container {
   max-width: 800px;
   margin: 0 auto;
@@ -6,17 +6,21 @@
   min-height: calc(100vh - 64px);
 }
 
+/* 毛玻璃卡片 */
 .detail-section {
-  background: #fff;
+  background: var(--color-surface, rgba(255,255,255,0.85));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border, rgba(255,255,255,0.4));
+  box-shadow: var(--color-glass-shadow, 0 8px 32px rgba(0,0,0,0.06));
   border-radius: 12px;
   padding: 20px 24px;
   margin-bottom: 16px;
-  border: 1px solid #f0f0f0;
-  transition: box-shadow 0.2s;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .detail-section:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
 }
 
 .detail-section h3 {
@@ -24,7 +28,8 @@
   font-weight: 700;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--color-border, #f0f0f0);
+  color: var(--color-text, #1a1a2e);
 }
 
 /* 关系卡片 */
@@ -34,34 +39,37 @@
   gap: 6px;
   padding: 6px 14px;
   margin: 4px 6px 4px 0;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-primary-light, #f0f5ff);
+  border: 1px solid var(--color-primary-light, #d6e4ff);
   border-radius: 20px;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  backdrop-filter: blur(4px);
 }
 
 .relation-card:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
+  filter: brightness(0.95);
+  transform: translateY(-1px);
 }
 
 .relation-type-badge {
   font-size: 10px;
   padding: 1px 6px;
   border-radius: 4px;
-  background: #e2e8f0;
-  color: #64748b;
+  background: var(--color-surface-solid, #fff);
+  color: var(--color-text-secondary, #64748b);
 }
 
 /* 练习问题卡片 */
 .practice-question {
-  background: #f8fafc;
+  background: var(--color-code-bg, rgba(248,250,252,0.8));
+  backdrop-filter: blur(8px);
   border-radius: 8px;
   padding: 14px 16px;
   margin-bottom: 10px;
+  transition: background 0.3s ease;
 }
 
 /* D3 图谱全局样式 */
@@ -81,8 +89,8 @@
 
 .graph-tooltip {
   position: absolute;
-  background: rgba(30, 41, 59, 0.95);
-  color: #fff;
+  background: var(--color-tooltip-bg, rgba(30, 41, 59, 0.95));
+  color: var(--color-tooltip-text, #fff);
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 13px;

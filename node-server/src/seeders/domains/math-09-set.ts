@@ -23,7 +23,7 @@ export async function seedSetDomain() {
       ],
       ['$A = \\{a, b, c\\}$', '$B = \\{x \\in \\mathbb{R} \\mid x^2 - 1 = 0\\}$', '$a \\in A$', '$\\mathbb{N} \\subseteq \\mathbb{Z} \\subseteq \\mathbb{Q} \\subseteq \\mathbb{R}$'],
       [
-        { title: '例1', question: '用适当的方法表示下列集合：\\n（1）大于0且小于10的偶数\\n（2）方程$x^2 - 3x + 2 = 0$的解集',
+        { title: '例1', question: '用适当的方法表示下列集合：\n（1）大于0且小于10的偶数 \n（2）方程$x^2 - 3x + 2 = 0$的解集',
           hint: '元素少用列举法，元素多用描述法',
           steps: ['（1）大于0且小于10的偶数有：2, 4, 6, 8', '列举法：{2, 4, 6, 8}',
                   '（2）方程$x^2 - 3x + 2 = 0$因式分解为$(x-1)(x-2)=0$', '解为x=1或x=2，列举法：{1, 2}'],

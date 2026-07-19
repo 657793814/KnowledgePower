@@ -5,10 +5,22 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html, body {
   height: 100%;
+}
+
+#root {
+  min-height: 100%;
+}
+
+html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #f5f7fa;
+}
+
+/* body 由 ThemeContext 直接设置背景，这里只设默认 */
+body {
+  color: var(--color-text, #1a1a2e);
+  transition: background 1s ease, color 0.3s ease;
 }
 
 /* ===== 领域主题色 ===== */
@@ -50,8 +62,8 @@ html, body, #root {
 /* ===== 节点 tooltip ===== */
 .graph-tooltip {
   position: absolute;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  background: var(--color-tooltip-bg, rgba(0,0,0,0.85));
+  color: var(--color-tooltip-text, #fff);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 13px;
@@ -69,17 +81,21 @@ html, body, #root {
 }
 
 .detail-section {
-  background: #fff;
+  background: var(--color-surface, rgba(255,255,255,0.85));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border, rgba(255,255,255,0.4));
+  box-shadow: var(--color-glass-shadow, 0 8px 32px rgba(0,0,0,0.06));
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .detail-section h3 {
   font-size: 18px;
   margin-bottom: 12px;
-  color: #1a1a2e;
+  color: var(--color-text, #1a1a2e);
 }
 
 .detail-section h3::before {
@@ -87,20 +103,21 @@ html, body, #root {
   display: inline-block;
   width: 4px;
   height: 18px;
-  background: #3B82F6;
+  background: var(--color-primary, #3B82F6);
   margin-right: 10px;
   vertical-align: middle;
   border-radius: 2px;
 }
 
 .visual-area {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-code-bg, rgba(248,250,252,0.8));
+  border: 1px solid var(--color-border-strong, #e2e8f0);
   border-radius: 12px;
   min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* ===== 关系卡片 ===== */
@@ -109,18 +126,18 @@ html, body, #root {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: #f0f5ff;
-  border: 1px solid #d6e4ff;
+  background: var(--color-primary-light, #f0f5ff);
+  border: 1px solid var(--color-primary-light, #d6e4ff);
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 14px;
-  color: #1d39c4;
+  color: var(--color-primary, #1d39c4);
   margin: 4px 6px 4px 0;
 }
 
 .relation-card:hover {
-  background: #d6e4ff;
+  filter: brightness(0.95);
   transform: translateY(-1px);
 }
 
@@ -128,22 +145,24 @@ html, body, #root {
   font-size: 11px;
   padding: 1px 6px;
   border-radius: 10px;
-  background: #fff;
-  color: #666;
+  background: var(--color-surface-solid, #fff);
+  color: var(--color-text-secondary, #666);
 }
 
 /* ===== 随堂练习 ===== */
 .practice-question {
   padding: 16px;
   margin-bottom: 12px;
-  background: #fafafa;
+  background: var(--color-code-bg, rgba(248,250,252,0.8));
+  backdrop-filter: blur(8px);
   border-radius: 8px;
-  border-left: 3px solid #3B82F6;
+  border-left: 3px solid var(--color-primary, #3B82F6);
+  transition: background 0.3s ease;
 }
 
 /* ===== 摘要卡片 ===== */
 .milestone-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, #764ba2 100%);
   color: #fff;
   border-radius: 12px;
   padding: 24px;
@@ -155,9 +174,9 @@ html, body, #root {
   width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
+  background: var(--color-scrollbar, #d9d9d9);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
+  background: var(--color-scrollbar-hover, #bfbfbf);
 }

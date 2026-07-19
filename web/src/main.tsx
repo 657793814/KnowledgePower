@@ -5,19 +5,17 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ThemeProvider } from './themes/ThemeContext';
 import './styles/global.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ConfigProvider locale={zhCN} theme={{
-    token: {
-      colorPrimary: '#3B82F6',
-      borderRadius: 8,
-    },
-  }}>
-    <HashRouter>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </HashRouter>
-  </ConfigProvider>,
+  <ThemeProvider>
+    <ConfigProvider locale={zhCN}>
+      <HashRouter>
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      </HashRouter>
+    </ConfigProvider>
+  </ThemeProvider>,
 );
