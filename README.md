@@ -2,7 +2,7 @@
 
 交互式知识图谱 + 训练系统 + AI 导师 + RAG 知识库
 
-![Tech Stack](https://img.shields.io/badge/React-18-blue) ![Tech Stack](https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen) ![Tech Stack](https://img.shields.io/badge/Node.js-18-green) ![Tech Stack](https://img.shields.io/badge/SQLite-blue) ![Tech Stack](https://img.shields.io/badge/MySQL-8.0-orange) ![Tech Stack](https://img.shields.io/badge/Tauri-v2-purple)
+![Tech Stack](https://img.shields.io/badge/React-18-blue) ![Tech Stack](https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen) ![Tech Stack](https://img.shields.io/badge/Node.js-20-green) ![Tech Stack](https://img.shields.io/badge/SQLite-blue) ![Tech Stack](https://img.shields.io/badge/MySQL-8.0-orange) ![Tech Stack](https://img.shields.io/badge/Tauri-v2-purple)
 
 ---
 
@@ -29,22 +29,26 @@ KnowledgePower/
 │   └── ai-config.json.example  # AI 配置样例
 ├── node-server/                # 🟡 Node.js 后端 (Express + SQLite + Prisma)
 │   ├── prisma/                 # Prisma ORM 配置与数据库
+│   ├── scripts/                # 数据维护脚本
 │   └── src/
 │       ├── routes/             # REST API 路由
 │       │   ├── ai.ts           # AI 问答/解析/推荐/组卷
 │       │   ├── admin.ts        # 管理员配置管理
 │       │   ├── exam.ts         # 考试/练习/错题本
+│       │   ├── insight.ts      # 学习洞察
 │       │   ├── knowledgeNodes.ts    # 知识点 CRUD
 │       │   ├── knowledgeRelations.ts # 知识点关系
 │       │   ├── knowledgeGraph.ts    # 知识图谱
 │       │   ├── knowledgeSearch.ts   # 全文搜索
 │       │   ├── auth.ts         # 认证
+│       │   ├── upload.ts       # 文件上传
 │       │   └── user.ts         # 用户
 │       ├── services/           # 业务服务层
 │       │   ├── aiService.ts    # AI 核心服务（含 RAG 检索）
 │       │   ├── examService.ts  # 考试服务
+│       │   ├── minioService.ts # MinIO 文件服务
 │       │   └── ragService.ts   # RAG 向量检索服务
-│       ├── seeders/            # 数据种子（数学/物理/化学共 20+ 领域）
+│       ├── seeders/            # 数据种子（数学/物理/化学/生物/英语/历史/政治/地理/计算机）
 │       ├── middlewares/        # 中间件（认证、管理员权限）
 │       └── utils/              # 工具函数
 ├── web/                        # 🔵 前端 (React + Vite + TypeScript)
@@ -53,21 +57,21 @@ KnowledgePower/
 │       ├── components/         # UI 组件库
 │       │   ├── Graph/          # 知识图谱可视化
 │       │   ├── Visual/         # 可视化组件（几何、复数平面、三角函数等）
-│       │   ├── Animation/      # 数学动画（方程平衡、函数变换等）
+│       │   ├── Animation/      # 数学动画（方程平衡、函数变换、将军饮马等）
 │       │   ├── ai/             # AI 对话面板
+│       │   ├── Layout/         # 布局组件
 │       │   └── Card/           # 卡片组件
 │       ├── pages/              # 页面视图
-│       │   ├── admin/          # 管理员页面（知识点管理、AI 设置、文档管理）
-│       │   │   ├── Dashboard.tsx      # 知识点列表管理
-│       │   │   ├── KnowledgeEdit.tsx  # 知识点编辑
-│       │   │   ├── AiSettingsPage.tsx # AI 配置管理
-│       │   │   └── DocumentsPage.tsx  # RAG 文档统计
-│       │   ├── exam/           # 练习/统计/错题本
+│       │   ├── admin/          # 管理员页面（知识点管理、AI 设置、文档管理、用户管理）
+│       │   ├── exam/           # 练习/统计/错题本/模型训练
 │       │   ├── auth/           # 登录/注册
+│       │   ├── CosmicHome.tsx  # 宇宙首页（3D 动画）
 │       │   ├── GraphPage.tsx   # 知识图谱可视化
-│       │   ├── KnowledgeDetail.tsx    # 知识点详情
+│       │   ├── KnowledgeDetail.tsx    # 知识点详情（含动画演示）
 │       │   ├── SearchPage.tsx  # 全文搜索
+│       │   ├── InsightPage.tsx # 学习洞察
 │       │   └── AnimationDemo.tsx      # 动画演示
+│       ├── hooks/              # 自定义 Hooks
 │       ├── store/              # 状态管理（Zustand）
 │       └── types/              # TypeScript 类型定义
 ├── server/                     # 🟢 Java 后端 (Spring Boot + MySQL)
@@ -77,8 +81,7 @@ KnowledgePower/
 │   ├── parsers/                # 文档解析模块（PDF/Markdown）
 │   ├── vector_store/           # 向量存储模块（Milvus）
 │   └── ingest.py               # RAG 数据导入脚本
-├── doc/                        # 📖 项目文档
-├── docker/                     # 🐳 Docker 配置
+├── docker/                     # 🐳 Docker 配置（MySQL、Redis、Milvus、Attu、MinIO、etcd）
 ├── scripts/                    # 📦 打包脚本
 └── start.sh                    # 🚀 一键启动
 ```
@@ -88,11 +91,12 @@ KnowledgePower/
 | 模块 | 职责 | 核心功能 |
 |------|------|----------|
 | **config** | AI 配置管理 | AI 服务商、模型参数、RAG 开关 |
-| **node-server** | Node.js 后端服务 | REST API、AI 集成、RAG 检索 |
-| **web** | 前端应用 | 知识图谱可视化、AI 聊天、练习系统、管理后台 |
+| **node-server** | Node.js 后端服务 | REST API、AI 集成、RAG 检索、文件上传 |
+| **web** | 前端应用 | 知识图谱可视化、AI 聊天、练习系统、管理后台、宇宙首页、学习洞察 |
 | **server** | Java 后端服务 | 备用后端（MySQL + Redis） |
 | **src-tauri** | 桌面端壳 | 跨平台桌面应用打包 |
 | **knowledge-base** | 知识库内容 | Markdown 文档 + RAG 向量数据导入 |
+| **docker** | 容器服务 | MySQL、Redis、Milvus、Attu、MinIO、etcd |
 
 ---
 
@@ -102,12 +106,11 @@ KnowledgePower/
 
 | 工具 | 最低版本 |
 |------|---------|
-| Node.js | 18.x |
+| Node.js | 20.x |
 | pnpm | 8.x (或 npm) |
 | Java | 21 (Java 后端) |
-| Docker | 可选（MySQL/Milvus） |
+| Docker | 推荐（MySQL/Milvus/Redis/MinIO） |
 | Ollama | 可选（RAG 嵌入） |
-| Milvus | 可选（RAG 向量库） |
 
 ### 启动开发环境
 
@@ -136,6 +139,16 @@ cp config/ai-config.json.example config/ai-config.json
 ./start.sh frontend # 只启动前端（后端已在其他地方运行）
 ```
 
+### Docker 服务启动
+
+```bash
+# 启动所有依赖服务（MySQL、Redis、Milvus、Attu、MinIO、etcd）
+docker compose -f docker/docker-compose.yml up -d
+
+# 查看服务状态
+docker compose -f docker/docker-compose.yml ps
+```
+
 ---
 
 ## AI 配置
@@ -144,7 +157,7 @@ cp config/ai-config.json.example config/ai-config.json
 
 AI 配置存储在 `config/ai-config.json`，支持运行时热重载，无需重启服务。
 
-**样例文件**: [ai-config.json.example](file:///Users/liuzuodong/Documents/workspace/ZDKnowledge/config/ai-config.json.example)
+**样例文件**: [ai-config.json.example](config/ai-config.json.example)
 
 ### 配置项说明
 
@@ -208,7 +221,7 @@ Java 后端通过 `start.sh` 脚本自动读取 `config/ai-config.json`，并将
 ollama run nomic-embed-text
 
 # 2. 启动 Milvus（向量数据库，使用 Docker）
-./scripts/milvus.sh start
+docker compose -f docker/docker-compose.yml up -d
 
 # 3. 导入知识库（Markdown → 向量）
 ./scripts/ingest.sh
@@ -226,6 +239,7 @@ ollama run nomic-embed-text
 - 交互式图谱可视化（D3.js）
 - 按领域分组浏览
 - 全文搜索 + 过滤
+- 宇宙首页（3D 科目星球环绕动画）
 
 ### AI 导师
 - 智能知识问答（支持 LaTeX 公式）
@@ -239,6 +253,7 @@ ollama run nomic-embed-text
 - 答题评分、实时反馈
 - 错题本管理
 - 学习统计（各领域正确率）
+- 模型专题训练（每个题型模型配套练习题）
 
 ### 可视化组件
 
@@ -251,14 +266,22 @@ ollama run nomic-embed-text
 - 数列可视化（SequenceVisual）
 - 幂函数圆（CirclePower）
 - 数轴（NumberLine）
+- 将军饮马动画（GeneralHorseDrinking）
+- 路径优化（PathOptimization）
+- 圆周运动（CircularMotion）
 
 **物理可视化**
 - 受力分析图（ForceDiagram）
 - 光学演示（OpticsDemo）
 - 自由落体动画（FreeFall）
+- 粒子偏转（ParticleDeflection）
 
 **化学可视化**
 - 分子结构视图（MoleculeView）
+
+**其他**
+- 概率模拟（ProbabilitySim）
+- 携手并进动画（HandInHand）
 
 ---
 
@@ -315,6 +338,7 @@ ollama run nomic-embed-text
 | POST | `/exam/generate` | 规则组卷 |
 | POST | `/exam/auto-generate` | AI 智能组卷 |
 | GET | `/exam/paper/:paperId` | 获取试卷详情 |
+| GET | `/exam/model-questions/:modelId` | 获取模型专题练习题 |
 
 ### 题库管理
 | 方法 | 路径 | 说明 |
@@ -333,6 +357,12 @@ ollama run nomic-embed-text
 | POST | `/ai/recommend` | 学习建议 |
 | POST | `/ai/generate-paper` | AI 智能组卷 |
 
+### 学习洞察
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/insight/weak-points` | 薄弱知识点分析 |
+| GET | `/insight/learning-path` | 学习路径建议 |
+
 ### 管理员
 | 方法 | 路径 | 说明 |
 |------|------|------|
@@ -340,6 +370,11 @@ ollama run nomic-embed-text
 | PUT | `/admin/ai-config` | 更新 AI 配置 |
 | POST | `/admin/ai-config/test` | 测试 AI 连接 |
 | GET | `/admin/documents/stats` | RAG 文档统计 |
+
+### 文件上传
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/upload/image` | 上传图片 |
 
 ### 健康检查
 | 方法 | 路径 | 说明 |
@@ -376,6 +411,32 @@ mysql -h 127.0.0.1 -u root -p knowledgepower < server/src/main/resources/db/init
 
 ---
 
+## Docker 服务
+
+Docker Compose 包含以下服务：
+
+| 服务 | 端口 | 说明 |
+|------|------|------|
+| MySQL | 3306 | 关系型数据库 |
+| Redis | 6379 | 缓存 |
+| Milvus | 19530 | 向量数据库 |
+| Attu | 8000 | Milvus 管理界面 |
+| MinIO | 9000 | 对象存储 |
+| etcd | 2379 | Milvus 元数据存储 |
+
+```bash
+# 启动所有服务
+docker compose -f docker/docker-compose.yml up -d
+
+# 停止所有服务
+docker compose -f docker/docker-compose.yml down
+
+# 查看日志
+docker compose -f docker/docker-compose.yml logs -f
+```
+
+---
+
 ## 桌面端 (Tauri v2)
 
 ```bash
@@ -392,10 +453,12 @@ cd web && npm run tauri build
 
 | 层 | 技术 |
 |----|------|
-| **前端** | React 18, TypeScript, Vite, Ant Design 5, D3.js, KaTeX |
+| **前端** | React 18, TypeScript, Vite, Ant Design 5, D3.js, KaTeX, Canvas API |
 | **Node.js 后端** | Express 4, Prisma ORM, TypeScript, tsx |
 | **Java 后端** | Spring Boot 3.3, MyBatis-Plus, JDK 21 |
 | **数据库** | SQLite / MySQL 8.0 |
+| **缓存** | Redis |
+| **对象存储** | MinIO |
 | **AI 引擎** | OpenAI 兼容 API (Agnes AI) |
 | **RAG** | Ollama (嵌入) + Milvus (向量库) |
 | **桌面壳** | Tauri v2 (Rust) |
@@ -427,3 +490,109 @@ cd web && npm run tauri build
 | ⑰ | 化学 | 溶液 | 初中 → 高中 |
 | ⑱ | 化学 | 有机化学 | 高中 |
 | ⑲ | 化学 | 化学计算 | 高中 |
+| ⑳ | 生物 | 细胞生物学 | 初中 → 高中 |
+| ㉑ | 生物 | 遗传与进化 | 初中 → 高中 |
+| ㉒ | 生物 | 人体生理 | 初中 → 高中 |
+| ㉓ | 生物 | 植物学 | 初中 → 高中 |
+| ㉔ | 生物 | 生态学 | 初中 → 高中 |
+| ㉕ | 生物 | 微生物与生物技术 | 高中 |
+| ㉖ | 英语 | 语法基础 | 初中 → 高中 |
+| ㉗ | 英语 | 词汇与构词 | 初中 → 高中 |
+| ㉘ | 英语 | 时态与语态 | 初中 → 高中 |
+| ㉙ | 英语 | 句法与从句 | 初中 → 高中 |
+| ㉚ | 英语 | 阅读策略 | 初中 → 高中 |
+| ㉛ | 英语 | 写作表达 | 初中 → 高中 |
+| ㉜ | 历史 | 中国古代史 | 初中 → 高中 |
+| ㉝ | 历史 | 中国近现代史 | 初中 → 高中 |
+| ㉞ | 历史 | 世界古代史 | 初中 → 高中 |
+| ㉟ | 历史 | 世界近现代史 | 初中 → 高中 |
+| ㊱ | 政治 | 思想政治基础 | 初中 → 高中 |
+| ㊲ | 政治 | 思想政治扩展 | 初中 → 高中 |
+| ㊳ | 地理 | 地理基础 | 初中 → 高中 |
+| ㊴ | 地理 | 区域地理 | 初中 → 高中 |
+| ㊵ | 地理 | 地图与地理工具 | 初中 → 高中 |
+| ㊶ | 地理 | 环境与可持续发展 | 高中 |
+| ㊷ | 计算机 | 计算机基础 | 初中 → 高中 |
+| ㊸ | 计算机 | 程序设计基础 | 初中 → 高中 |
+| ㊹ | 计算机 | 数据结构 | 高中 |
+| ㊺ | 计算机 | 算法 | 高中 |
+| ㊻ | 计算机 | 计算机网络 | 高中 |
+| ㊼ | 计算机 | 数据库 | 高中 |
+| ㊽ | 计算机 | 操作系统 | 高中 |
+
+---
+
+## 题型模型
+
+### 数学模型（60+）
+- **几何模型**：将军饮马、胡不归、阿氏圆、费马点、瓜豆原理、手拉手全等/相似等
+- **函数模型**：对勾函数、主元法、构造函数法、判别式法求值域等
+- **方程模型**：穿针引线法、多项式除法、绝对值最值、参数不等式分类讨论等
+- **数列模型**：裂项相消、错位相减、构造等差/等比数列等
+- **代数模型**：整体代入、对称式、韦达定理应用等
+
+### 物理模型（16+）
+- **力学模型**：滑块模型、传送带模型、圆周运动模型、平抛运动模型等
+
+### 化学模型（11+）
+- 化学反应速率模型、化学平衡模型、溶液配制模型等
+
+### 生物模型（8+）
+- 细胞分裂模型、遗传定律模型等
+
+---
+
+## 开发命令
+
+### 前端
+```bash
+cd web
+npm run dev          # 开发模式
+npm run build        # 生产构建
+npm run lint         # 代码检查
+npm run tauri dev    # Tauri 开发
+npm run tauri build  # Tauri 打包
+```
+
+### Node.js 后端
+```bash
+cd node-server
+npm run dev          # 开发模式（自动重启）
+npm run build        # 生产构建
+npm run seed         # 数据种子
+npx prisma studio    # 数据库可视化
+```
+
+### Java 后端
+```bash
+cd server
+mvn spring-boot:run  # 开发模式
+mvn clean package    # 生产构建
+java -jar target/knowledge-power-1.0.0.jar  # 运行
+```
+
+---
+
+## 项目统计
+
+- **知识点总数**: 472+
+- **关系总数**: 798+
+- **题目总数**: 2327+
+- **题型模型**: 95+
+- **知识领域**: 49 个
+- **学科**: 9 门（数学、物理、化学、生物、英语、历史、政治、地理、计算机）
+
+---
+
+## 许可证
+
+本项目采用 **个人非商业用途许可协议**。
+
+- ✅ 个人学习、研究、非商业项目可自由使用、修改、分发
+- ❌ 商业用途（销售、租赁、SaaS、企业使用等）需联系作者获得授权
+
+详情请查看 [LICENSE](LICENSE) 文件。
+
+**商业授权咨询**：
+- 项目仓库：https://github.com/657793814/KnowledgePower
+- 作者邮箱：657793814@qq.com
