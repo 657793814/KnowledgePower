@@ -6,6 +6,18 @@
 
 ---
 
+## 📸 截图
+
+![知识动力 主界面](docs/screenshots/image.png)
+
+![知识动力 科目知识目录](docs/screenshots/image2.png)
+
+![知识动力 题型模型](docs/screenshots/image3.png)
+
+![知识动力 题型模型](docs/screenshots/image4.png)
+
+---
+
 ## 项目结构
 
 ```
