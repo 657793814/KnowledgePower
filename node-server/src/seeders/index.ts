@@ -9,6 +9,9 @@ import { prisma } from './helpers.js';
 import { seedUsers } from './users.js';
 import { seedQuestions } from './questions.js';
 import { seedModelQuestions } from './model-questions.js';
+import { seedModelQuestionsMath } from './model-questions-math.js';
+import { seedModelQuestionsChemistry } from './model-questions-chemistry.js';
+import { seedModelQuestionsPhysics } from './model-questions-physics.js';
 
 // 数学
 import { seedNumberDomain } from './domains/math-01-number.js';
@@ -259,6 +262,18 @@ async function main() {
   // ===== 模型专题题目 =====
   console.log('\n🏷️ 模型专题题目\n' + '='.repeat(20));
   await seedModelQuestions();
+
+  // ===== 数学模型专题题目（38个模型，每个10+题）=====
+  console.log('\n🏷️ 数学模型专题题目（38个模型）\n' + '='.repeat(20));
+  await seedModelQuestionsMath();
+
+  // ===== 化学模型专题题目 =====
+  console.log('\n🧪 化学模型专题题目\n' + '='.repeat(20));
+  await seedModelQuestionsChemistry();
+
+  // ===== 物理模型专题题目 =====
+  console.log('\n⚡ 物理模型专题题目\n' + '='.repeat(20));
+  await seedModelQuestionsPhysics();
 
   // ===== 数学领域总结根结点 =====
   console.log('\n➕ 函数补充知识点\n' + '='.repeat(20));

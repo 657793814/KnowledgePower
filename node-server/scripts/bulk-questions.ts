@@ -172,6 +172,10 @@ function generateWrongAnswers(correct: string): string[] {
   // 跳过太短或太长的答案
   if (!correct || correct.length < 1 || correct.length > 40) return wrongs;
 
+  // 🚨 跳过带编号枚举型的答案（如 "(1)3.14（3个有效数字）(2)3.142（4个有效数字）"）
+  // 这种答案不适合作为选择题，数字替换会把题号前缀改乱产生无意义干扰项
+  if (/\(1\)/.test(correct) && correct.length > 15) return wrongs;
+
   // 数值型（整数）
   if (/^-?\d+$/.test(correct)) {
     const n = parseInt(correct);
@@ -188,8 +192,10 @@ function generateWrongAnswers(correct: string): string[] {
   }
   // 文本型（且不是单个字母）
   else if (correct.length >= 3 && !/^[A-Da-d]\)?$/.test(correct)) {
+    // 先去掉开头的 (N) 编号前缀，避免误匹配题号
+    const stripped = correct.replace(/^\(\d+\)\s*/, '').trim();
     // 提取关键数字或名词进行变形
-    const numMatch = correct.match(/(\d+(\.\d+)?)/);
+    const numMatch = stripped.match(/(\d+(\.\d+)?)/);
     if (numMatch) {
       const val = parseFloat(numMatch[1]);
       wrongs.push(correct.replace(numMatch[1], String(val + 1)));
@@ -229,6 +235,9 @@ function genChoiceFromExamples(node: any, parsed: ParsedContent): any[] {
     if (ex.answer.length > 60 || ex.answer.length < 2) continue;
     // 跳过答案是单个字母（那是 MCQ 选项索引，不是真实答案）
     if (/^[A-Da-d]\)?$/.test(ex.answer.trim())) continue;
+
+    // 🚨 跳过带编号枚举型答案（如 "(1)3.14...(2)3.142..."），不适合出选择题
+    if (/\(1\)/.test(ex.answer) && ex.answer.length > 15) continue;
 
     const wrongAnswers = generateWrongAnswers(ex.answer);
     if (wrongAnswers.length < 3) continue;
@@ -302,6 +311,8 @@ async function main() {
   // 删除所有旧题（重新生成）
   const oldCount = await prisma.examQuestion.count();
   console.log(`🗑️  删除 ${oldCount} 道旧题...`);
+  console.log('  ⚠️  注意：模型节点（visualType=model）的手写题目也会被删！');
+  console.log('  ⚠️  如需保留，请先注释 deleteMany，再单独运行。');
   await prisma.examQuestion.deleteMany({});
   console.log('   ✅ 已清空\n');
 
@@ -316,6 +327,13 @@ async function main() {
   let nodeCount = 0;
 
   for (const node of allNodes) {
+    // 🚨 跳过模型节点 — 模型题目应该手写，不适合自动生成
+    if (node.visualType === 'model') {
+      nodeCount++;
+      console.log(`   ⏭️  ${node.id} ${node.title} (模型节点，跳过)`);
+      continue;
+    }
+
     const parsed = parseContent(node);
     const questions: any[] = [];
 

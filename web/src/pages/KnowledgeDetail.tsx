@@ -115,7 +115,7 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
               }
               return (
                 <li key={i} style={{ fontSize: 14, color: '#374151' }}>
-                  {item}
+                  <span dangerouslySetInnerHTML={{ __html: renderFormula(item) }} />
                 </li>
               );
             })}
@@ -133,7 +133,7 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
                 dangerouslySetInnerHTML={{ __html: renderFormula(ex.question) }} />
               {ex.hint && (
                 <div style={{ background: '#f0f9ff', padding: '6px 10px', borderRadius: 4, marginBottom: 6, fontSize: 13, color: '#0369a1' }}>
-                  💡 {ex.hint}
+                  💡 <span dangerouslySetInnerHTML={{ __html: renderFormula(ex.hint) }} />
                 </div>
               )}
               {ex.steps && (
@@ -174,7 +174,7 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
           {section.items?.length > 0 && (
             <ul style={{ paddingLeft: 20, lineHeight: 2 }}>
               {section.items.map((item: string, i: number) => (
-                <li key={i} style={{ fontSize: 14, color: '#7c2d12' }}>{item}</li>
+                <li key={i} style={{ fontSize: 14, color: '#7c2d12' }}><span dangerouslySetInnerHTML={{ __html: renderFormula(item) }} /></li>
               ))}
             </ul>
           )}
@@ -304,7 +304,7 @@ function SectionRenderer({ section, index }: { section: any; index: number }) {
           {section.items?.length > 0 && (
             <ul style={{ paddingLeft: 20, lineHeight: 2 }}>
               {section.items.map((item: string, i: number) => (
-                <li key={i} style={{ fontSize: 14, color: '#4c1d95' }}>{item}</li>
+                <li key={i} style={{ fontSize: 14, color: '#4c1d95' }}><span dangerouslySetInnerHTML={{ __html: renderFormula(item) }} /></li>
               ))}
             </ul>
           )}
@@ -684,7 +684,7 @@ export default function KnowledgeDetail() {
                 </summary>
                 <div style={{ marginTop: 4 }}>
                   <Tag color="green" style={{ fontSize: 13, padding: '2px 8px', cursor: 'default' }}>
-                    {q.answer}
+                    <span dangerouslySetInnerHTML={{ __html: renderFormula(q.answer) }} />
                   </Tag>
                 </div>
               </details>

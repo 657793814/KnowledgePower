@@ -99,8 +99,8 @@ export async function seedGeometryDomain() {
       ],
       ['全等性质：$\\triangle ABC \\cong \\triangle DEF \\Rightarrow AB=DE, \\angle A=\\angle D$', '判定：SSS, SAS, ASA, AAS, HL'],
       [
-        { title: '例1', question: '如图，AB=AC，∠B=∠C，求证：△ABE≌△ACD。',
-          steps: ['已知：AB=AC', '已知：∠B=∠C', '∠A是公共角（或∠BAE=∠CAD）', 'ASA判定：两角及夹边相等', '∴ △ABE≌△ACD'],
+        { title: '例1', question: '如图，AB=AC，∠B=∠C，求证：△ABE\\cong△ACD。',
+          steps: ['已知：AB=AC', '已知：∠B=∠C', '∠A是公共角（或∠BAE=∠CAD）', 'ASA判定：两角及夹边相等', '∴ △ABE\\cong△ACD'],
           answer: 'ASA判定全等' },
         { title: '例2', question: '判断正误并说明理由：\n(1) 三条边对应相等的两个三角形一定全等\n(2) 三个角对应相等的两个三角形一定全等',
           steps: ['(1) 正确：SSS判定', '(2) 错误：三个角相等只能得到相似（AAA），大小可能不同'],

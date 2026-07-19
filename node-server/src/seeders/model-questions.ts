@@ -151,7 +151,7 @@ add(
       'D. 两个三角形面积相等',
     ])),
   q('MATH-05-017', 'math', '几何', '初中', 'choice', 4,
-    '\\triangle ABC 和 \\triangle ADE 都是等边三角形，且点 A 为公共顶点，则 \\triangle ABD ≌ \\triangle ACE 的判定依据是（　）',
+    '\\triangle ABC 和 \\triangle ADE 都是等边三角形，且点 A 为公共顶点，则 \\triangle ABD \\cong \\triangle ACE 的判定依据是（　）',
     'C',
     'AB=AC（等边三角形），AD=AE（等边三角形），\\angle BAD=\\angle CAE（两边同时减去 \\angle DAC），故 SAS 全等。',
     JSON.stringify([
@@ -223,7 +223,7 @@ add(
   q('MATH-05-019', 'math', '几何', '初中', 'judge', 3,
     '阿氏圆问题通常可以利用"子母相似"构造等比线段来转化。',
     '正确',
-    '阿氏圆问题通过构造子母相似三角形（\\triangle PAC ∽ \\triangle CBP），将比例关系转化为线段相等关系。'),
+    '阿氏圆问题通过构造子母相似三角形（\\triangle PAC \\sim \\triangle CBP），将比例关系转化为线段相等关系。'),
 );
 
 // =====================================================================
@@ -333,10 +333,10 @@ add(
   q('MATH-05-023', 'math', '几何', '初中', 'choice', 3,
     '在 \\triangle ABC 中，AB=AC，D 是 BC 边上一点，\\angle EDF=\\angle B，E、F 分别在 AB、AC 上，则（　）',
     'B',
-    'B、D、C 共线，\\angle B=\\angle EDF=\\angle C（AB=AC），构成一线三等角模型，可证 \\triangle BDE ∽ \\triangle CFD。',
+    'B、D、C 共线，\\angle B=\\angle EDF=\\angle C（AB=AC），构成一线三等角模型，可证 \\triangle BDE \\sim \\triangle CFD。',
     JSON.stringify([
-      'A. \\triangle BDE ≌ \\triangle CFD',
-      'B. \\triangle BDE ∽ \\triangle CFD',
+      'A. \\triangle BDE \\cong \\triangle CFD',
+      'B. \\triangle BDE \\sim \\triangle CFD',
       'C. DE=DF',
       'D. BE=CF',
     ])),
@@ -363,12 +363,12 @@ add(
   q('MATH-05-024', 'math', '几何', '初中', 'choice', 4,
     '在 \\triangle ABC 中，AD 是 BC 边上的中线，E 为 AD 上一点，连接 BE 并延长交 AC 于 F。若使用倍长中线法，应延长 AD 至 G 使 DG=AD，连接 CG，则可证（　）',
     'B',
-    '倍长 AD 至 G，则 BD=DC、AD=DG、\\angle ADB=\\angle GDC（对顶角），故 \\triangle ABD ≌ \\triangle GCD（SAS）。',
+    '倍长 AD 至 G，则 BD=DC、AD=DG、\\angle ADB=\\angle GDC（对顶角），故 \\triangle ABD \\cong \\triangle GCD（SAS）。',
     JSON.stringify([
-      'A. \\triangle ABD ≌ \\triangle ACD',
-      'B. \\triangle ABD ≌ \\triangle GCD',
-      'C. \\triangle ABD ≌ \\triangle AGC',
-      'D. \\triangle ADC ≌ \\triangle GDB',
+      'A. \\triangle ABD \\cong \\triangle ACD',
+      'B. \\triangle ABD \\cong \\triangle GCD',
+      'C. \\triangle ABD \\cong \\triangle AGC',
+      'D. \\triangle ADC \\cong \\triangle GDB',
     ])),
   q('MATH-05-024', 'math', '几何', '初中', 'judge', 2,
     '倍长中线法只能用于证明线段相等关系，不能用于证明角的关系。',
@@ -423,7 +423,7 @@ add(
   q('MATH-05-026', 'math', '几何', '初中', 'choice', 4,
     '正方形 ABCD 中，\\angle EAF=45°（E 在 BC 上，F 在 CD 上），将 \\triangle ADF 绕 A 旋转至 \\triangle ABG，则可证（　）',
     'D',
-    '旋转后 G、B、E 共线，\\angle GAE=45°=\\angle EAF，AG=AF，AE=AE，故 \\triangle AEG ≌ \\triangle AEF（SAS），所以 EF=BE+DF。',
+    '旋转后 G、B、E 共线，\\angle GAE=45°=\\angle EAF，AG=AF，AE=AE，故 \\triangle AEG \\cong \\triangle AEF（SAS），所以 EF=BE+DF。',
     JSON.stringify([
       'A. EF=BE',
       'B. EF=DF',
@@ -487,7 +487,7 @@ add(
   q('MATH-05-028', 'math', '几何', '初中', 'choice', 3,
     '在正方形 ABCD 中，E、F 分别在 BC、CD 上，若 AE\\perp BF，则（　）',
     'B',
-    '十字模型：正方形中两条互相垂直的线段，可构造全等三角形，证明对应线段相等。AE\\perp BF 时，可证 \\triangle ABE ≌ \\triangle BCF，故 AE=BF。',
+    '十字模型：正方形中两条互相垂直的线段，可构造全等三角形，证明对应线段相等。AE\\perp BF 时，可证 \\triangle ABE \\cong \\triangle BCF，故 AE=BF。',
     JSON.stringify([
       'A. AE>BF',
       'B. AE=BF',
@@ -562,7 +562,7 @@ add(
       'A. EF 垂直平分 AA\'',
       'B. AE=A\'E',
       'C. AA\' 经过 EF 的中点',
-      'D. \\triangle AEF ≌ \\triangle A\'EF',
+      'D. \\triangle AEF \\cong \\triangle A\'EF',
     ])),
   q('MATH-05-030', 'math', '几何', '初中', 'judge', 3,
     '折叠问题中，折痕一定是对应点连线的垂直平分线。',
@@ -582,7 +582,12 @@ export async function seedModelQuestions() {
     const existing = await prisma.examQuestion.findFirst({
       where: { nodeId: qq.nodeId, title: qq.title },
     });
-    if (!existing) {
+    if (existing) {
+      await prisma.examQuestion.update({
+        where: { id: existing.id },
+        data: qq,
+      });
+    } else {
       await prisma.examQuestion.create({ data: qq });
     }
   }

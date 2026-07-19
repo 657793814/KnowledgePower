@@ -1,147 +1,268 @@
 /**
  * 全局 LaTeX 公式渲染工具
- * 用 KaTeX 渲染 $...$（行内）和 $$...$$（块级）公式
- * 
- * 安全处理：
- * - $...$ 段内的 < 和 > 由 KaTeX 处理为数学符号
- * - 非公式文本中的 < 和 > 被 HTML 转义，防止被当作标签
- * 
- * 改进 v2：
- * - 支持 `\$`（LaTeX 转义美元符号）在 $...$ 内部
- * - 支持 \\\(...\\\) 和 \\\[...\\\]（JSON 双转义版）
- * - 更安全的后备显示（失败时用不同颜色区分）
+ * v4 — 全面数据层 LaTeX 修复
  */
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
-/** HTML 转义：防止 < > & 被误解析为 HTML 标签/实体 */
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+function escapeHtml(s: string): string {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
-/**
- * 将文本中的 LaTeX 公式渲染为 HTML
- * 支持分隔符：$...$（行内）、$$...$$（块级）、\(...\)（行内）、\[...\]（块级）
- * @param text 包含 LaTeX 公式的文本
- * @returns 渲染后的 HTML 字符串（可直接用于 dangerouslySetInnerHTML）
- */
+// ════════════════════════════════════════════
+// Unicode → LaTeX 映射
+// ════════════════════════════════════════════
+
+const SYM: Record<string, string> = {
+  '\u00B7':'\\cdot ','\u00D7':'\\times ','\u00F7':'\\div ','\u2212':'-',
+  '\u2192':'\\to ','\u2190':'\\leftarrow ','\u21D2':'\\Rightarrow ',
+  '\u21D0':'\\Leftarrow ','\u21D4':'\\iff ',
+  '\u2264':'\\le ','\u2265':'\\ge ','\u2260':'\\ne ','\u2248':'\\approx ',
+  '\u2261':'\\equiv ','\u223C':'\\sim ','\u221D':'\\propto ','\u22A5':'\\perp ',
+  '\u2220':'\\angle ','\u2225':'\\parallel ',
+  '\u2208':'\\in ','\u2209':'\\notin ',
+  '\u2286':'\\subseteq ','\u2287':'\\supseteq ','\u2282':'\\subset ','\u2283':'\\supset ',
+  '\u2288':'\\nsubseteq ',
+  '\u2229':'\\cap ','\u222A':'\\cup ',
+  '\u2205':'\\emptyset ','\u2200':'\\forall ','\u2203':'\\exists ','\u2201':'\\complement ',
+  '\u221E':'\\infty ',
+  '\u220F':'\\prod ','\u2211':'\\sum ','\u222B':'\\int ',
+  '\u2234':'\\therefore ',
+  '\u22C8':'\\bowtie ',
+  '\u25B3':'\\triangle ','\u22BF':'\\triangle ',
+  '\u03C0':'\\pi ','\u03B1':'\\alpha ','\u03B2':'\\beta ','\u03B3':'\\gamma ',
+  '\u03B4':'\\delta ','\u03B5':'\\epsilon ','\u03B8':'\\theta ',
+  '\u03BB':'\\lambda ','\u03BC':'\\mu ','\u03C3':'\\sigma ','\u03C6':'\\phi ',
+  '\u03C9':'\\omega ',
+  '\u0393':'\\Gamma ','\u0394':'\\Delta ','\u0398':'\\Theta ',
+  '\u039B':'\\Lambda ','\u039E':'\\Xi ','\u03A0':'\\Pi ',
+  '\u03A3':'\\Sigma ','\u03A6':'\\Phi ','\u03A8':'\\Psi ','\u03A9':'\\Omega ',
+};
+
+const SUB_CH: Record<string, string> = {
+  '\u2080':'0','\u2081':'1','\u2082':'2','\u2083':'3',
+  '\u2084':'4','\u2085':'5','\u2086':'6','\u2087':'7',
+  '\u2088':'8','\u2089':'9','\u208A':'+','\u208B':'-',
+  '\u2090':'a','\u2091':'e','\u2093':'x','\u2092':'o',
+  '\u2095':'h','\u2096':'k','\u2097':'l','\u2098':'m',
+  '\u2099':'n','\u209A':'p','\u209B':'s','\u209C':'t',
+};
+
+const SUP_CH: Record<string, string> = {
+  '\u2070':'0','\u2074':'4','\u2075':'5','\u2076':'6','\u2077':'7','\u2078':'8','\u2079':'9',
+  '\u207A':'+','\u207B':'-',
+  '\u2071':'i','\u207F':'n',
+  '\u00B9':'1','\u00B2':'2','\u00B3':'3',
+};
+
+const SYM_RE = /[\u00B7\u00D7\u00F7\u2212\u2190-\u21FF\u2200-\u22FF\u2282-\u2289\u25B3\u22BF\u03B1-\u03C9\u0393\u0394\u0398\u039B\u039E\u03A0\u03A3\u03A6\u03A8\u03A9]/g;
+const SUB_RE = /[\u2080-\u209C]+/g;
+const SUP_RE = /[\u2070\u2071\u2074-\u207F\u00B9\u00B2\u00B3]+/g;
+
+function convertUnicodeMath(s: string): string {
+  s = s.replace(SYM_RE, m => SYM[m] ?? m);
+  s = s.replace(SUB_RE, m => {
+    let r = '';
+    for (const c of m) r += SUB_CH[c] ?? c;
+    return '_{' + r + '}';
+  });
+  s = s.replace(SUP_RE, m => {
+    let r = '';
+    for (const c of m) r += SUP_CH[c] ?? c;
+    return '^{' + r + '}';
+  });
+  return s;
+}
+
+// ════════════════════════════════════════════
+// LaTeX 关键字
+// ════════════════════════════════════════════
+
+const LATEX_CMDS = [
+  'alpha','beta','gamma','delta','epsilon','zeta','eta','theta',
+  'iota','kappa','lambda','mu','nu','xi','omicron','rho','sigma',
+  'tau','upsilon','phi','chi','psi','omega',
+  'Delta','Gamma','Theta','Lambda','Xi','Pi','Sigma','Phi','Psi','Omega',
+  'sin','cos','tan','cot','sec','csc','arcsin','arccos','arctan',
+  'sinh','cosh','tanh',
+  'log','ln','lg','exp',
+  'cdot','circ','div','times','pm','mp','ast','star',
+  'wedge','vee','oplus','otimes','odot','ominus',
+  'sum','prod','int','oint','lim','iint','iiint',
+  'infty','nabla','partial','prime',
+  'to','mapsto','iff','implies',
+  'rightarrow','Rightarrow','leftarrow','Leftarrow',
+  'leftrightarrow','Leftrightarrow',
+  'uparrow','downarrow','updownarrow',
+  'longrightarrow','Longrightarrow',
+  'longleftarrow','Longleftarrow','longleftrightarrow','Longleftrightarrow',
+  'subset','supset','subseteq','supseteq',
+  'subsetneq','supsetneq',
+  'nsubseteq','nsupseteq','nsubset','nsupset',
+  'in','notin','ni','owns',
+  'cup','cap','sqcup','sqcap','setminus',
+  'emptyset','varnothing',
+  'forall','exists','nexists',
+  'land','lor','lnot','neg',
+  'equiv','simeq','cong','approx','sim','propto','bowtie',
+  'neq','ne','geq','leq','le','ge','ll','gg',
+  'perp','parallel','mid','nmid','models',
+  'angle','measuredangle','triangle','triangledown',
+  'because','therefore','varpropto',
+  'colon','dots','cdots','vdots','ddots','iddots',
+  'hat','bar','dot','ddot','tilde','vec','check','acute','grave',
+  'breve','mathring','widehat','widetilde',
+  'overbrace','underbrace','overset','underset',
+  'overline','underline','overrightarrow','overleftrightarrow',
+  'operatorname','text','boxed','cancel','sout',
+  'xrightarrow','xleftarrow',
+  'limits','nolimits','displaystyle','textstyle',
+  'left','right','big','bigg','Big','Bigg',
+  'bigl','bigr','biggl','biggr',
+  'mathcal','mathbb','mathrm','mathbf','mathit','mathsf','mathtt',
+];
+const CMD_RE = new RegExp('\\\\(?:' + LATEX_CMDS.join('|') + ')\\b', 'g');
+const FRAC_SQRT_RE = /\\(frac\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}|sqrt\s*(?:\[[^\]]*\])?\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})/g;
+
+// ════════════════════════════════════════════
+// 安全分段处理
+// ════════════════════════════════════════════
+
+function mapOutsideDollar(text: string, fn: (t: string) => string): string {
+  const parts = text.split(/(\$[^$]*\$)/g);
+  for (let i = 0; i < parts.length; i += 2) {
+    parts[i] = fn(parts[i]);
+  }
+  return parts.join('');
+}
+
+// ════════════════════════════════════════════
+// 主函数
+// ════════════════════════════════════════════
+
 export function renderFormula(text: string): string {
   if (!text) return '';
 
-  // 统一预处理：将各种 LaTeX 定界符转为 $...$ 和 $$...$$
+  // === 第一遍：$...$ 渲染 ============================
   let normalized = text
-    // \\[ ... \\] → $$ ... $$ (双反斜杠版，来自 JSON 转义)
     .replace(/\\\\\[([\s\S]*?)\\\\\]/g, '$$\n$1\n$$')
-    // \\\( ... \\\) → $ ... $ (双反斜杠版)
     .replace(/\\\\\(([\s\S]*?)\\\\\)/g, '$$1$')
-    // \[ ... \] → $$ ... $$ (普通版)
     .replace(/\\\[([\s\S]*?)\\\]/g, '$$\n$1\n$$')
-    // \( ... \) → $ ... $ (普通版)
     .replace(/\\\(([\s\S]*?)\\\)/g, '$$1$');
 
-  // 正则匹配：$$...$$（块级优先），$...$（行内）
-  // 行内使用 ((?:[^$\\]|\\.)+?) 处理 \$ 转义
-  const regex = /\$\$([\s\S]*?)\$\$|\$((?:[^$\\]|\\.)+?)\$/g;
+  const DOLLAR_RE = /\$\$([\s\S]*?)\$\$|\$((?:[^$\\]|\\.)+?)\$/g;
   let result = '';
   let lastIndex = 0;
-  let match: RegExpExecArray | null;
+  let m;
 
-  while ((match = regex.exec(normalized)) !== null) {
-    // 匹配前的文本 → HTML 转义
-    result += escapeHtml(normalized.slice(lastIndex, match.index));
-
-    const isBlock = match[1] !== undefined;
-    const latex = (isBlock ? match[1] : match[2]).trim();
-
-    // 空内容：原样保留 $$ 或 $
-    if (!latex) {
-      result += isBlock ? '$$' : '$';
-      lastIndex = match.index + match[0].length;
-      continue;
+  while ((m = DOLLAR_RE.exec(normalized)) !== null) {
+    result += escapeHtml(normalized.slice(lastIndex, m.index));
+    const block = m[1] !== undefined;
+    let latex = (block ? m[1] : m[2]).trim();
+    if (!latex) { result += block ? '$$' : '$'; lastIndex = m.index + m[0].length; continue; }
+    latex = latex.replace(/\u00B0/g, '^\\circ');
+    try { result += katex.renderToString(latex, { throwOnError: false, displayMode: block, output: 'html' }); }
+    catch {
+      result += '<span style="color:#3B82F6;font-style:italic;border-bottom:1px dashed #3B82F6;cursor:help" title="LaTeX: ' + escapeHtml(latex) + '">\\(' + escapeHtml(latex) + '\\)</span>';
     }
-
-    // 行内公式：纯数字/标点/货币 → 不作为公式
-    if (!isBlock && /^[\d.,%‰¥$€£\s·;:!?，。；：！？、……—·'"『』【】《》（）\-+]+$/.test(latex)) {
-      result += '$' + latex + '$';
-      lastIndex = match.index + match[0].length;
-      continue;
-    }
-
-    try {
-      result += katex.renderToString(latex, {
-        throwOnError: false,
-        displayMode: isBlock,
-        output: 'html',
-      });
-    } catch {
-      // 渲染失败：蓝色斜体回退，显示公式原始内容
-      // 使用红色边框标注让用户知道这里有公式但渲染失败
-      result += `<span style="color:#3B82F6;font-style:italic;border-bottom:1px dashed #3B82F6;cursor:help" title="LaTeX: ${escapeHtml(latex)}">`
-             + `\\(${escapeHtml(latex)}\\)</span>`;
-    }
-
-    lastIndex = match.index + match[0].length;
+    lastIndex = m.index + m[0].length;
   }
 
-  // 剩余文本
-  const remaining = normalized.slice(lastIndex);
+  // === 第二遍：auto-detect ============================
+  let p = normalized.slice(lastIndex).replace(/\\\\/g, '\\');
 
-  // 处理没有被定界符包裹的 LaTeX 公式
-  // 先将双反斜杠转为单反斜杠（处理 JSON 转义问题）
-  const normalizedRemaining = remaining.replace(/\\\\/g, '\\');
+  // A) Unicode 映射
+  p = convertUnicodeMath(p);
 
-  // 使用一个大正则表达式一次性匹配所有可能的 LaTeX 命令
-  const latexCommandRegex = /\\(frac\s*\{[^{}]*\}\s*\{[^{}]*\}|sqrt\s*\{[^}]*\}|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|rho|sigma|tau|upsilon|phi|chi|psi|omega|Delta|Gamma|Theta|Lambda|Xi|Pi|Sigma|Phi|Psi|Omega|sin|cos|tan|log|ln|exp|infty|sum|prod|int|oint|lim|pi)/g;
+  // B) 复杂 LaTeX 命令
+  p = mapOutsideDollar(p, t => t.replace(FRAC_SQRT_RE, m => ' $' + m + '$ '));
 
-  let processed = normalizedRemaining.replace(latexCommandRegex, (match) => {
-    return ` $${match}$ `;
-  })
-    // 处理下标和上标
-    .replace(/([a-zA-Z])_(\d+)/g, '$1_{$2}')
-    .replace(/([a-zA-Z])\^(\d+)/g, '$1^{$2}')
-    // 处理分数形式 a/b 后面跟数字或字母（简单形式）
-    .replace(/(\d+)\/(\d+)(?=\s|$|\))/g, ' $\\frac{$1}{$2}$ ')
-    // 合并相邻的 $...$ 块
-    .replace(/\$\s+\$/g, '$');
+  // C) 裸露 LaTeX 关键字
+  p = mapOutsideDollar(p, t => t.replace(CMD_RE, m => ' $' + m + '$ '));
 
-  // 重新对处理后的文本应用公式渲染
-  const reprocessRegex = /\$\$([\s\S]*?)\$\$|\$((?:[^$\\]|\\.)+?)\$/g;
+  // D) Unicode √ → LaTeX \sqrt
+  p = mapOutsideDollar(p, t =>
+    t
+      .replace(/³√\(([^)]*?)\)/g, ' $\\sqrt[3]{$1}$ ')
+      .replace(/√(\d+)\/(\d+)/g, ' $\\frac{\\sqrt{$1}}{$2}$ ')
+      .replace(/√\(([^)]*?)\)/g, (_, c) => ' $\\sqrt{' + c + '}$ ')
+      .replace(/√(\d+)/g, ' $\\sqrt{$1}$ ')
+      .replace(/√([a-zA-Zα-ωπ])/g, ' $\\sqrt{$1}$ ')
+  );
+
+  // E0) 带括号的指数整体捕获（在分数处理之前，防止 )² 被拆散）
+  // 如 (x+1/x)² → $(x+1/x)^{2}$，然后 1/x 在 KaTeX 内保持原样
+  p = mapOutsideDollar(p, t => {
+    t = t.replace(/\(([^$()\n]+)\)\^\{(\d+)\}/g, (_, expr, exp) =>
+      ' $(' + expr + ')^{' + exp + '}$ '
+    );
+    return t;
+  });
+
+  // E1) 分数
+  p = mapOutsideDollar(p, t => {
+    // 1/x^{2} 或 1/x^{n} 带花括号上标
+    t = t.replace(/(\d+)\/([a-zA-Z])\^\{(\d+)\}/g, (_, a, b, e) =>
+      ' $\\frac{' + a + '}{' + b + '^{' + e + '}}$ '
+    );
+    // 1/x_{n}（下标转换后产生，如 1/x₁ → 1/x_{1}）
+    t = t.replace(/(\d+)\/([a-zA-Z])_\{(\d+)\}/g, (_, a, b, d) =>
+      ' $\\frac{' + a + '}{' + b + '_{' + d + '}}$ '
+    );
+    // digit/letter（如 1/x）
+    t = t.replace(/(\d+)\/([a-zA-Z])(?=[\s,\)\u3002\uff1b\]\+\-×÷·=]|$|\.(?!\d))/g, (_, a, b) =>
+      ' $\\frac{' + a + '}{' + b + '}$ '
+    );
+    // digit/digit（如 1/4）
+    t = t.replace(/(\d+)\/(\d+)(?=[\s,\)\u3002\uff1b\]\+\-×÷·=]|$|\.(?!\d))/g, (_, a, b) =>
+      ' $\\frac{' + a + '}{' + b + '}$ '
+    );
+    return t;
+  });
+
+  // E2) 裸露上标/下标
+  // 每个模式独立 mapOutsideDollar 调用，防止 $...$ 被后续步骤入侵
+  // E2a) 订阅+上标组合优先：v_{0}^{2}（Step A 转换后产生）
+  p = mapOutsideDollar(p, t =>
+    t.replace(/([a-zA-Z])_\{([^}]*)\}\^(?:\{([^}]*)\}|([a-zA-Z0-9]))/g, (_, l, s, b1, b2) =>
+      ' $' + l + '_{' + s + '}^{' + (b1 ?? b2) + '}$ '
+    )
+  );
+  // E2b) 单独下标：v_{0}、v_0、a_n
+  p = mapOutsideDollar(p, t =>
+    t.replace(/([a-zA-Z])_(?:\{([^}]*)\}|([a-zA-Z0-9]))/g, (_, l, b1, b2) =>
+      ' $' + l + '_{' + (b1 ?? b2) + '}$ '
+    )
+  );
+  // E2c) 单独上标：x^{2}、x^2、vy^{2}
+  p = mapOutsideDollar(p, t =>
+    t.replace(/([a-zA-Z0-9]+)\^(?:\{([^}]*)\}|([a-zA-Z0-9]))/g, (_, base, b1, b2) =>
+      ' $' + base + '^{' + (b1 ?? b2) + '}$ '
+    )
+  );
+  // E2d) x)^{n} 残留
+  p = mapOutsideDollar(p, t =>
+    t.replace(/([a-zA-Z0-9]+)\)\^(?:\{([^}]*)\}|([a-zA-Z0-9]))/g, (_, base, b1, b2) =>
+      ' $' + base + ')^{' + (b1 ?? b2) + '}$ '
+    )
+  );
+
+  // F) 第三遍：渲染新增的 $...$
   let finalResult = '';
-  let lastMatchIndex = 0;
-  let latexMatch: RegExpExecArray | null;
-
-  while ((latexMatch = reprocessRegex.exec(processed)) !== null) {
-    finalResult += escapeHtml(processed.slice(lastMatchIndex, latexMatch.index));
-    const isBlock = latexMatch[1] !== undefined;
-    const latex = (isBlock ? latexMatch[1] : latexMatch[2]).trim();
-    if (!latex) {
-      finalResult += isBlock ? '$$' : '$';
-      lastMatchIndex = latexMatch.index + latexMatch[0].length;
-      continue;
+  lastIndex = 0;
+  while ((m = DOLLAR_RE.exec(p)) !== null) {
+    finalResult += escapeHtml(p.slice(lastIndex, m.index));
+    const block = m[1] !== undefined;
+    let latex = (block ? m[1] : m[2]).trim();
+    if (!latex) { finalResult += block ? '$$' : '$'; lastIndex = m.index + m[0].length; continue; }
+    latex = latex.replace(/\u00B0/g, '^\\circ');
+    try { finalResult += katex.renderToString(latex, { throwOnError: false, displayMode: block, output: 'html' }); }
+    catch {
+      finalResult += '<span style="color:#3B82F6;font-style:italic;border-bottom:1px dashed #3B82F6;cursor:help" title="LaTeX: ' + escapeHtml(latex) + '">\\(' + escapeHtml(latex) + '\\)</span>';
     }
-    if (!isBlock && /^[\d.,%‰¥$€£\s·;:!?，。；：！？、……—·'"『』【】《》（）\-+]+$/.test(latex)) {
-      finalResult += '$' + latex + '$';
-      lastMatchIndex = latexMatch.index + latexMatch[0].length;
-      continue;
-    }
-    try {
-      finalResult += katex.renderToString(latex, {
-        throwOnError: false,
-        displayMode: isBlock,
-        output: 'html',
-      });
-    } catch {
-      finalResult += `<span style="color:#3B82F6;font-style:italic;border-bottom:1px dashed #3B82F6;cursor:help" title="LaTeX: ${escapeHtml(latex)}">`
-             + `\\(${escapeHtml(latex)}\\)</span>`;
-    }
-    lastMatchIndex = latexMatch.index + latexMatch[0].length;
+    lastIndex = m.index + m[0].length;
   }
-  finalResult += escapeHtml(processed.slice(lastMatchIndex));
+  finalResult += escapeHtml(p.slice(lastIndex));
 
   return result + finalResult;
 }
