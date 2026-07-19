@@ -16,6 +16,8 @@
 
 ![知识动力 题型模型](docs/screenshots/image4.png)
 
+![知识动力 AI导师](docs/screenshots/image5.png)
+
 ---
 
 ## 项目结构
